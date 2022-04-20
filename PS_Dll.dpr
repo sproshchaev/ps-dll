@@ -10,6 +10,9 @@ uses
   Windows,
   libeay32 in 'libeay32.pas',
   WinSock
+  { D7 Controls,
+  Dialogs }
+
   ;
 
 { *** Начало раздела описания процедур и функций DLL *** }
@@ -451,9 +454,9 @@ begin
       begin
         // Если инишника нет
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        Vcl.Dialogs.MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
+        { D7 MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0); }
       end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN { D7 MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0); }
   paramFromIniFile:=tmp_paramFromIniFile;
 end;
 
@@ -583,9 +586,9 @@ begin
       begin
         // Если инишника нет
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0);
+        { D7 MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0); }
       end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN { D7 MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0); }
   paramFromIniFileWithFullPath:=tmp_paramFromIniFile;
 end;
 
@@ -1282,18 +1285,20 @@ begin
 end;
 
 { 44. Определение в системе переменной "Temp" как C:\Temp\ }
+{ D7
 function GetTempPathSystem: ShortString;
 var Buffer: array[0..1023] of Char;
 begin
   SetString(Result, Buffer, GetTempPath(Sizeof(Buffer)-1,Buffer));
-end;
+end; }
 
 { 45. Определение текущего каталога как C:\WORK }
+{ D7
 function GetCurrDir: ShortString;
 var Buffer: array[0..1023] of Char;
 begin
-  SetString(Result, Buffer, GetCurrentDirectory(Sizeof(Buffer)-1,Buffer));
-end;
+  SetString(Result, Buffer, GetCurrentDirectory(Sizeof(Buffer)-1, Buffer));
+end; }
 
 { 46. Определение короткого имени файла "D:\WORK\read.txt" -> "read.txt" }
 function getShortFileName(In_FileName:ShortString):ShortString;
@@ -2440,9 +2445,9 @@ GenHashMD5 Name 'GenHashMD5',
 
 WindowsCopyFile Name 'WindowsCopyFile',
 
-GetTempPathSystem Name 'GetTempPathSystem',
+{ D7 GetTempPathSystem Name 'GetTempPathSystem', }
 
-GetCurrDir Name 'GetCurrDir',
+{ D7 GetCurrDir Name 'GetCurrDir', }
 
 getShortFileName Name 'getShortFileName',
 
