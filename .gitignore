@@ -67,3 +67,10 @@ __recovery/
 
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
+
+# Other files
+*.txt
+*.bat
+*.arj
+*.rar
+*.dp~
