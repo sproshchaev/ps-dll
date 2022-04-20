@@ -1,11 +1,9 @@
-Library PS_Dll; {D7}
+п»їLibrary PS_Dll;
 
 uses
   ShareMem,
   SysUtils,
   Classes,
-  Controls,
-  Dialogs,
   Des in 'Des.pas',
   psnMD5 in 'psnMD5.pas',
   ShellApi,
@@ -14,9 +12,9 @@ uses
   WinSock
   ;
 
-{ *** Начало раздела описания процедур и функций DLL *** }
+{ *** РќР°С‡Р°Р»Рѕ СЂР°Р·РґРµР»Р° РѕРїРёСЃР°РЅРёСЏ РїСЂРѕС†РµРґСѓСЂ Рё С„СѓРЅРєС†РёР№ DLL *** }
 
-// 1. Функция RoundCurrency округляет передаваемое ей значение до указанного количества знаков после запятой
+// 1. Р¤СѓРЅРєС†РёСЏ RoundCurrency РѕРєСЂСѓРіР»СЏРµС‚ РїРµСЂРµРґР°РІР°РµРјРѕРµ РµР№ Р·РЅР°С‡РµРЅРёРµ РґРѕ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·РЅР°РєРѕРІ РїРѕСЃР»Рµ Р·Р°РїСЏС‚РѕР№
 Function RoundCurrency(in_value : Double; accuracy : Byte) : Double;
 begin
   case accuracy of
@@ -28,7 +26,7 @@ begin
   end;
 end;
 
-// 2. Функция DosToWin преобразует Dos кодировку входящей строки в символы кодировки Windows
+// 2. Р¤СѓРЅРєС†РёСЏ DosToWin РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Dos РєРѕРґРёСЂРѕРІРєСѓ РІС…РѕРґСЏС‰РµР№ СЃС‚СЂРѕРєРё РІ СЃРёРјРІРѕР»С‹ РєРѕРґРёСЂРѕРІРєРё Windows
 Function DosToWin(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -56,7 +54,7 @@ begin
   DosToWin:=localStr;
 end;
 
-// 3. Функция WinToDos преобразует Windows кодировку входящей строки в символы кодировки Dos
+// 3. Р¤СѓРЅРєС†РёСЏ WinToDos РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Windows РєРѕРґРёСЂРѕРІРєСѓ РІС…РѕРґСЏС‰РµР№ СЃС‚СЂРѕРєРё РІ СЃРёРјРІРѕР»С‹ РєРѕРґРёСЂРѕРІРєРё Dos
 Function WinToDos(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -75,7 +73,7 @@ begin
   WinToDos:=localStr;
 end;
 
-// 4. Преобразование разделителя целой и дробной части (, -> .), представленного в строковом виде
+// 4. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЂР°Р·РґРµР»РёС‚РµР»СЏ С†РµР»РѕР№ Рё РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё (, -> .), РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅРѕРіРѕ РІ СЃС‚СЂРѕРєРѕРІРѕРј РІРёРґРµ
 Function ChangeSeparator(In_StringFloat: shortString): shortString;
 var tranzVar: shortString;
 begin
@@ -89,7 +87,7 @@ begin
     ELSE ChangeSeparator:=In_StringFloat+'.00';
 end;
 
-// 5. Преобразование разделителя целой и дробной части (. -> ,), представленного в строковом виде
+// 5. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЂР°Р·РґРµР»РёС‚РµР»СЏ С†РµР»РѕР№ Рё РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё (. -> ,), РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅРѕРіРѕ РІ СЃС‚СЂРѕРєРѕРІРѕРј РІРёРґРµ
 Function ChangeSeparator2(In_StringFloat: shortString): shortString;
 var tranzVar: shortString;
 begin
@@ -103,7 +101,7 @@ begin
     ELSE ChangeSeparator2:=In_StringFloat+',00';
 end;
 
-// 6. Фиксированная строка выравнивание влево
+// 6. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РІР»РµРІРѕ
 Function LeftFixString (In_String: shortString; In_FixPosition: Byte): shortString;
 begin
   IF Length(Trim(In_String)) >= In_FixPosition
@@ -111,7 +109,7 @@ begin
     ELSE LeftFixString:=Trim(In_String) + StringOfChar(' ', In_FixPosition - Length(Trim(In_String)));
 end;
 
-// 7. Фиксированная строка выравнивание вправо
+// 7. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РІРїСЂР°РІРѕ
 Function RightFixString (In_String: shortString; In_FixPosition: Byte): shortString;
 begin
   IF Length(Trim(In_String)) >= In_FixPosition
@@ -119,7 +117,7 @@ begin
     ELSE RightFixString:=StringOfChar(' ', In_FixPosition - Length(Trim(In_String))) + Trim(In_String);
 end;
 
-// 8. Фиксированная строка выравнивание по центру
+// 8. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РїРѕ С†РµРЅС‚СЂСѓ
 Function CentrFixString (In_String: shortString; In_FixPosition: Byte): shortString;
 begin
   In_String:=Trim(In_String);
@@ -131,7 +129,7 @@ begin
       end;
 end;
 
-// 9. Преобразование суммы из prn-файла
+// 9. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃСѓРјРјС‹ РёР· prn-С„Р°Р№Р»Р°
 Function prnSum(In_String: shortString): shortString;
 var i : 0..50;
     tmp_TrSum : ShortString;
@@ -141,14 +139,14 @@ begin
     begin
       IF ((In_String[i]<>' ')AND((In_String[i]='0')OR(In_String[i]='1')OR(In_String[i]='2')OR(In_String[i]='3')OR(In_String[i]='4')OR(In_String[i]='5')OR(In_String[i]='6')OR(In_String[i]='7')OR(In_String[i]='8')OR(In_String[i]='9')))
         THEN tmp_TrSum:=tmp_TrSum+In_String[i];
-      // На всякй случай проверяем наличие тире, точки и запятой - как разделтелей дробной части
+      // РќР° РІСЃСЏРєР№ СЃР»СѓС‡Р°Р№ РїСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С‚РёСЂРµ, С‚РѕС‡РєРё Рё Р·Р°РїСЏС‚РѕР№ - РєР°Рє СЂР°Р·РґРµР»С‚РµР»РµР№ РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё
       IF (In_String[i]='-')or(In_String[i]='.')or(In_String[i]=',')
         THEN tmp_TrSum:=tmp_TrSum+',';
     end;
   prnSum:=tmp_TrSum;
 end;
 
-// 10. Преобразование строки '25 000,25' в число 25000,25
+// 10. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё '25 000,25' РІ С‡РёСЃР»Рѕ 25000,25
 Function TrSum(In_String: ShortString):Double;
 var i : 0..50;
     tmp_TrSum : ShortString;
@@ -160,7 +158,7 @@ begin
   TrSum:=StrToFloat(tmp_TrSum);
 end;
 
-// 11. Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int
+// 11. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РµРєСЃС‚РѕРІРѕР№ РґР°С‚С‹ "Р”Р”.РњРњ.Р“Р“Р“Р“" РІ Р±Р°РЅРєРѕРІСЃРєРёР№ РґРµРЅСЊ С‚РёРїР° Int
 Function bnkDay(in_value : ShortString) : Word;
 var countDate : Word;
     workindDate : TDate;
@@ -177,36 +175,36 @@ begin
   bnkDay:=countDate;
 end;
 
-// 12. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
+// 12. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '01/01/2002'
 Function DiaStrDate(in_value : TDate) : shortString;
 begin
   DiaStrDate:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,4);
 end;
 
-// 13. Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.'
+// 13. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '"01" СЏРЅРІР°СЂСЏ 2002 Рі.'
 Function PropisStrDate(in_value : TDate) : shortString;
 var PropisStrDateTmp:shortString;
 begin
   PropisStrDateTmp:='"'+COPY(DateToStr(in_value),1,2)+'"';
   CASE StrToInt(COPY(DateToStr(in_value),4,2)) OF
-       1: PropisStrDateTmp:=PropisStrDateTmp+' января ';
-       2: PropisStrDateTmp:=PropisStrDateTmp+' февраля ';
-       3: PropisStrDateTmp:=PropisStrDateTmp+' марта ';
-       4: PropisStrDateTmp:=PropisStrDateTmp+' апреля ';
-       5: PropisStrDateTmp:=PropisStrDateTmp+' мая ';
-       6: PropisStrDateTmp:=PropisStrDateTmp+' июня ';
-       7: PropisStrDateTmp:=PropisStrDateTmp+' июля ';
-       8: PropisStrDateTmp:=PropisStrDateTmp+' августа ';
-       9: PropisStrDateTmp:=PropisStrDateTmp+' сентября ';
-      10: PropisStrDateTmp:=PropisStrDateTmp+' октября ';
-      11: PropisStrDateTmp:=PropisStrDateTmp+' ноября ';
-      12: PropisStrDateTmp:=PropisStrDateTmp+' декабря ';
+       1: PropisStrDateTmp:=PropisStrDateTmp+' СЏРЅРІР°СЂСЏ ';
+       2: PropisStrDateTmp:=PropisStrDateTmp+' С„РµРІСЂР°Р»СЏ ';
+       3: PropisStrDateTmp:=PropisStrDateTmp+' РјР°СЂС‚Р° ';
+       4: PropisStrDateTmp:=PropisStrDateTmp+' Р°РїСЂРµР»СЏ ';
+       5: PropisStrDateTmp:=PropisStrDateTmp+' РјР°СЏ ';
+       6: PropisStrDateTmp:=PropisStrDateTmp+' РёСЋРЅСЏ ';
+       7: PropisStrDateTmp:=PropisStrDateTmp+' РёСЋР»СЏ ';
+       8: PropisStrDateTmp:=PropisStrDateTmp+' Р°РІРіСѓСЃС‚Р° ';
+       9: PropisStrDateTmp:=PropisStrDateTmp+' СЃРµРЅС‚СЏР±СЂСЏ ';
+      10: PropisStrDateTmp:=PropisStrDateTmp+' РѕРєС‚СЏР±СЂСЏ ';
+      11: PropisStrDateTmp:=PropisStrDateTmp+' РЅРѕСЏР±СЂСЏ ';
+      12: PropisStrDateTmp:=PropisStrDateTmp+' РґРµРєР°Р±СЂСЏ ';
      end;
-  PropisStrDateTmp:=PropisStrDateTmp+COPY(DateToStr(in_value),7,4)+' г.';
+  PropisStrDateTmp:=PropisStrDateTmp+COPY(DateToStr(in_value),7,4)+' Рі.';
   PropisStrDate:=PropisStrDateTmp;
 end;
 
-// 14. Функция определяет в передаваемой строке, позицию номера сепаратора ^
+// 14. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° СЃРµРїР°СЂР°С‚РѕСЂР° ^
 Function FindSeparator(In_String: shortString; number_of_separator: Byte): Byte;
 var i,counterSeparatorVar:Byte;
 begin
@@ -225,15 +223,16 @@ begin
     end;
 end;
 
-// 15. Функция определяет в передаваемой строке, позицию номера передаваемого символа
+// 15. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРёРјРІРѕР»Р°
 Function FindChar(In_String: shortString; In_Char: Char; number_of_separator: Byte): Byte;
-var i,counterSeparatorVar:Byte;
+var i, counterSeparatorVar : Byte;
 begin
   FindChar:=0;
   counterSeparatorVar:=0;
   FOR i:=1 TO Length(In_String) DO
     begin
-      IF In_String[i]=In_Char
+
+      IF Copy(In_String, i, 1) = In_Char
         THEN  counterSeparatorVar:=counterSeparatorVar+1;
       IF (counterSeparatorVar = number_of_separator)
         THEN
@@ -244,7 +243,7 @@ begin
     end;
 end;
 
-// 15+. Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа
+// 15+. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ С€РёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРёРјРІРѕР»Р°
 Function FindCharWideString(In_String: String; In_Char: Char; number_of_separator: Word): Word;
 var i,counterSeparatorVar:Word;
 begin
@@ -263,7 +262,7 @@ begin
     end;
 end;
 
-// 15++. Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа
+// 15++. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ С€РёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРёРјРІРѕР»Р°
 Function FindCharWideString2(In_String: WideString; In_Char: Char; number_of_separator: Word): Longword;
 var i:Longword; counterSeparatorVar:Word;
 begin
@@ -286,7 +285,7 @@ begin
 end;
 
 
-// 16. Функция определяет в передаваемой строке, позицию пробела
+// 16. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РїСЂРѕР±РµР»Р°
 Function FindSpace(In_String: shortString; number_of_space: Byte): Byte;
 var i,counterSpaceVar:Byte;
 begin
@@ -305,7 +304,7 @@ begin
     end;
 end;
 
-{ Подсчет числа вхождений символа In_Char в строку In_String }
+{ РџРѕРґСЃС‡РµС‚ С‡РёСЃР»Р° РІС…РѕР¶РґРµРЅРёР№ СЃРёРјРІРѕР»Р° In_Char РІ СЃС‚СЂРѕРєСѓ In_String }
 Function countCharInString(In_String:WideString;In_Char:ShortString):Word;
 var In_String_tmp:WideString;
     count:Word;
@@ -320,7 +319,7 @@ begin
   Result:=count;
 end;
 
-// 17. Функция преобразует Win строку 'Abcd' -> 'ABCD'
+// 17. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'Abcd' -> 'ABCD'
 Function Upper(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -338,7 +337,7 @@ begin
   Upper:=localStr;
 end;
 
-// 18. Функция преобразует Win строку 'abcd' -> 'Abcd'
+// 18. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'abcd' -> 'Abcd'
 Function Proper(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -366,7 +365,7 @@ begin
   Proper:=localStr;
 end;
 
-// 19. Функция преобразует Win строку 'ABCD' -> 'abcd'
+// 19. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'ABCD' -> 'abcd'
 Function Lower(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -384,7 +383,7 @@ begin
   Lower:=localStr;
 end;
 
-// 20. Функция преобразует строку '1000,00' -> '1 000,00'
+// 20. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ '1000,00' -> '1 000,00'
 Function Divide1000(in_string:ShortString):ShortString;
 var i, count1000: -1..100;
     afterPoint:boolean;
@@ -413,13 +412,13 @@ begin
   Divide1000:=Trim(tmpString);
 end;
 
-// 21. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
+// 21. Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂР°РјРµС‚СЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј РёР· ini-С„Р°Р№Р»Р°; Р•СЃР»Рё РЅРµС‚ ini - 'INIFILE_NOT_FOUND'. Р•СЃР»Рё РЅРµС‚ РїР°СЂР°РјРµС‚СЂР° - 'PARAMETR_NOT_FOUND'
 Function paramFromIniFile(inIniFile:ShortString; inParam:ShortString):ShortString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:String[255];
     StrokaVar:ANSIString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
     THEN
@@ -450,21 +449,21 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
+        Vcl.Dialogs.MessageDlg('РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
       end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('Р’ С„Р°Р№Р»Рµ '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' РЅРµ РЅР°Р№РґРµРЅ РїР°СЂР°РјРµС‚СЂ '+Trim(inParam)+'!', mtError, [mbOk],0);
   paramFromIniFile:=tmp_paramFromIniFile;
 end;
 
-// 21++. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
+// 21++. Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂР°РјРµС‚СЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј РёР· ini-С„Р°Р№Р»Р°; Р•СЃР»Рё РЅРµС‚ ini - 'INIFILE_NOT_FOUND'. Р•СЃР»Рё РЅРµС‚ РїР°СЂР°РјРµС‚СЂР° - 'PARAMETR_NOT_FOUND'
 Function paramFromIniFileWithOutMessDlg(inIniFile:ShortString; inParam:ShortString):ShortString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:String[255];
     StrokaVar:ANSIString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
     THEN
@@ -496,23 +495,23 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        //MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
+        //MessageDlg('РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
       end;
-  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('Р’ С„Р°Р№Р»Рµ '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' РЅРµ РЅР°Р№РґРµРЅ РїР°СЂР°РјРµС‚СЂ '+Trim(inParam)+'!', mtError, [mbOk],0);
 
   paramFromIniFileWithOutMessDlg:=tmp_paramFromIniFile;
 
 end;
 
-{ 21+++. В отличие от paramFromIniFileWithOutMessDlg - результат WideString }
+{ 21+++. Р’ РѕС‚Р»РёС‡РёРµ РѕС‚ paramFromIniFileWithOutMessDlg - СЂРµР·СѓР»СЊС‚Р°С‚ WideString }
 Function paramFromIniFileWithOutMessDlg2(inIniFile:ShortString; inParam:ShortString):WideString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:WideString;
     StrokaVar:WideString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
     THEN
@@ -534,7 +533,7 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
       end;
 
@@ -543,13 +542,13 @@ begin
 end;
 
 
-// 21+. Тоже самое, но имя к инишнику-полное - Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
+// 21+. РўРѕР¶Рµ СЃР°РјРѕРµ, РЅРѕ РёРјСЏ Рє РёРЅРёС€РЅРёРєСѓ-РїРѕР»РЅРѕРµ - Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂР°РјРµС‚СЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј РёР· ini-С„Р°Р№Р»Р°; Р•СЃР»Рё РЅРµС‚ ini - 'INIFILE_NOT_FOUND'. Р•СЃР»Рё РЅРµС‚ РїР°СЂР°РјРµС‚СЂР° - 'PARAMETR_NOT_FOUND'
 Function paramFromIniFileWithFullPath(inIniFile:ShortString; inParam:ShortString):ShortString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:String[255];
     StrokaVar:ANSIString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   inIniFile:=Trim(inIniFile);
   IF FileExists(inIniFile)=True
@@ -582,22 +581,22 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0);
+        MessageDlg('РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» '+inIniFile+'!', mtError, [mbOk],0);
       end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('Р’ С„Р°Р№Р»Рµ '+ExtractFilePath(inIniFile)+' РЅРµ РЅР°Р№РґРµРЅ РїР°СЂР°РјРµС‚СЂ '+Trim(inParam)+'!', mtError, [mbOk],0);
   paramFromIniFileWithFullPath:=tmp_paramFromIniFile;
 end;
 
-// 21++. Тоже самое, но имя к инишнику-полное - Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-// без MessageDlg
+// 21++. РўРѕР¶Рµ СЃР°РјРѕРµ, РЅРѕ РёРјСЏ Рє РёРЅРёС€РЅРёРєСѓ-РїРѕР»РЅРѕРµ - Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂР°РјРµС‚СЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј РёР· ini-С„Р°Р№Р»Р°; Р•СЃР»Рё РЅРµС‚ ini - 'INIFILE_NOT_FOUND'. Р•СЃР»Рё РЅРµС‚ РїР°СЂР°РјРµС‚СЂР° - 'PARAMETR_NOT_FOUND'
+// Р±РµР· MessageDlg
 Function paramFromIniFileWithFullPathWithOutMessDlg(inIniFile:ShortString; inParam:ShortString):ShortString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:String[255];
     StrokaVar:ANSIString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   inIniFile:=Trim(inIniFile);
   IF FileExists(inIniFile)=True
@@ -629,24 +628,24 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        // MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0);
+        // MessageDlg('РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» '+inIniFile+'!', mtError, [mbOk],0);
       end;
-  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
+  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('Р’ С„Р°Р№Р»Рµ '+ExtractFilePath(inIniFile)+' РЅРµ РЅР°Р№РґРµРЅ РїР°СЂР°РјРµС‚СЂ '+Trim(inParam)+'!', mtError, [mbOk],0);
 
   paramFromIniFileWithFullPathWithOutMessDlg:=tmp_paramFromIniFile;
 
 end;
 
 
-// 22. Функция ищет ini файл и параметр в нем; Если все нормально - возвращается значение параметра, если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND'
+// 22. Р¤СѓРЅРєС†РёСЏ РёС‰РµС‚ ini С„Р°Р№Р» Рё РїР°СЂР°РјРµС‚СЂ РІ РЅРµРј; Р•СЃР»Рё РІСЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ - РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°, РµСЃР»Рё РЅРµС‚ - С‚Рѕ Р·Р°РЅР°С‡РµРЅРёРµ С„СѓРЅРєС†РёРёР№ 'INIFILE_NOT_FOUND' РёР»Рё 'PARAMETR_NOT_FOUND'
 Function paramFoundFromIniFile(inIniFile:ShortString; inParam:ShortString):ShortString;
 var iniFileVar:Textfile;
     tmp_paramFromIniFile:String[255];
     StrokaVar:ANSIString;
 begin
-  // Параметр не найден
+  // РџР°СЂР°РјРµС‚СЂ РЅРµ РЅР°Р№РґРµРЅ
   tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
   IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
     THEN
@@ -676,13 +675,13 @@ begin
       end
     ELSE
       begin
-        // Если инишника нет
+        // Р•СЃР»Рё РёРЅРёС€РЅРёРєР° РЅРµС‚
         tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
       end;
   paramFoundFromIniFile:=tmp_paramFromIniFile;
 end;
 
-// 23. Функция добавляет перед числом нули 1 до нужного количества знаков-> '0001'
+// 23. Р¤СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚ РїРµСЂРµРґ С‡РёСЃР»РѕРј РЅСѓР»Рё 1 РґРѕ РЅСѓР¶РЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·РЅР°РєРѕРІ-> '0001'
 Function beforZero(in_value:Integer; in_length:Word):ShortString;
 var i:Word;
     string_0:ShortString;
@@ -692,11 +691,11 @@ begin
   beforZero:=string_0+IntToStr(in_value);
 end;
 
-// 24. Автонумерация документа из 12-х знаков с ведением электронного жунала
+// 24. РђРІС‚РѕРЅСѓРјРµСЂР°С†РёСЏ РґРѕРєСѓРјРµРЅС‚Р° РёР· 12-С… Р·РЅР°РєРѕРІ СЃ РІРµРґРµРЅРёРµРј СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ Р¶СѓРЅР°Р»Р°
 Function ID12docFromJournal(In_Journal:ShortString; In_NameDoc:ShortString):Word;
 var txtJournal:TextFile; StrokaVar:ShortString; tmpIDdoc:Word;
 begin
-  // Открываем журнал для чтения, если он есть, иначе tmpIDdoc:=0;
+  // РћС‚РєСЂС‹РІР°РµРј Р¶СѓСЂРЅР°Р» РґР»СЏ С‡С‚РµРЅРёСЏ, РµСЃР»Рё РѕРЅ РµСЃС‚СЊ, РёРЅР°С‡Рµ tmpIDdoc:=0;
   tmpIDdoc:=0;
   IF FileExists(ExtractFilePath(ParamStr(0))+In_Journal)=True
     THEN
@@ -706,37 +705,37 @@ begin
         WHILE EOF(txtJournal)=false DO
           begin
             Readln(txtJournal, StrokaVar);
-            // Найти в журнале самый последний номер записи
+            // РќР°Р№С‚Рё РІ Р¶СѓСЂРЅР°Р»Рµ СЃР°РјС‹Р№ РїРѕСЃР»РµРґРЅРёР№ РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
             IF ((COPY(StrokaVar, 1, 1)='0')or(COPY(StrokaVar, 1, 1)='1')or(COPY(StrokaVar, 1, 1)='2')or(COPY(StrokaVar, 1, 1)='3')or(COPY(StrokaVar, 1, 1)='4')or(COPY(StrokaVar, 1, 1)='5')or(COPY(StrokaVar, 1, 1)='6')or(COPY(StrokaVar, 1, 1)='7')or(COPY(StrokaVar, 1, 1)='8')or(COPY(StrokaVar, 1, 1)='9'))
               THEN tmpIDdoc:=StrToInt(Trim(COPY(StrokaVar, 1, 12)));
           end;  // While
         CloseFile(txtJournal);
       end; // If
-  // Если номер из журнала больше 999999999999
+  // Р•СЃР»Рё РЅРѕРјРµСЂ РёР· Р¶СѓСЂРЅР°Р»Р° Р±РѕР»СЊС€Рµ 999999999999
   IF tmpIDdoc=999999999999 THEN tmpIDdoc:=1 ELSE tmpIDdoc:=tmpIDdoc+1;
-  // Открываем журнал для записи
+  // РћС‚РєСЂС‹РІР°РµРј Р¶СѓСЂРЅР°Р» РґР»СЏ Р·Р°РїРёСЃРё
   AssignFile(txtJournal, ExtractFilePath(ParamStr(0))+In_Journal);
   IF FileExists(ExtractFilePath(ParamStr(0))+In_Journal)=True
     THEN Append(txtJournal)
     ELSE
       begin
         ReWrite(txtJournal);
-        WriteLn(txtJournal, 'Филиал АБ "Газпромбанк" (ЗАО) в г.Белоярский');
-        WriteLn(txtJournal, 'Отдел Банковских карт');
+        WriteLn(txtJournal, 'Р¤РёР»РёР°Р» РђР‘ "Р“Р°Р·РїСЂРѕРјР±Р°РЅРє" (Р—РђРћ) РІ Рі.Р‘РµР»РѕСЏСЂСЃРєРёР№');
+        WriteLn(txtJournal, 'РћС‚РґРµР» Р‘Р°РЅРєРѕРІСЃРєРёС… РєР°СЂС‚');
         WriteLn(txtJournal, ' ');
-        WriteLn(txtJournal, 'Электронный журнал регистрации документов');
-        WriteLn(txtJournal, 'Начат: '+DateToStr(Now));
+        WriteLn(txtJournal, 'Р­Р»РµРєС‚СЂРѕРЅРЅС‹Р№ Р¶СѓСЂРЅР°Р» СЂРµРіРёСЃС‚СЂР°С†РёРё РґРѕРєСѓРјРµРЅС‚РѕРІ');
+        WriteLn(txtJournal, 'РќР°С‡Р°С‚: '+DateToStr(Now));
         WriteLn(txtJournal, '------------------------------------------------------------------------------------------');
-        WriteLn(txtJournal, '      #     |   Дата   |                        Примечание                               |');
+        WriteLn(txtJournal, '      #     |   Р”Р°С‚Р°   |                        РџСЂРёРјРµС‡Р°РЅРёРµ                               |');
         WriteLn(txtJournal, '------------------------------------------------------------------------------------------');
       end;
   WriteLn(txtJournal, LeftFixString(IntToStr(tmpIDdoc),12)+'|'+DateToStr(Now)+'|'+DosToWin(In_NameDoc) );
   CloseFile(txtJournal);
-  // Результат
+  // Р РµР·СѓР»СЊС‚Р°С‚
   ID12docFromJournal:=tmpIDdoc;
 end;
 
-// 25. Преобразование Строки в Integer
+// 25. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЎС‚СЂРѕРєРё РІ Integer
 Function dateTimeToSec(in_value_str:ShortString):Integer;
 begin
   Result:=Round((StrToDate(COPY(in_value_str,1,2)+'.'+COPY(in_value_str,4,2)+'.20'+COPY(in_value_str,7,2))-StrToDate('01.01.2000')))*86400+
@@ -746,19 +745,19 @@ begin
 end;
 
 
-// 26. Преобразование String в PChar
+// 26. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ String РІ PChar
 Function StrToPchar(In_string:string):Pchar;
 begin
   In_string:=In_string+#0;
   result:=StrPCopy(@In_string[1], In_string);
 end;
 
-// 27. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
+// 27. РџСЂРѕС†РµРґСѓСЂР° РІС‹РІРѕРґРёС‚ РІ Р»РѕРі С„Р°Р№Р» СЃ РёРјРµРЅРµРј InFileName СЃС‚СЂРѕРєСѓ InString СЃ РїРµСЂРµРІРѕРґРѕРј РєР°СЂРµС‚РєРё РµСЃР»Рё InLn='Ln'
 Procedure ToLogFileWithName(InFileName : shortString; InString : shortString; InLn : shortString);
 var LogFile:TextFile;
 begin
 
-  { Обработка ошибок:
+  { РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє:
     ErrCode := AssignFile(F, 'SomeFile.Txt');
     if ErrCode = FILE_NOT_FOUND then ...
 
@@ -772,11 +771,11 @@ begin
 
   try
     AssignFile(LogFile, ExtractFilePath(ParamStr(0))+Trim(InFileName));
-    // Открыть файл с протоколом работы системы
+    // РћС‚РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
     IF FileExists(ExtractFilePath(ParamStr(0))+Trim(InFileName))=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-    // Занести строку
+    // Р—Р°РЅРµСЃС‚Рё СЃС‚СЂРѕРєСѓ
     IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-    // Закрыть файл с протоколом работы системы
+    // Р—Р°РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
     CloseFile(LogFile);
   except
     {on E: Exception do WriteLn(E.Message);}
@@ -784,12 +783,12 @@ begin
 
 end;
 
-// 27+. Процедура выводит в лог файл с Широкой строкой с именем InFileName строку InString с переводом каретки если InLn='Ln'
+// 27+. РџСЂРѕС†РµРґСѓСЂР° РІС‹РІРѕРґРёС‚ РІ Р»РѕРі С„Р°Р№Р» СЃ РЁРёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРѕР№ СЃ РёРјРµРЅРµРј InFileName СЃС‚СЂРѕРєСѓ InString СЃ РїРµСЂРµРІРѕРґРѕРј РєР°СЂРµС‚РєРё РµСЃР»Рё InLn='Ln'
 Procedure ToLogFileWideStringWithName(InFileName : shortString; InString : String; InLn : shortString);
 var LogFile:TextFile;
 begin
 
-  { Обработка ошибок:
+  { РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє:
     ErrCode := AssignFile(F, 'SomeFile.Txt');
     if ErrCode = FILE_NOT_FOUND then ...
 
@@ -803,11 +802,11 @@ begin
 
   try
     AssignFile(LogFile, ExtractFilePath(ParamStr(0))+Trim(InFileName));
-    // Открыть файл с протоколом работы системы
+    // РћС‚РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
     IF FileExists(ExtractFilePath(ParamStr(0))+Trim(InFileName))=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-    // Занести строку
+    // Р—Р°РЅРµСЃС‚Рё СЃС‚СЂРѕРєСѓ
     IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-    // Закрыть файл с протоколом работы системы
+    // Р—Р°РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
     CloseFile(LogFile);
   except
     {on E: Exception do WriteLn(E.Message);}
@@ -815,34 +814,34 @@ begin
 
 end;
 
-// 27++ Полный путь к лог-файлу
+// 27++ РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє Р»РѕРі-С„Р°Р№Р»Сѓ
 Procedure ToLogFileWithFullName(InFileName : shortString; InString : shortString; InLn : shortString);
 var LogFile:TextFile;
 begin
   AssignFile(LogFile, InFileName);
-  // Открыть файл с протоколом работы системы
+  // РћС‚РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
   IF FileExists(InFileName)=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-  // Занести строку
+  // Р—Р°РЅРµСЃС‚Рё СЃС‚СЂРѕРєСѓ
   IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-  // Закрыть файл с протоколом работы системы
+  // Р—Р°РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
   CloseFile(LogFile);
 end;
 
-// 27+++ Полный путь к лог-файлу (WideString)
+// 27+++ РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє Р»РѕРі-С„Р°Р№Р»Сѓ (WideString)
 Procedure ToLogFileWideStringWithFullName(InFileName : shortString; InString : WideString; InLn : shortString);
 var LogFile:TextFile;
 begin
   AssignFile(LogFile, InFileName);
-  // Открыть файл с протоколом работы системы
+  // РћС‚РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
   IF FileExists(InFileName)=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-  // Занести строку
+  // Р—Р°РЅРµСЃС‚Рё СЃС‚СЂРѕРєСѓ
   IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-  // Закрыть файл с протоколом работы системы
+  // Р—Р°РєСЂС‹С‚СЊ С„Р°Р№Р» СЃ РїСЂРѕС‚РѕРєРѕР»РѕРј СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹
   CloseFile(LogFile);
 end;
 
 
-// 28. Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации с www.beonline.ru
+// 28. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РљРёСЂРёР»Р»РёС†С‹ РІ Р›Р°С‚РёРЅРёС†Сѓ РїРѕ С‚Р°Р±Р»РёС†Рµ С‚СЂР°РЅСЃР»РёС‚РµСЂР°С†РёРё СЃ www.beonline.ru
 Function TranslitBeeLine(in_string:ShortString):ShortString;
 var i:1..1000;
     localStr:String;
@@ -850,23 +849,23 @@ begin
   FOR i:=1 TO Length(in_string) DO
     begin
       CASE in_string[i] OF
-           'Й' : localStr:=localStr + 'J'; 'Ц' : localStr:=localStr + 'TS'; 'У' : localStr:=localStr + 'U'; 'К' : localStr:=localStr + 'K';
-           'Е' : localStr:=localStr + 'E'; 'Н' : localStr:=localStr + 'N'; 'Г' : localStr:=localStr + 'G'; 'Ш' : localStr:=localStr + 'SH';
-           'Щ' : localStr:=localStr + 'SCH'; 'З' : localStr:=localStr + 'Z'; 'Х' : localStr:=localStr + 'H'; 'Ъ' : localStr:=localStr + '"';
-           'Ф' : localStr:=localStr + 'F'; 'Ы' : localStr:=localStr + 'Y'; 'В' : localStr:=localStr + 'V'; 'А' : localStr:=localStr + 'A';
-           'П' : localStr:=localStr + 'P'; 'Р' : localStr:=localStr + 'R'; 'О' : localStr:=localStr + 'O'; 'Л' : localStr:=localStr + 'L';
-           'Д' : localStr:=localStr + 'D'; 'Ж' : localStr:=localStr + 'ZH'; 'Э' : localStr:=localStr + 'E'; 'Я' : localStr:=localStr + 'YA';
-           'Ч' : localStr:=localStr + 'CH'; 'С' : localStr:=localStr + 'S'; 'М' : localStr:=localStr + 'M'; 'И' : localStr:=localStr + 'I';
-           'Т' : localStr:=localStr + 'T'; 'Ь' : localStr:=localStr + '"'; 'Б' : localStr:=localStr + 'B'; 'Ю' : localStr:=localStr + 'YU';
+           'Р™' : localStr:=localStr + 'J'; 'Р¦' : localStr:=localStr + 'TS'; 'РЈ' : localStr:=localStr + 'U'; 'Рљ' : localStr:=localStr + 'K';
+           'Р•' : localStr:=localStr + 'E'; 'Рќ' : localStr:=localStr + 'N'; 'Р“' : localStr:=localStr + 'G'; 'РЁ' : localStr:=localStr + 'SH';
+           'Р©' : localStr:=localStr + 'SCH'; 'Р—' : localStr:=localStr + 'Z'; 'РҐ' : localStr:=localStr + 'H'; 'РЄ' : localStr:=localStr + '"';
+           'Р¤' : localStr:=localStr + 'F'; 'Р«' : localStr:=localStr + 'Y'; 'Р’' : localStr:=localStr + 'V'; 'Рђ' : localStr:=localStr + 'A';
+           'Рџ' : localStr:=localStr + 'P'; 'Р ' : localStr:=localStr + 'R'; 'Рћ' : localStr:=localStr + 'O'; 'Р›' : localStr:=localStr + 'L';
+           'Р”' : localStr:=localStr + 'D'; 'Р–' : localStr:=localStr + 'ZH'; 'Р­' : localStr:=localStr + 'E'; 'РЇ' : localStr:=localStr + 'YA';
+           'Р§' : localStr:=localStr + 'CH'; 'РЎ' : localStr:=localStr + 'S'; 'Рњ' : localStr:=localStr + 'M'; 'Р' : localStr:=localStr + 'I';
+           'Рў' : localStr:=localStr + 'T'; 'Р¬' : localStr:=localStr + '"'; 'Р‘' : localStr:=localStr + 'B'; 'Р®' : localStr:=localStr + 'YU';
            //
-           'й' : localStr:=localStr + 'j'; 'ц' : localStr:=localStr + 'ts'; 'у' : localStr:=localStr + 'u'; 'к' : localStr:=localStr + 'k';
-           'е' : localStr:=localStr + 'e'; 'н' : localStr:=localStr + 'n'; 'г' : localStr:=localStr + 'g'; 'ш' : localStr:=localStr + 'sh';
-           'щ' : localStr:=localStr + 'sch'; 'з' : localStr:=localStr + 'z'; 'х' : localStr:=localStr + 'h'; 'ъ' : localStr:=localStr + '"';
-           'ф' : localStr:=localStr + 'f'; 'ы' : localStr:=localStr + 'y'; 'в' : localStr:=localStr + 'v'; 'а' : localStr:=localStr + 'a';
-           'п' : localStr:=localStr + 'p'; 'р' : localStr:=localStr + 'r'; 'о' : localStr:=localStr + 'o'; 'л' : localStr:=localStr + 'l';
-           'д' : localStr:=localStr + 'd'; 'ж' : localStr:=localStr + 'zh'; 'э' : localStr:=localStr + 'e'; 'я' : localStr:=localStr + 'ya';
-           'ч' : localStr:=localStr + 'ch'; 'с' : localStr:=localStr + 's'; 'м' : localStr:=localStr + 'm'; 'и' : localStr:=localStr + 'i';
-           'т' : localStr:=localStr + 't'; 'ь' : localStr:=localStr + '"'; 'б' : localStr:=localStr + 'b'; 'ю' : localStr:=localStr + 'yu';
+           'Р№' : localStr:=localStr + 'j'; 'С†' : localStr:=localStr + 'ts'; 'Сѓ' : localStr:=localStr + 'u'; 'Рє' : localStr:=localStr + 'k';
+           'Рµ' : localStr:=localStr + 'e'; 'РЅ' : localStr:=localStr + 'n'; 'Рі' : localStr:=localStr + 'g'; 'С€' : localStr:=localStr + 'sh';
+           'С‰' : localStr:=localStr + 'sch'; 'Р·' : localStr:=localStr + 'z'; 'С…' : localStr:=localStr + 'h'; 'СЉ' : localStr:=localStr + '"';
+           'С„' : localStr:=localStr + 'f'; 'С‹' : localStr:=localStr + 'y'; 'РІ' : localStr:=localStr + 'v'; 'Р°' : localStr:=localStr + 'a';
+           'Рї' : localStr:=localStr + 'p'; 'СЂ' : localStr:=localStr + 'r'; 'Рѕ' : localStr:=localStr + 'o'; 'Р»' : localStr:=localStr + 'l';
+           'Рґ' : localStr:=localStr + 'd'; 'Р¶' : localStr:=localStr + 'zh'; 'СЌ' : localStr:=localStr + 'e'; 'СЏ' : localStr:=localStr + 'ya';
+           'С‡' : localStr:=localStr + 'ch'; 'СЃ' : localStr:=localStr + 's'; 'Рј' : localStr:=localStr + 'm'; 'Рё' : localStr:=localStr + 'i';
+           'С‚' : localStr:=localStr + 't'; 'СЊ' : localStr:=localStr + '"'; 'Р±' : localStr:=localStr + 'b'; 'СЋ' : localStr:=localStr + 'yu';
         ELSE
           localStr:=localStr+in_string[i];
       end; // Case
@@ -874,26 +873,26 @@ begin
   TranslitBeeLine:=localStr;
 end;
 
-// 29. Функция преобразует дату 06.05.2006 (06 мая 2006) в строку формата MS SQL '05.06.2006'
+// 29. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 06.05.2006 (06 РјР°СЏ 2006) РІ СЃС‚СЂРѕРєСѓ С„РѕСЂРјР°С‚Р° MS SQL '05.06.2006'
 //     06.05.2006 10:01:05
 Function formatMSSqlDate(in_value:TDate):ShortString;
 begin
   formatMSSqlDate:=COPY(DateToStr(in_value),4,2)+'.'+COPY(DateToStr(in_value),1,2)+'.'+COPY(DateToStr(in_value),7,4);
 end;
 
-// 30. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime ( корректировку часового пояса +0300 пока не учитываем )
+// 30. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё TTimeStamp '04-04-2007 15:22:11 +0300' РІ С‚РёРї TDateTime ( РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєСѓ С‡Р°СЃРѕРІРѕРіРѕ РїРѕСЏСЃР° +0300 РїРѕРєР° РЅРµ СѓС‡РёС‚С‹РІР°РµРј )
 Function StrFormatTimeStampToDateTime(In_StrFormatTimeStamp:ShortString):TDateTime;
 begin
   StrFormatTimeStampToDateTime:=StrToDateTime(COPY(In_StrFormatTimeStamp,1,2)+'.'+COPY(In_StrFormatTimeStamp,4,2)+'.'+COPY(In_StrFormatTimeStamp,7,4)+'.'+' '+COPY(In_StrFormatTimeStamp,12,8));
 end;
 
-// 31. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'  ( корректировку часового пояса +0300 пока не учитываем )
+// 31. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё TTimeStamp '04-04-2007 15:22:11 +0300' РІ СЃС‚СЂРѕРєСѓ '04.04.2007 15:22:11'  ( РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєСѓ С‡Р°СЃРѕРІРѕРіРѕ РїРѕСЏСЃР° +0300 РїРѕРєР° РЅРµ СѓС‡РёС‚С‹РІР°РµРј )
 Function StrTimeStampToStrDateTime(In_StrFormatTimeStamp:ShortString):ShortString;
 begin
   StrTimeStampToStrDateTime:=COPY(In_StrFormatTimeStamp,1,2)+'.'+COPY(In_StrFormatTimeStamp,4,2)+'.'+COPY(In_StrFormatTimeStamp,7,4)+'.'+' '+COPY(In_StrFormatTimeStamp,12,8);
 end;
 
-// 32. Функция DateTimeToStrFormat преобразует дату и время  01.01.2007 1:02:00 в строку '0101200710200'
+// 32. Р¤СѓРЅРєС†РёСЏ DateTimeToStrFormat РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ  01.01.2007 1:02:00 РІ СЃС‚СЂРѕРєСѓ '0101200710200'
 Function DateTimeToStrFormat(In_DateTime:TDateTime):ShortString;
 var DateTimeToStrFormatVar:ShortString;
 begin
@@ -903,196 +902,196 @@ begin
   DateTimeToStrFormat:=DateTimeToStrFormatVar;
 end;
 
-// 33. Функция преобразует код валюты 810 в ISO: "RUR"
+// 33. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РєРѕРґ РІР°Р»СЋС‚С‹ 810 РІ ISO: "RUR"
 Function decodeCurCodeToISO(In_CurrCode:Word):ShortString;
 begin
   case In_CurrCode of
     0   : decodeCurCodeToISO:='RUR';
-    4   : decodeCurCodeToISO:='AFA';  //    Афгани
-    8   : decodeCurCodeToISO:='ALL';  //    Лек
-    12  : decodeCurCodeToISO:='DZD';  //    Алжирский динар
-    20  : decodeCurCodeToISO:='ADP';  //    Андорская песета
-    31  : decodeCurCodeToISO:='AZM';  //    Азербайджанский манат
-    32  : decodeCurCodeToISO:='ARS';  //    Аргентинское песо
-    36  : decodeCurCodeToISO:='AUD';  //    Австралийский доллар
-    40  : decodeCurCodeToISO:='ATS';  //    Шиллинг
-    44  : decodeCurCodeToISO:='BSD';  //    Багамский доллар
-    48  : decodeCurCodeToISO:='BHD';  //    Бахрейнский динар
-    50  : decodeCurCodeToISO:='BDT';  //    Така
-    51  : decodeCurCodeToISO:='AMD';  //    Армянский драм
-    52  : decodeCurCodeToISO:='BBD';  //    Барбадосский доллар
-    56  : decodeCurCodeToISO:='BEF';  //    Бельгийский франк
-    60  : decodeCurCodeToISO:='BMD';  //    Бермудский доллар
-    64  : decodeCurCodeToISO:='BTN';  //    Нгултрум
-    68  : decodeCurCodeToISO:='BOB';  //    Боливиано
-    72  : decodeCurCodeToISO:='BWP';  //    Пула
-    84  : decodeCurCodeToISO:='BZD';  //    Белизский доллар
-    90  : decodeCurCodeToISO:='SBD';  //    Доллар Соломоновых
-    96  : decodeCurCodeToISO:='BND';  //    Брунейский доллар
-    100 : decodeCurCodeToISO:='BGL';  //    Лев
-    104 : decodeCurCodeToISO:='MMK';  //    Кьят
-    108 : decodeCurCodeToISO:='BIF';  //    Бурундийский франк
-    116 : decodeCurCodeToISO:='KHR';  //    Риель
-    124 : decodeCurCodeToISO:='CAD';  //    Канадский доллар
-    132 : decodeCurCodeToISO:='CVE';  //    Эскудо Кабо - Верде
-    136 : decodeCurCodeToISO:='KYD';  //    Доллар Каймановых
-    144 : decodeCurCodeToISO:='LKR';  //    Шри - Ланкийская рупия
-    152 : decodeCurCodeToISO:='CLP';  //    Чилийское песо
-    156 : decodeCurCodeToISO:='CNY';  //    Юань Ренминби
-    170 : decodeCurCodeToISO:='COP';  //    Колумбийское песо
-    174 : decodeCurCodeToISO:='KMF';  //    Франк Коморских
-    188 : decodeCurCodeToISO:='CRC';  //    Костариканский колон
-    191 : decodeCurCodeToISO:='HRK';  //    Куна
-    192 : decodeCurCodeToISO:='CUP';  //    Кубинское песо
-    196 : decodeCurCodeToISO:='CYP';  //    Кипрский фунт
-    203 : decodeCurCodeToISO:='CZK';  //    Чешская крона
-    208 : decodeCurCodeToISO:='DKK';  //    Датская крона
-    214 : decodeCurCodeToISO:='DOP';  //    Доминиканское песо
-    218 : decodeCurCodeToISO:='ECS';  //    Сукре
-    222 : decodeCurCodeToISO:='SVC';  //    Сальвадорский колон
-    230 : decodeCurCodeToISO:='ETB';  //    Эфиопский быр
-    232 : decodeCurCodeToISO:='ERN';  //    Накфа
-    233 : decodeCurCodeToISO:='EEK';  //    Крона
-    238 : decodeCurCodeToISO:='FKP';  //    Фунт Фолклендских
-    242 : decodeCurCodeToISO:='FJD';  //    Доллар Фиджи
-    246 : decodeCurCodeToISO:='FIM';  //    Марка
-    250 : decodeCurCodeToISO:='FRF';  //    Французский франк
-    262 : decodeCurCodeToISO:='DJF';  //    Франк Джибути
-    270 : decodeCurCodeToISO:='GMD';  //    Даласи
-    276 : decodeCurCodeToISO:='DEM';  //    Немецкая марка
-    288 : decodeCurCodeToISO:='GHC';  //    Седи
-    292 : decodeCurCodeToISO:='GIP';  //    Гибралтарский фунт
-    300 : decodeCurCodeToISO:='GRD';  //    Драхма
-    320 : decodeCurCodeToISO:='GTQ';  //    Кетсаль
-    324 : decodeCurCodeToISO:='GNF';  //    Гвинейский франк
-    328 : decodeCurCodeToISO:='GYD';  //    Гайанский доллар
-    332 : decodeCurCodeToISO:='HTG';  //    Гурд
-    340 : decodeCurCodeToISO:='HNL';  //    Лемпира
-    344 : decodeCurCodeToISO:='HKD';  //    Гонконгский доллар
-    348 : decodeCurCodeToISO:='HUF';  //    Форинт
-    352 : decodeCurCodeToISO:='ISK';  //    Исландская крона
-    356 : decodeCurCodeToISO:='INR';  //    Индийская рупия
-    360 : decodeCurCodeToISO:='IDR';  //    Рупия
-    364 : decodeCurCodeToISO:='IRR';  //    Иранский риал
-    368 : decodeCurCodeToISO:='IQD';  //    Иракский динар
-    372 : decodeCurCodeToISO:='IEP';  //    Ирландский фунт
-    376 : decodeCurCodeToISO:='ILS';  //    Новый израильский
-    380 : decodeCurCodeToISO:='ITL';  //    Итальянская лира
-    388 : decodeCurCodeToISO:='JMD';  //    Ямайский доллар
-    392 : decodeCurCodeToISO:='JPY';  //    Йена
-    398 : decodeCurCodeToISO:='KZT';  //    Тенге
-    400 : decodeCurCodeToISO:='JOD';  //    Иорданский динар
-    404 : decodeCurCodeToISO:='KES';  //    Кенийский шиллинг
-    408 : decodeCurCodeToISO:='KPW';  //    Северо - корейская вона
-    410 : decodeCurCodeToISO:='KRW';  //    Вона
-    414 : decodeCurCodeToISO:='KWD';  //    Кувейтский динар
-    417 : decodeCurCodeToISO:='KGS';  //    Сом
-    418 : decodeCurCodeToISO:='LAK';  //    Кип
-    422 : decodeCurCodeToISO:='LBP';  //    Ливанский фунт
-    426 : decodeCurCodeToISO:='LSL';  //    Лоти
-    428 : decodeCurCodeToISO:='LVL';  //    Латвийский лат
-    430 : decodeCurCodeToISO:='LRD';  //    Либерийский доллар
-    434 : decodeCurCodeToISO:='LYD';  //    Ливийский динар
-    440 : decodeCurCodeToISO:='LTL';  //    Литовский лит
-    442 : decodeCurCodeToISO:='LUF';  //    Люксембургский франк
-    446 : decodeCurCodeToISO:='MOP';  //    Патака
-    450 : decodeCurCodeToISO:='MGF';  //    Малагасийский франк
-    454 : decodeCurCodeToISO:='MWK';  //    Квача
-    458 : decodeCurCodeToISO:='MYR';  //    Малайзийский ринггит
-    462 : decodeCurCodeToISO:='MVR';  //    Руфия
-    470 : decodeCurCodeToISO:='MTL';  //    Мальтийская лира
-    478 : decodeCurCodeToISO:='MRO';  //    Угия
-    480 : decodeCurCodeToISO:='MUR';  //    Маврикийская рупия
-    484 : decodeCurCodeToISO:='MXN';  //    Мексиканское песо
-    496 : decodeCurCodeToISO:='MNT';  //    Тугрик
-    498 : decodeCurCodeToISO:='MDL';  //    Молдавский лей
-    504 : decodeCurCodeToISO:='MAD';  //    Марокканский дирхам
-    508 : decodeCurCodeToISO:='MZM';  //    Метикал
-    512 : decodeCurCodeToISO:='OMR';  //    Оманский риал
-    516 : decodeCurCodeToISO:='NAD';  //    Доллар Намибии
-    524 : decodeCurCodeToISO:='NPR';  //    Непальская рупия
-    528 : decodeCurCodeToISO:='NLG';  //    Нидерландский гульден
-    532 : decodeCurCodeToISO:='ANG';  //    Нидерландский
-    533 : decodeCurCodeToISO:='AWG';  //    Арубанский гульден
-    548 : decodeCurCodeToISO:='VUV';  //    Вату
-    554 : decodeCurCodeToISO:='NZD';  //    Новозеландский доллар
-    558 : decodeCurCodeToISO:='NIO';  //    Золотая кордоба
-    566 : decodeCurCodeToISO:='NGN';  //    Найра
-    578 : decodeCurCodeToISO:='NOK';  //    Норвежская крона
-    586 : decodeCurCodeToISO:='PKR';  //    Пакистанская рупия
-    590 : decodeCurCodeToISO:='PAB';  //    Бальбоа
-    598 : decodeCurCodeToISO:='PGK';  //    Кина
-    600 : decodeCurCodeToISO:='PYG';  //    Гуарани
-    604 : decodeCurCodeToISO:='PEN';  //    Новый соль
-    608 : decodeCurCodeToISO:='PHP';  //    Филиппинское песо
-    620 : decodeCurCodeToISO:='PTE';  //    Португальское эскудо
-    624 : decodeCurCodeToISO:='GWP';  //    Песо Гвинеи - Бисау
-    626 : decodeCurCodeToISO:='TPE';  //    Тиморское эскудо
-    634 : decodeCurCodeToISO:='QAR';  //    Катарский риал
-    642 : decodeCurCodeToISO:='ROL';  //    Лей
-    643 : decodeCurCodeToISO:='RUB';  //    Российский рубль
-    646 : decodeCurCodeToISO:='RWF';  //    Франк Руанды
-    654 : decodeCurCodeToISO:='SHP';  //    Фунт Острова Святой
-    678 : decodeCurCodeToISO:='STD';  //    Добра
-    682 : decodeCurCodeToISO:='SAR';  //    Саудовский риял
-    690 : decodeCurCodeToISO:='SCR';  //    Сейшельская рупия
-    694 : decodeCurCodeToISO:='SLL';  //    Леоне
-    702 : decodeCurCodeToISO:='SGD';  //    Сингапурский доллар
-    703 : decodeCurCodeToISO:='SKK';  //    Словацкая крона
-    704 : decodeCurCodeToISO:='VND';  //    Донг
-    705 : decodeCurCodeToISO:='SIT';  //    Толар
-    706 : decodeCurCodeToISO:='SOS';  //    Сомалийский шиллинг
-    710 : decodeCurCodeToISO:='ZAR';  //    Рэнд
-    716 : decodeCurCodeToISO:='ZWD';  //    Доллар Зимбабве
-    724 : decodeCurCodeToISO:='ESP';  //    Испанская песета
-    736 : decodeCurCodeToISO:='SDD';  //    Суданский динар
-    740 : decodeCurCodeToISO:='SRG';  //    Суринамский гульден
-    748 : decodeCurCodeToISO:='SZL';  //    Лилангени
-    752 : decodeCurCodeToISO:='SEK';  //    Шведская крона
-    756 : decodeCurCodeToISO:='CHF';  //    Швейцарский франк
-    760 : decodeCurCodeToISO:='SYP';  //    Сирийский фунт
-    764 : decodeCurCodeToISO:='THB';  //    Бат
-    776 : decodeCurCodeToISO:='TOP';  //    Паанга
-    780 : decodeCurCodeToISO:='TTD';  //    Доллар Тринидада и
-    784 : decodeCurCodeToISO:='AED';  //    Дирхам (ОАЭ)
-    788 : decodeCurCodeToISO:='TND';  //    Тунисский динар
-    792 : decodeCurCodeToISO:='TRL';  //    Турецкая лира
-    795 : decodeCurCodeToISO:='TMM';  //    Манат
-    800 : decodeCurCodeToISO:='UGX';  //    Угандийский шиллинг
-    807 : decodeCurCodeToISO:='MKD';  //    Динар
-    810 : decodeCurCodeToISO:='RUR';  //    Российский рубль
-    818 : decodeCurCodeToISO:='EGP';  //    Египетский фунт
-    826 : decodeCurCodeToISO:='GBP';  //    Фунт стерлингов
-    834 : decodeCurCodeToISO:='TZS';  //    Танзанийский шиллинг
-    840 : decodeCurCodeToISO:='USD';  //    Доллар США
-    858 : decodeCurCodeToISO:='UYU';  //    Уругвайское песо
-    860 : decodeCurCodeToISO:='UZS';  //    Узбекский сум
-    862 : decodeCurCodeToISO:='VEB';  //    Боливар
-    882 : decodeCurCodeToISO:='WST';  //    Тала
-    886 : decodeCurCodeToISO:='YER';  //    Йеменский риал
-    891 : decodeCurCodeToISO:='YUM';  //    Новый динар
-    894 : decodeCurCodeToISO:='ZMK';  //    Квача (замбийская)
-    901 : decodeCurCodeToISO:='TWD';  //    Новый тайваньский
-    950 : decodeCurCodeToISO:='XAF';  //    Франк КФА ВЕАС
-    951 : decodeCurCodeToISO:='XCD';  //    Восточно - карибский
-    952 : decodeCurCodeToISO:='XOF';  //    Франк КФА ВСЕАО
-    953 : decodeCurCodeToISO:='XPF';  //    Франк КФП
-    960 : decodeCurCodeToISO:='XDR';  //    СДР (специальные права
-    972 : decodeCurCodeToISO:='TJS';  //    Сомони
-    973 : decodeCurCodeToISO:='AOA';  //    Кванза
-    974 : decodeCurCodeToISO:='BYR';  //    Белорусский рубль
-    975 : decodeCurCodeToISO:='BGN';  //    Болгарский лев
-    976 : decodeCurCodeToISO:='CDF';  //    Конголезский франк
-    977 : decodeCurCodeToISO:='ВАМ';  //    Конвертируемая марка
-    978 : decodeCurCodeToISO:='EUR';  //    Евро
-    980 : decodeCurCodeToISO:='UAH';  //    Гривна
-    981 : decodeCurCodeToISO:='GEL';  //    Лари
-    985 : decodeCurCodeToISO:='PLN';  //    Злотый
-    986 : decodeCurCodeToISO:='BRL';  //    Бразильский реал
+    4   : decodeCurCodeToISO:='AFA';  //    РђС„РіР°РЅРё
+    8   : decodeCurCodeToISO:='ALL';  //    Р›РµРє
+    12  : decodeCurCodeToISO:='DZD';  //    РђР»Р¶РёСЂСЃРєРёР№ РґРёРЅР°СЂ
+    20  : decodeCurCodeToISO:='ADP';  //    РђРЅРґРѕСЂСЃРєР°СЏ РїРµСЃРµС‚Р°
+    31  : decodeCurCodeToISO:='AZM';  //    РђР·РµСЂР±Р°Р№РґР¶Р°РЅСЃРєРёР№ РјР°РЅР°С‚
+    32  : decodeCurCodeToISO:='ARS';  //    РђСЂРіРµРЅС‚РёРЅСЃРєРѕРµ РїРµСЃРѕ
+    36  : decodeCurCodeToISO:='AUD';  //    РђРІСЃС‚СЂР°Р»РёР№СЃРєРёР№ РґРѕР»Р»Р°СЂ
+    40  : decodeCurCodeToISO:='ATS';  //    РЁРёР»Р»РёРЅРі
+    44  : decodeCurCodeToISO:='BSD';  //    Р‘Р°РіР°РјСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    48  : decodeCurCodeToISO:='BHD';  //    Р‘Р°С…СЂРµР№РЅСЃРєРёР№ РґРёРЅР°СЂ
+    50  : decodeCurCodeToISO:='BDT';  //    РўР°РєР°
+    51  : decodeCurCodeToISO:='AMD';  //    РђСЂРјСЏРЅСЃРєРёР№ РґСЂР°Рј
+    52  : decodeCurCodeToISO:='BBD';  //    Р‘Р°СЂР±Р°РґРѕСЃСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    56  : decodeCurCodeToISO:='BEF';  //    Р‘РµР»СЊРіРёР№СЃРєРёР№ С„СЂР°РЅРє
+    60  : decodeCurCodeToISO:='BMD';  //    Р‘РµСЂРјСѓРґСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    64  : decodeCurCodeToISO:='BTN';  //    РќРіСѓР»С‚СЂСѓРј
+    68  : decodeCurCodeToISO:='BOB';  //    Р‘РѕР»РёРІРёР°РЅРѕ
+    72  : decodeCurCodeToISO:='BWP';  //    РџСѓР»Р°
+    84  : decodeCurCodeToISO:='BZD';  //    Р‘РµР»РёР·СЃРєРёР№ РґРѕР»Р»Р°СЂ
+    90  : decodeCurCodeToISO:='SBD';  //    Р”РѕР»Р»Р°СЂ РЎРѕР»РѕРјРѕРЅРѕРІС‹С…
+    96  : decodeCurCodeToISO:='BND';  //    Р‘СЂСѓРЅРµР№СЃРєРёР№ РґРѕР»Р»Р°СЂ
+    100 : decodeCurCodeToISO:='BGL';  //    Р›РµРІ
+    104 : decodeCurCodeToISO:='MMK';  //    РљСЊСЏС‚
+    108 : decodeCurCodeToISO:='BIF';  //    Р‘СѓСЂСѓРЅРґРёР№СЃРєРёР№ С„СЂР°РЅРє
+    116 : decodeCurCodeToISO:='KHR';  //    Р РёРµР»СЊ
+    124 : decodeCurCodeToISO:='CAD';  //    РљР°РЅР°РґСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    132 : decodeCurCodeToISO:='CVE';  //    Р­СЃРєСѓРґРѕ РљР°Р±Рѕ - Р’РµСЂРґРµ
+    136 : decodeCurCodeToISO:='KYD';  //    Р”РѕР»Р»Р°СЂ РљР°Р№РјР°РЅРѕРІС‹С…
+    144 : decodeCurCodeToISO:='LKR';  //    РЁСЂРё - Р›Р°РЅРєРёР№СЃРєР°СЏ СЂСѓРїРёСЏ
+    152 : decodeCurCodeToISO:='CLP';  //    Р§РёР»РёР№СЃРєРѕРµ РїРµСЃРѕ
+    156 : decodeCurCodeToISO:='CNY';  //    Р®Р°РЅСЊ Р РµРЅРјРёРЅР±Рё
+    170 : decodeCurCodeToISO:='COP';  //    РљРѕР»СѓРјР±РёР№СЃРєРѕРµ РїРµСЃРѕ
+    174 : decodeCurCodeToISO:='KMF';  //    Р¤СЂР°РЅРє РљРѕРјРѕСЂСЃРєРёС…
+    188 : decodeCurCodeToISO:='CRC';  //    РљРѕСЃС‚Р°СЂРёРєР°РЅСЃРєРёР№ РєРѕР»РѕРЅ
+    191 : decodeCurCodeToISO:='HRK';  //    РљСѓРЅР°
+    192 : decodeCurCodeToISO:='CUP';  //    РљСѓР±РёРЅСЃРєРѕРµ РїРµСЃРѕ
+    196 : decodeCurCodeToISO:='CYP';  //    РљРёРїСЂСЃРєРёР№ С„СѓРЅС‚
+    203 : decodeCurCodeToISO:='CZK';  //    Р§РµС€СЃРєР°СЏ РєСЂРѕРЅР°
+    208 : decodeCurCodeToISO:='DKK';  //    Р”Р°С‚СЃРєР°СЏ РєСЂРѕРЅР°
+    214 : decodeCurCodeToISO:='DOP';  //    Р”РѕРјРёРЅРёРєР°РЅСЃРєРѕРµ РїРµСЃРѕ
+    218 : decodeCurCodeToISO:='ECS';  //    РЎСѓРєСЂРµ
+    222 : decodeCurCodeToISO:='SVC';  //    РЎР°Р»СЊРІР°РґРѕСЂСЃРєРёР№ РєРѕР»РѕРЅ
+    230 : decodeCurCodeToISO:='ETB';  //    Р­С„РёРѕРїСЃРєРёР№ Р±С‹СЂ
+    232 : decodeCurCodeToISO:='ERN';  //    РќР°РєС„Р°
+    233 : decodeCurCodeToISO:='EEK';  //    РљСЂРѕРЅР°
+    238 : decodeCurCodeToISO:='FKP';  //    Р¤СѓРЅС‚ Р¤РѕР»РєР»РµРЅРґСЃРєРёС…
+    242 : decodeCurCodeToISO:='FJD';  //    Р”РѕР»Р»Р°СЂ Р¤РёРґР¶Рё
+    246 : decodeCurCodeToISO:='FIM';  //    РњР°СЂРєР°
+    250 : decodeCurCodeToISO:='FRF';  //    Р¤СЂР°РЅС†СѓР·СЃРєРёР№ С„СЂР°РЅРє
+    262 : decodeCurCodeToISO:='DJF';  //    Р¤СЂР°РЅРє Р”Р¶РёР±СѓС‚Рё
+    270 : decodeCurCodeToISO:='GMD';  //    Р”Р°Р»Р°СЃРё
+    276 : decodeCurCodeToISO:='DEM';  //    РќРµРјРµС†РєР°СЏ РјР°СЂРєР°
+    288 : decodeCurCodeToISO:='GHC';  //    РЎРµРґРё
+    292 : decodeCurCodeToISO:='GIP';  //    Р“РёР±СЂР°Р»С‚Р°СЂСЃРєРёР№ С„СѓРЅС‚
+    300 : decodeCurCodeToISO:='GRD';  //    Р”СЂР°С…РјР°
+    320 : decodeCurCodeToISO:='GTQ';  //    РљРµС‚СЃР°Р»СЊ
+    324 : decodeCurCodeToISO:='GNF';  //    Р“РІРёРЅРµР№СЃРєРёР№ С„СЂР°РЅРє
+    328 : decodeCurCodeToISO:='GYD';  //    Р“Р°Р№Р°РЅСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    332 : decodeCurCodeToISO:='HTG';  //    Р“СѓСЂРґ
+    340 : decodeCurCodeToISO:='HNL';  //    Р›РµРјРїРёСЂР°
+    344 : decodeCurCodeToISO:='HKD';  //    Р“РѕРЅРєРѕРЅРіСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    348 : decodeCurCodeToISO:='HUF';  //    Р¤РѕСЂРёРЅС‚
+    352 : decodeCurCodeToISO:='ISK';  //    РСЃР»Р°РЅРґСЃРєР°СЏ РєСЂРѕРЅР°
+    356 : decodeCurCodeToISO:='INR';  //    РРЅРґРёР№СЃРєР°СЏ СЂСѓРїРёСЏ
+    360 : decodeCurCodeToISO:='IDR';  //    Р СѓРїРёСЏ
+    364 : decodeCurCodeToISO:='IRR';  //    РСЂР°РЅСЃРєРёР№ СЂРёР°Р»
+    368 : decodeCurCodeToISO:='IQD';  //    РСЂР°РєСЃРєРёР№ РґРёРЅР°СЂ
+    372 : decodeCurCodeToISO:='IEP';  //    РСЂР»Р°РЅРґСЃРєРёР№ С„СѓРЅС‚
+    376 : decodeCurCodeToISO:='ILS';  //    РќРѕРІС‹Р№ РёР·СЂР°РёР»СЊСЃРєРёР№
+    380 : decodeCurCodeToISO:='ITL';  //    РС‚Р°Р»СЊСЏРЅСЃРєР°СЏ Р»РёСЂР°
+    388 : decodeCurCodeToISO:='JMD';  //    РЇРјР°Р№СЃРєРёР№ РґРѕР»Р»Р°СЂ
+    392 : decodeCurCodeToISO:='JPY';  //    Р™РµРЅР°
+    398 : decodeCurCodeToISO:='KZT';  //    РўРµРЅРіРµ
+    400 : decodeCurCodeToISO:='JOD';  //    РРѕСЂРґР°РЅСЃРєРёР№ РґРёРЅР°СЂ
+    404 : decodeCurCodeToISO:='KES';  //    РљРµРЅРёР№СЃРєРёР№ С€РёР»Р»РёРЅРі
+    408 : decodeCurCodeToISO:='KPW';  //    РЎРµРІРµСЂРѕ - РєРѕСЂРµР№СЃРєР°СЏ РІРѕРЅР°
+    410 : decodeCurCodeToISO:='KRW';  //    Р’РѕРЅР°
+    414 : decodeCurCodeToISO:='KWD';  //    РљСѓРІРµР№С‚СЃРєРёР№ РґРёРЅР°СЂ
+    417 : decodeCurCodeToISO:='KGS';  //    РЎРѕРј
+    418 : decodeCurCodeToISO:='LAK';  //    РљРёРї
+    422 : decodeCurCodeToISO:='LBP';  //    Р›РёРІР°РЅСЃРєРёР№ С„СѓРЅС‚
+    426 : decodeCurCodeToISO:='LSL';  //    Р›РѕС‚Рё
+    428 : decodeCurCodeToISO:='LVL';  //    Р›Р°С‚РІРёР№СЃРєРёР№ Р»Р°С‚
+    430 : decodeCurCodeToISO:='LRD';  //    Р›РёР±РµСЂРёР№СЃРєРёР№ РґРѕР»Р»Р°СЂ
+    434 : decodeCurCodeToISO:='LYD';  //    Р›РёРІРёР№СЃРєРёР№ РґРёРЅР°СЂ
+    440 : decodeCurCodeToISO:='LTL';  //    Р›РёС‚РѕРІСЃРєРёР№ Р»РёС‚
+    442 : decodeCurCodeToISO:='LUF';  //    Р›СЋРєСЃРµРјР±СѓСЂРіСЃРєРёР№ С„СЂР°РЅРє
+    446 : decodeCurCodeToISO:='MOP';  //    РџР°С‚Р°РєР°
+    450 : decodeCurCodeToISO:='MGF';  //    РњР°Р»Р°РіР°СЃРёР№СЃРєРёР№ С„СЂР°РЅРє
+    454 : decodeCurCodeToISO:='MWK';  //    РљРІР°С‡Р°
+    458 : decodeCurCodeToISO:='MYR';  //    РњР°Р»Р°Р№Р·РёР№СЃРєРёР№ СЂРёРЅРіРіРёС‚
+    462 : decodeCurCodeToISO:='MVR';  //    Р СѓС„РёСЏ
+    470 : decodeCurCodeToISO:='MTL';  //    РњР°Р»СЊС‚РёР№СЃРєР°СЏ Р»РёСЂР°
+    478 : decodeCurCodeToISO:='MRO';  //    РЈРіРёСЏ
+    480 : decodeCurCodeToISO:='MUR';  //    РњР°РІСЂРёРєРёР№СЃРєР°СЏ СЂСѓРїРёСЏ
+    484 : decodeCurCodeToISO:='MXN';  //    РњРµРєСЃРёРєР°РЅСЃРєРѕРµ РїРµСЃРѕ
+    496 : decodeCurCodeToISO:='MNT';  //    РўСѓРіСЂРёРє
+    498 : decodeCurCodeToISO:='MDL';  //    РњРѕР»РґР°РІСЃРєРёР№ Р»РµР№
+    504 : decodeCurCodeToISO:='MAD';  //    РњР°СЂРѕРєРєР°РЅСЃРєРёР№ РґРёСЂС…Р°Рј
+    508 : decodeCurCodeToISO:='MZM';  //    РњРµС‚РёРєР°Р»
+    512 : decodeCurCodeToISO:='OMR';  //    РћРјР°РЅСЃРєРёР№ СЂРёР°Р»
+    516 : decodeCurCodeToISO:='NAD';  //    Р”РѕР»Р»Р°СЂ РќР°РјРёР±РёРё
+    524 : decodeCurCodeToISO:='NPR';  //    РќРµРїР°Р»СЊСЃРєР°СЏ СЂСѓРїРёСЏ
+    528 : decodeCurCodeToISO:='NLG';  //    РќРёРґРµСЂР»Р°РЅРґСЃРєРёР№ РіСѓР»СЊРґРµРЅ
+    532 : decodeCurCodeToISO:='ANG';  //    РќРёРґРµСЂР»Р°РЅРґСЃРєРёР№
+    533 : decodeCurCodeToISO:='AWG';  //    РђСЂСѓР±Р°РЅСЃРєРёР№ РіСѓР»СЊРґРµРЅ
+    548 : decodeCurCodeToISO:='VUV';  //    Р’Р°С‚Сѓ
+    554 : decodeCurCodeToISO:='NZD';  //    РќРѕРІРѕР·РµР»Р°РЅРґСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    558 : decodeCurCodeToISO:='NIO';  //    Р—РѕР»РѕС‚Р°СЏ РєРѕСЂРґРѕР±Р°
+    566 : decodeCurCodeToISO:='NGN';  //    РќР°Р№СЂР°
+    578 : decodeCurCodeToISO:='NOK';  //    РќРѕСЂРІРµР¶СЃРєР°СЏ РєСЂРѕРЅР°
+    586 : decodeCurCodeToISO:='PKR';  //    РџР°РєРёСЃС‚Р°РЅСЃРєР°СЏ СЂСѓРїРёСЏ
+    590 : decodeCurCodeToISO:='PAB';  //    Р‘Р°Р»СЊР±РѕР°
+    598 : decodeCurCodeToISO:='PGK';  //    РљРёРЅР°
+    600 : decodeCurCodeToISO:='PYG';  //    Р“СѓР°СЂР°РЅРё
+    604 : decodeCurCodeToISO:='PEN';  //    РќРѕРІС‹Р№ СЃРѕР»СЊ
+    608 : decodeCurCodeToISO:='PHP';  //    Р¤РёР»РёРїРїРёРЅСЃРєРѕРµ РїРµСЃРѕ
+    620 : decodeCurCodeToISO:='PTE';  //    РџРѕСЂС‚СѓРіР°Р»СЊСЃРєРѕРµ СЌСЃРєСѓРґРѕ
+    624 : decodeCurCodeToISO:='GWP';  //    РџРµСЃРѕ Р“РІРёРЅРµРё - Р‘РёСЃР°Сѓ
+    626 : decodeCurCodeToISO:='TPE';  //    РўРёРјРѕСЂСЃРєРѕРµ СЌСЃРєСѓРґРѕ
+    634 : decodeCurCodeToISO:='QAR';  //    РљР°С‚Р°СЂСЃРєРёР№ СЂРёР°Р»
+    642 : decodeCurCodeToISO:='ROL';  //    Р›РµР№
+    643 : decodeCurCodeToISO:='RUB';  //    Р РѕСЃСЃРёР№СЃРєРёР№ СЂСѓР±Р»СЊ
+    646 : decodeCurCodeToISO:='RWF';  //    Р¤СЂР°РЅРє Р СѓР°РЅРґС‹
+    654 : decodeCurCodeToISO:='SHP';  //    Р¤СѓРЅС‚ РћСЃС‚СЂРѕРІР° РЎРІСЏС‚РѕР№
+    678 : decodeCurCodeToISO:='STD';  //    Р”РѕР±СЂР°
+    682 : decodeCurCodeToISO:='SAR';  //    РЎР°СѓРґРѕРІСЃРєРёР№ СЂРёСЏР»
+    690 : decodeCurCodeToISO:='SCR';  //    РЎРµР№С€РµР»СЊСЃРєР°СЏ СЂСѓРїРёСЏ
+    694 : decodeCurCodeToISO:='SLL';  //    Р›РµРѕРЅРµ
+    702 : decodeCurCodeToISO:='SGD';  //    РЎРёРЅРіР°РїСѓСЂСЃРєРёР№ РґРѕР»Р»Р°СЂ
+    703 : decodeCurCodeToISO:='SKK';  //    РЎР»РѕРІР°С†РєР°СЏ РєСЂРѕРЅР°
+    704 : decodeCurCodeToISO:='VND';  //    Р”РѕРЅРі
+    705 : decodeCurCodeToISO:='SIT';  //    РўРѕР»Р°СЂ
+    706 : decodeCurCodeToISO:='SOS';  //    РЎРѕРјР°Р»РёР№СЃРєРёР№ С€РёР»Р»РёРЅРі
+    710 : decodeCurCodeToISO:='ZAR';  //    Р СЌРЅРґ
+    716 : decodeCurCodeToISO:='ZWD';  //    Р”РѕР»Р»Р°СЂ Р—РёРјР±Р°Р±РІРµ
+    724 : decodeCurCodeToISO:='ESP';  //    РСЃРїР°РЅСЃРєР°СЏ РїРµСЃРµС‚Р°
+    736 : decodeCurCodeToISO:='SDD';  //    РЎСѓРґР°РЅСЃРєРёР№ РґРёРЅР°СЂ
+    740 : decodeCurCodeToISO:='SRG';  //    РЎСѓСЂРёРЅР°РјСЃРєРёР№ РіСѓР»СЊРґРµРЅ
+    748 : decodeCurCodeToISO:='SZL';  //    Р›РёР»Р°РЅРіРµРЅРё
+    752 : decodeCurCodeToISO:='SEK';  //    РЁРІРµРґСЃРєР°СЏ РєСЂРѕРЅР°
+    756 : decodeCurCodeToISO:='CHF';  //    РЁРІРµР№С†Р°СЂСЃРєРёР№ С„СЂР°РЅРє
+    760 : decodeCurCodeToISO:='SYP';  //    РЎРёСЂРёР№СЃРєРёР№ С„СѓРЅС‚
+    764 : decodeCurCodeToISO:='THB';  //    Р‘Р°С‚
+    776 : decodeCurCodeToISO:='TOP';  //    РџР°Р°РЅРіР°
+    780 : decodeCurCodeToISO:='TTD';  //    Р”РѕР»Р»Р°СЂ РўСЂРёРЅРёРґР°РґР° Рё
+    784 : decodeCurCodeToISO:='AED';  //    Р”РёСЂС…Р°Рј (РћРђР­)
+    788 : decodeCurCodeToISO:='TND';  //    РўСѓРЅРёСЃСЃРєРёР№ РґРёРЅР°СЂ
+    792 : decodeCurCodeToISO:='TRL';  //    РўСѓСЂРµС†РєР°СЏ Р»РёСЂР°
+    795 : decodeCurCodeToISO:='TMM';  //    РњР°РЅР°С‚
+    800 : decodeCurCodeToISO:='UGX';  //    РЈРіР°РЅРґРёР№СЃРєРёР№ С€РёР»Р»РёРЅРі
+    807 : decodeCurCodeToISO:='MKD';  //    Р”РёРЅР°СЂ
+    810 : decodeCurCodeToISO:='RUR';  //    Р РѕСЃСЃРёР№СЃРєРёР№ СЂСѓР±Р»СЊ
+    818 : decodeCurCodeToISO:='EGP';  //    Р•РіРёРїРµС‚СЃРєРёР№ С„СѓРЅС‚
+    826 : decodeCurCodeToISO:='GBP';  //    Р¤СѓРЅС‚ СЃС‚РµСЂР»РёРЅРіРѕРІ
+    834 : decodeCurCodeToISO:='TZS';  //    РўР°РЅР·Р°РЅРёР№СЃРєРёР№ С€РёР»Р»РёРЅРі
+    840 : decodeCurCodeToISO:='USD';  //    Р”РѕР»Р»Р°СЂ РЎРЁРђ
+    858 : decodeCurCodeToISO:='UYU';  //    РЈСЂСѓРіРІР°Р№СЃРєРѕРµ РїРµСЃРѕ
+    860 : decodeCurCodeToISO:='UZS';  //    РЈР·Р±РµРєСЃРєРёР№ СЃСѓРј
+    862 : decodeCurCodeToISO:='VEB';  //    Р‘РѕР»РёРІР°СЂ
+    882 : decodeCurCodeToISO:='WST';  //    РўР°Р»Р°
+    886 : decodeCurCodeToISO:='YER';  //    Р™РµРјРµРЅСЃРєРёР№ СЂРёР°Р»
+    891 : decodeCurCodeToISO:='YUM';  //    РќРѕРІС‹Р№ РґРёРЅР°СЂ
+    894 : decodeCurCodeToISO:='ZMK';  //    РљРІР°С‡Р° (Р·Р°РјР±РёР№СЃРєР°СЏ)
+    901 : decodeCurCodeToISO:='TWD';  //    РќРѕРІС‹Р№ С‚Р°Р№РІР°РЅСЊСЃРєРёР№
+    950 : decodeCurCodeToISO:='XAF';  //    Р¤СЂР°РЅРє РљР¤Рђ Р’Р•РђРЎ
+    951 : decodeCurCodeToISO:='XCD';  //    Р’РѕСЃС‚РѕС‡РЅРѕ - РєР°СЂРёР±СЃРєРёР№
+    952 : decodeCurCodeToISO:='XOF';  //    Р¤СЂР°РЅРє РљР¤Рђ Р’РЎР•РђРћ
+    953 : decodeCurCodeToISO:='XPF';  //    Р¤СЂР°РЅРє РљР¤Рџ
+    960 : decodeCurCodeToISO:='XDR';  //    РЎР”Р  (СЃРїРµС†РёР°Р»СЊРЅС‹Рµ РїСЂР°РІР°
+    972 : decodeCurCodeToISO:='TJS';  //    РЎРѕРјРѕРЅРё
+    973 : decodeCurCodeToISO:='AOA';  //    РљРІР°РЅР·Р°
+    974 : decodeCurCodeToISO:='BYR';  //    Р‘РµР»РѕСЂСѓСЃСЃРєРёР№ СЂСѓР±Р»СЊ
+    975 : decodeCurCodeToISO:='BGN';  //    Р‘РѕР»РіР°СЂСЃРєРёР№ Р»РµРІ
+    976 : decodeCurCodeToISO:='CDF';  //    РљРѕРЅРіРѕР»РµР·СЃРєРёР№ С„СЂР°РЅРє
+    977 : decodeCurCodeToISO:='Р’РђРњ';  //    РљРѕРЅРІРµСЂС‚РёСЂСѓРµРјР°СЏ РјР°СЂРєР°
+    978 : decodeCurCodeToISO:='EUR';  //    Р•РІСЂРѕ
+    980 : decodeCurCodeToISO:='UAH';  //    Р“СЂРёРІРЅР°
+    981 : decodeCurCodeToISO:='GEL';  //    Р›Р°СЂРё
+    985 : decodeCurCodeToISO:='PLN';  //    Р—Р»РѕС‚С‹Р№
+    986 : decodeCurCodeToISO:='BRL';  //    Р‘СЂР°Р·РёР»СЊСЃРєРёР№ СЂРµР°Р»
       end;
 end;
 
-// 34. Преобразование строки "01-05" в дату 31.01.2005
+// 34. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё "01-05" РІ РґР°С‚Сѓ 31.01.2005
 Function cardExpDate_To_Date(In_cardExpDate:ShortString):TDate;
 var Year, Month, Day, Hour, Min, Sec, MSec: Word;
 begin
@@ -1102,7 +1101,7 @@ begin
     ELSE cardExpDate_To_Date:=StrToDate('01.'+IntToStr(Month+1)+'.20'+COPY(In_cardExpDate,4,2))-1;
 end;
 
-// 35. Преобразование номера карты по первым 9-ти цифрам в тип карты (филиал)
+// 35. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЅРѕРјРµСЂР° РєР°СЂС‚С‹ РїРѕ РїРµСЂРІС‹Рј 9-С‚Рё С†РёС„СЂР°Рј РІ С‚РёРї РєР°СЂС‚С‹ (С„РёР»РёР°Р»)
 Function decodeTypeCard(In_CardNumber:ShortString):ShortString;
 var decodeTypeCard_tmp:ShortString;
 begin
@@ -1116,15 +1115,15 @@ begin
 
   // Union Card
   IF (COPY(In_CardNumber, 1, 6)='602208') THEN decodeTypeCard_tmp:='Union Card';
-  // Пенсионная карта
-  IF (COPY(In_CardNumber, 1, 9)='487417415') THEN decodeTypeCard_tmp:='VISA Electron Пенсионная';
-  IF (COPY(In_CardNumber, 1, 9)='487415415') THEN decodeTypeCard_tmp:='VISA Classic Пенсионная';
-  IF (COPY(In_CardNumber, 1, 9)='487416415') THEN decodeTypeCard_tmp:='VISA Gold Пенсионная';
+  // РџРµРЅСЃРёРѕРЅРЅР°СЏ РєР°СЂС‚Р°
+  IF (COPY(In_CardNumber, 1, 9)='487417415') THEN decodeTypeCard_tmp:='VISA Electron РџРµРЅСЃРёРѕРЅРЅР°СЏ';
+  IF (COPY(In_CardNumber, 1, 9)='487415415') THEN decodeTypeCard_tmp:='VISA Classic РџРµРЅСЃРёРѕРЅРЅР°СЏ';
+  IF (COPY(In_CardNumber, 1, 9)='487416415') THEN decodeTypeCard_tmp:='VISA Gold РџРµРЅСЃРёРѕРЅРЅР°СЏ';
 
   decodeTypeCard:=decodeTypeCard_tmp;
 end;
 
-// 35.+ Преобразование номера карты по первым 6-ти цифрам в тип карты (Газпромбанк)
+// 35.+ РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЅРѕРјРµСЂР° РєР°СЂС‚С‹ РїРѕ РїРµСЂРІС‹Рј 6-С‚Рё С†РёС„СЂР°Рј РІ С‚РёРї РєР°СЂС‚С‹ (Р“Р°Р·РїСЂРѕРјР±Р°РЅРє)
 Function decodeTypeCardGPB(In_CardNumber:ShortString):ShortString;
 var decodeTypeCard_tmp:ShortString;
 begin
@@ -1140,56 +1139,56 @@ begin
 end;
 
 
-// 36. Преобразование PChar в Str
+// 36. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ PChar РІ Str
 Function PCharToStr(P:Pchar) :String;
 begin
   Result:=P;
 end;
 
-// 37. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
+// 37. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '01/01/2002'
 Function StrDateFormat1(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat1:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat1:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,4);
 end;
 
-// 38. Функция преобразует дату 01.01.2002 в строку '01-01-2002'
+// 38. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '01-01-2002'
 Function StrDateFormat2(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat2:=COPY(DateToStr(in_value),1,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat2:=COPY(DateToStr(in_value),1,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),7,4);
 end;
 
-// 39. Модуль с функциями Суммы Прописью(RUB) * Функция........... SummaPropis(X) * Программист....... Uncle Slava * Дата создания..... 16.11.98 * Принимает......... X - цифровое представление числа * Возвращает........ Строковое представление числа *  Аргументы:  Используются глобальные аргументы SummaScheta, Summa, SummaCop и Ostatok Назначение: Перевод числа (SummaScheta) в строковую константу Возвращает: SummaPropis - Сумму прописью  }
+// 39. РњРѕРґСѓР»СЊ СЃ С„СѓРЅРєС†РёСЏРјРё РЎСѓРјРјС‹ РџСЂРѕРїРёСЃСЊСЋ(RUB) * Р¤СѓРЅРєС†РёСЏ........... SummaPropis(X) * РџСЂРѕРіСЂР°РјРјРёСЃС‚....... Uncle Slava * Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ..... 16.11.98 * РџСЂРёРЅРёРјР°РµС‚......... X - С†РёС„СЂРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С‡РёСЃР»Р° * Р’РѕР·РІСЂР°С‰Р°РµС‚........ РЎС‚СЂРѕРєРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С‡РёСЃР»Р° *  РђСЂРіСѓРјРµРЅС‚С‹:  РСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РіР»РѕР±Р°Р»СЊРЅС‹Рµ Р°СЂРіСѓРјРµРЅС‚С‹ SummaScheta, Summa, SummaCop Рё Ostatok РќР°Р·РЅР°С‡РµРЅРёРµ: РџРµСЂРµРІРѕРґ С‡РёСЃР»Р° (SummaScheta) РІ СЃС‚СЂРѕРєРѕРІСѓСЋ РєРѕРЅСЃС‚Р°РЅС‚Сѓ Р’РѕР·РІСЂР°С‰Р°РµС‚: SummaPropis - РЎСѓРјРјСѓ РїСЂРѕРїРёСЃСЊСЋ  }
 //Function SummaPropis(SummaScheta: Variant): ShortString;
-//  var {Глобальные переменные} {SummaScheta:Variant;} Ostatok, Summa, OstatokCop: Variant; R, R1 : Variant; Gruppa, Dlina : Variant; Propis, PropisCop, S: String; i : Integer;
-  {Единицы}   //  Function Edinici(R: Variant; Rod: String): String; begin case R of 1: if Rod = 'Мужской' then Edinici := 'один' else Edinici := 'одна'; 2: if Rod = 'Мужской' then Edinici := 'два' else Edinici := 'две'; 3: Edinici := 'три'; 4: Edinici := 'четыре'; 5: Edinici := 'пять'; 6: Edinici := 'шесть'; 7: Edinici := 'семь'; 8: Edinici := 'восемь'; 9: Edinici := 'девять'; 10: Edinici := 'десять'; 11: Edinici := 'одиннадцать'; 12: Edinici := 'двенадцать'; 13: Edinici := 'тринадцать'; 14: Edinici := 'четырнадцать'; 15: Edinici := 'пятнадцать'; 16: Edinici := 'шестнадцать'; 17: Edinici := 'семнадцать'; 18: Edinici := 'восемнадцать'; 19: Edinici := 'девятнадцать'; end; end;
-  {Десятки}   //  Function Desatki(R: Variant): String; begin case R of 2: Desatki := 'двадцать'; 3: Desatki := 'тридцать'; 4: Desatki := 'сорок'; 5: Desatki := 'пятьдесят'; 6: Desatki := 'шестьдесят'; 7: Desatki := 'семьдесят'; 8: Desatki := 'восемьдесят'; 9: Desatki := 'девяносто'; end; end;
-  {Сотни}     //  Function Sotni(R: Variant): String; begin case R of 1: Sotni := 'сто'; 2: Sotni := 'двести'; 3: Sotni := 'триста'; 4: Sotni := 'четыреста'; 5: Sotni := 'пятьсот'; 6: Sotni := 'шестьсот'; 7: Sotni := 'семьсот'; 8: Sotni := 'восемьсот'; 9: Sotni := 'девятьсот'; end; end;
-  {Тысячи}    //  Function Tusachi(R: Variant): String; begin If R = 1 Then Tusachi := 'тысяча' else if (R > 1) And (R < 5) then Tusachi := 'тысячи' else Tusachi := 'тысяч'; end;
-  {Миллионы}  //  Function Millioni(R: Variant): String; begin If R = 1 Then Millioni := 'миллион' else if (R > 1) And (R < 5) then Millioni := 'миллиона' else Millioni := 'миллионов'; end;
-  {Миллиарды} // Function Milliardi(R: Variant): String; begin If R = 1 Then Milliardi := 'миллиард' else if (R > 1) And (R < 5) then Milliardi := 'миллиарда' else Milliardi := 'миллиардов'; end;
-  {Копейки}   // Function Copeiki(R: Variant): String; begin If R = 1 Then Copeiki := '' else if (R > 1) And (R < 5) then Copeiki := '' else Copeiki := '' end;
-  {Рубли}     // Function Rubli(R: Variant): String; begin If R = 1 Then Rubli := '' else if (R > 1) And (R < 5) then Rubli := '' else Rubli := '' end;
-  { * Использую математические функции : * Abs(x)   - модуль числа.  Int(x)   - отделяет целую часть вещественного числа. * Frac(x)  - отделяет дробную часть вещественного числа. * Round(x) - округляет до целого числа. }
+//  var {Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ} {SummaScheta:Variant;} Ostatok, Summa, OstatokCop: Variant; R, R1 : Variant; Gruppa, Dlina : Variant; Propis, PropisCop, S: String; i : Integer;
+  {Р•РґРёРЅРёС†С‹}   //  Function Edinici(R: Variant; Rod: String): String; begin case R of 1: if Rod = 'РњСѓР¶СЃРєРѕР№' then Edinici := 'РѕРґРёРЅ' else Edinici := 'РѕРґРЅР°'; 2: if Rod = 'РњСѓР¶СЃРєРѕР№' then Edinici := 'РґРІР°' else Edinici := 'РґРІРµ'; 3: Edinici := 'С‚СЂРё'; 4: Edinici := 'С‡РµС‚С‹СЂРµ'; 5: Edinici := 'РїСЏС‚СЊ'; 6: Edinici := 'С€РµСЃС‚СЊ'; 7: Edinici := 'СЃРµРјСЊ'; 8: Edinici := 'РІРѕСЃРµРјСЊ'; 9: Edinici := 'РґРµРІСЏС‚СЊ'; 10: Edinici := 'РґРµСЃСЏС‚СЊ'; 11: Edinici := 'РѕРґРёРЅРЅР°РґС†Р°С‚СЊ'; 12: Edinici := 'РґРІРµРЅР°РґС†Р°С‚СЊ'; 13: Edinici := 'С‚СЂРёРЅР°РґС†Р°С‚СЊ'; 14: Edinici := 'С‡РµС‚С‹СЂРЅР°РґС†Р°С‚СЊ'; 15: Edinici := 'РїСЏС‚РЅР°РґС†Р°С‚СЊ'; 16: Edinici := 'С€РµСЃС‚РЅР°РґС†Р°С‚СЊ'; 17: Edinici := 'СЃРµРјРЅР°РґС†Р°С‚СЊ'; 18: Edinici := 'РІРѕСЃРµРјРЅР°РґС†Р°С‚СЊ'; 19: Edinici := 'РґРµРІСЏС‚РЅР°РґС†Р°С‚СЊ'; end; end;
+  {Р”РµСЃСЏС‚РєРё}   //  Function Desatki(R: Variant): String; begin case R of 2: Desatki := 'РґРІР°РґС†Р°С‚СЊ'; 3: Desatki := 'С‚СЂРёРґС†Р°С‚СЊ'; 4: Desatki := 'СЃРѕСЂРѕРє'; 5: Desatki := 'РїСЏС‚СЊРґРµСЃСЏС‚'; 6: Desatki := 'С€РµСЃС‚СЊРґРµСЃСЏС‚'; 7: Desatki := 'СЃРµРјСЊРґРµСЃСЏС‚'; 8: Desatki := 'РІРѕСЃРµРјСЊРґРµСЃСЏС‚'; 9: Desatki := 'РґРµРІСЏРЅРѕСЃС‚Рѕ'; end; end;
+  {РЎРѕС‚РЅРё}     //  Function Sotni(R: Variant): String; begin case R of 1: Sotni := 'СЃС‚Рѕ'; 2: Sotni := 'РґРІРµСЃС‚Рё'; 3: Sotni := 'С‚СЂРёСЃС‚Р°'; 4: Sotni := 'С‡РµС‚С‹СЂРµСЃС‚Р°'; 5: Sotni := 'РїСЏС‚СЊСЃРѕС‚'; 6: Sotni := 'С€РµСЃС‚СЊСЃРѕС‚'; 7: Sotni := 'СЃРµРјСЊСЃРѕС‚'; 8: Sotni := 'РІРѕСЃРµРјСЊСЃРѕС‚'; 9: Sotni := 'РґРµРІСЏС‚СЊСЃРѕС‚'; end; end;
+  {РўС‹СЃСЏС‡Рё}    //  Function Tusachi(R: Variant): String; begin If R = 1 Then Tusachi := 'С‚С‹СЃСЏС‡Р°' else if (R > 1) And (R < 5) then Tusachi := 'С‚С‹СЃСЏС‡Рё' else Tusachi := 'С‚С‹СЃСЏС‡'; end;
+  {РњРёР»Р»РёРѕРЅС‹}  //  Function Millioni(R: Variant): String; begin If R = 1 Then Millioni := 'РјРёР»Р»РёРѕРЅ' else if (R > 1) And (R < 5) then Millioni := 'РјРёР»Р»РёРѕРЅР°' else Millioni := 'РјРёР»Р»РёРѕРЅРѕРІ'; end;
+  {РњРёР»Р»РёР°СЂРґС‹} // Function Milliardi(R: Variant): String; begin If R = 1 Then Milliardi := 'РјРёР»Р»РёР°СЂРґ' else if (R > 1) And (R < 5) then Milliardi := 'РјРёР»Р»РёР°СЂРґР°' else Milliardi := 'РјРёР»Р»РёР°СЂРґРѕРІ'; end;
+  {РљРѕРїРµР№РєРё}   // Function Copeiki(R: Variant): String; begin If R = 1 Then Copeiki := '' else if (R > 1) And (R < 5) then Copeiki := '' else Copeiki := '' end;
+  {Р СѓР±Р»Рё}     // Function Rubli(R: Variant): String; begin If R = 1 Then Rubli := '' else if (R > 1) And (R < 5) then Rubli := '' else Rubli := '' end;
+  { * РСЃРїРѕР»СЊР·СѓСЋ РјР°С‚РµРјР°С‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё : * Abs(x)   - РјРѕРґСѓР»СЊ С‡РёСЃР»Р°.  Int(x)   - РѕС‚РґРµР»СЏРµС‚ С†РµР»СѓСЋ С‡Р°СЃС‚СЊ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ С‡РёСЃР»Р°. * Frac(x)  - РѕС‚РґРµР»СЏРµС‚ РґСЂРѕР±РЅСѓСЋ С‡Р°СЃС‚СЊ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ С‡РёСЃР»Р°. * Round(x) - РѕРєСЂСѓРіР»СЏРµС‚ РґРѕ С†РµР»РѕРіРѕ С‡РёСЃР»Р°. }
 //begin
-//  if Round(StrToFloat(SummaScheta))=0 then begin SummaPropis := 'Ноль'; Exit; end; Propis:=''; PropisCop:=''; S:=''; SummaScheta := Abs(SummaScheta); Ostatok := Int(SummaScheta); OstatokCop := Frac(SummaScheta); OstatokCop := Int(OstatokCop*100); Gruppa := Ostatok / 1000000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); Propis  := Propis + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской') + ' ' + Milliardi(R); Ostatok := Ostatok - R * 1000000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000000; Propis  := Propis + ' ' + Milliardi(R); end; end;
-//  Gruppa := Ostatok / 1000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской') + ' ' + Millioni(R); Ostatok := Ostatok - R * 1000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000; Propis  := Propis + ' ' + Millioni(R); end; end; Gruppa := Ostatok / 1000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10);
-//  if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Женский') + ' ' + Tusachi(R); Ostatok := Ostatok - R * 1000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000; Propis  := Propis + ' ' + Tusachi(R); end; end; Gruppa := Ostatok;
-//  if Gruppa <> 0 then begin R := Int(Gruppa / 100); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской'); Ostatok := Ostatok - R; end else begin R := Int(Gruppa); Ostatok := Ostatok - R; end; end else If False then begin Gruppa := OstatokCop; if Gruppa > 19 then begin R := Int(Gruppa / 10); PropisCop := PropisCop + ' ' + Desatki(R); OstatokCop := OstatokCop - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 2 then begin R := Int(Gruppa); PropisCop := PropisCop + ' ' + Edinici(R, 'Мужской') + ' ' + Copeiki(R); OstatokCop := OstatokCop - R; end else begin R := Int(Gruppa); OstatokCop := OstatokCop - R; PropisCop  := PropisCop + ' ' + Copeiki(R); end; end;
+//  if Round(StrToFloat(SummaScheta))=0 then begin SummaPropis := 'РќРѕР»СЊ'; Exit; end; Propis:=''; PropisCop:=''; S:=''; SummaScheta := Abs(SummaScheta); Ostatok := Int(SummaScheta); OstatokCop := Frac(SummaScheta); OstatokCop := Int(OstatokCop*100); Gruppa := Ostatok / 1000000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); Propis  := Propis + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'РњСѓР¶СЃРєРѕР№') + ' ' + Milliardi(R); Ostatok := Ostatok - R * 1000000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000000; Propis  := Propis + ' ' + Milliardi(R); end; end;
+//  Gruppa := Ostatok / 1000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'РњСѓР¶СЃРєРѕР№') + ' ' + Millioni(R); Ostatok := Ostatok - R * 1000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000; Propis  := Propis + ' ' + Millioni(R); end; end; Gruppa := Ostatok / 1000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10);
+//  if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Р–РµРЅСЃРєРёР№') + ' ' + Tusachi(R); Ostatok := Ostatok - R * 1000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000; Propis  := Propis + ' ' + Tusachi(R); end; end; Gruppa := Ostatok;
+//  if Gruppa <> 0 then begin R := Int(Gruppa / 100); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'РњСѓР¶СЃРєРѕР№'); Ostatok := Ostatok - R; end else begin R := Int(Gruppa); Ostatok := Ostatok - R; end; end else If False then begin Gruppa := OstatokCop; if Gruppa > 19 then begin R := Int(Gruppa / 10); PropisCop := PropisCop + ' ' + Desatki(R); OstatokCop := OstatokCop - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 2 then begin R := Int(Gruppa); PropisCop := PropisCop + ' ' + Edinici(R, 'РњСѓР¶СЃРєРѕР№') + ' ' + Copeiki(R); OstatokCop := OstatokCop - R; end else begin R := Int(Gruppa); OstatokCop := OstatokCop - R; PropisCop  := PropisCop + ' ' + Copeiki(R); end; end;
 //  Dlina := Length(Propis); if VarIsNull(Dlina) then Exit; Propis:= Trim(Propis); S:=AnsiUpPerCase(COPY(Propis,1,1))+COPY(Propis,2,Length(Propis)-1); SummaPropis := S + PropisCop;
 //end;
 
-// 39. Сумма прописью (Модифицирован )
+// 39. РЎСѓРјРјР° РїСЂРѕРїРёСЃСЊСЋ (РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅ )
 Function SummaPropis(In_Sum:Double): WideString;
 
-  { Функция Conv999}
+  { Р¤СѓРЅРєС†РёСЏ Conv999}
   function Conv999(M: longint; fm: integer): string;
-    const c1to9m: array [1..9] of string [6]=('один','два','три','четыре','пять','шесть','семь','восемь','девять');
-        c1to9f: array [1..9] of string [6]=('одна','две','три','четыре','пять','шесть','семь','восемь','девять');
-        c11to19: array [1..9] of string [12]=('одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать');
-        c10to90: array [1..9] of string [11]=('десять','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто');
-        c100to900: array [1..9] of string [9] =('сто','двести','триста','четыреста','пятьсот','шестьсот','семьсот','восемьсот','девятьсот');
+    const c1to9m: array [1..9] of string [6]=('РѕРґРёРЅ','РґРІР°','С‚СЂРё','С‡РµС‚С‹СЂРµ','РїСЏС‚СЊ','С€РµСЃС‚СЊ','СЃРµРјСЊ','РІРѕСЃРµРјСЊ','РґРµРІСЏС‚СЊ');
+        c1to9f: array [1..9] of string [6]=('РѕРґРЅР°','РґРІРµ','С‚СЂРё','С‡РµС‚С‹СЂРµ','РїСЏС‚СЊ','С€РµСЃС‚СЊ','СЃРµРјСЊ','РІРѕСЃРµРјСЊ','РґРµРІСЏС‚СЊ');
+        c11to19: array [1..9] of string [12]=('РѕРґРёРЅРЅР°РґС†Р°С‚СЊ','РґРІРµРЅР°РґС†Р°С‚СЊ','С‚СЂРёРЅР°РґС†Р°С‚СЊ','С‡РµС‚С‹СЂРЅР°РґС†Р°С‚СЊ','РїСЏС‚РЅР°РґС†Р°С‚СЊ','С€РµСЃС‚РЅР°РґС†Р°С‚СЊ','СЃРµРјРЅР°РґС†Р°С‚СЊ','РІРѕСЃРµРјРЅР°РґС†Р°С‚СЊ','РґРµРІСЏС‚РЅР°РґС†Р°С‚СЊ');
+        c10to90: array [1..9] of string [11]=('РґРµСЃСЏС‚СЊ','РґРІР°РґС†Р°С‚СЊ','С‚СЂРёРґС†Р°С‚СЊ','СЃРѕСЂРѕРє','РїСЏС‚СЊРґРµСЃСЏС‚','С€РµСЃС‚СЊРґРµСЃСЏС‚','СЃРµРјСЊРґРµСЃСЏС‚','РІРѕСЃРµРјСЊРґРµСЃСЏС‚','РґРµРІСЏРЅРѕСЃС‚Рѕ');
+        c100to900: array [1..9] of string [9] =('СЃС‚Рѕ','РґРІРµСЃС‚Рё','С‚СЂРёСЃС‚Р°','С‡РµС‚С‹СЂРµСЃС‚Р°','РїСЏС‚СЊСЃРѕС‚','С€РµСЃС‚СЊСЃРѕС‚','СЃРµРјСЊСЃРѕС‚','РІРѕСЃРµРјСЊСЃРѕС‚','РґРµРІСЏС‚СЊСЃРѕС‚');
   var s: string; i: longint;
   begin
     s := ''; i := M div 100; if i<>0 then s:=c100to900[i]+' '; M := M mod 100; i := M div 10;
@@ -1198,32 +1197,32 @@ Function SummaPropis(In_Sum:Double): WideString;
   end;
 var i: longint; j: longint; r: real; t: string; //S:Double;
 begin
-  { Преобразуем строку в тип Double }
+  { РџСЂРµРѕР±СЂР°Р·СѓРµРј СЃС‚СЂРѕРєСѓ РІ С‚РёРї Double }
   //S:=In_Sum;
-  { Выполняем дальнейшие действия }
+  { Р’С‹РїРѕР»РЅСЏРµРј РґР°Р»СЊРЅРµР№С€РёРµ РґРµР№СЃС‚РІРёСЏ }
   t := ''; j := Trunc(In_Sum/1000000000.0); r := j; r := In_Sum - r*1000000000.0; i := Trunc(r);
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллиард'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
+  if j<>0 then begin t:=t+Conv999(j,1)+'РјРёР»Р»РёР°СЂРґ'; j := j mod 100; if (j>10) and (j<20) then t:=t+'РѕРІ ' else case j mod 10 of 0: t:=t+'РѕРІ '; 1: t:=t+' '; 2..4: t:=t+'Р° '; 5..9: t:=t+'РѕРІ '; end; end;
   j := i div 1000000;
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллион'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
+  if j<>0 then begin t:=t+Conv999(j,1)+'РјРёР»Р»РёРѕРЅ'; j := j mod 100; if (j>10) and (j<20) then t:=t+'РѕРІ ' else case j mod 10 of 0: t:=t+'РѕРІ '; 1: t:=t+' '; 2..4: t:=t+'Р° '; 5..9: t:=t+'РѕРІ '; end; end;
   i := i mod 1000000; j := i div 1000;
-  if j<>0 then begin t:=t+Conv999(j,0)+'тысяч'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'а '; 2..4: t:=t+'и '; 5..9: t:=t+' '; end;
+  if j<>0 then begin t:=t+Conv999(j,0)+'С‚С‹СЃСЏС‡'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'Р° '; 2..4: t:=t+'Рё '; 5..9: t:=t+' '; end;
 end;
   i := i mod 1000; j := i; if j<>0 then t:=t+Conv999(j,1);
-  t := t {+'руб. '};  // не выводим руб.
+  t := t {+'СЂСѓР±. '};  // РЅРµ РІС‹РІРѕРґРёРј СЂСѓР±.
   i := Round(Frac(In_Sum)*100.0);
-  t := t {+IntToStr(i)+' коп.'}; // не выводим коп.
+  t := t {+IntToStr(i)+' РєРѕРї.'}; // РЅРµ РІС‹РІРѕРґРёРј РєРѕРї.
   SummaPropis:=AnsiUpperCase(COPY(t,1,1))+COPY(t,2,(Length(t)-1));
 end;
 
-// 39+. Сумма прописью (Модифицирован )
+// 39+. РЎСѓРјРјР° РїСЂРѕРїРёСЃСЊСЋ (РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅ )
 Function SummaPropis2(In_Sum:Double): WideString;
-  { Функция Conv999}
+  { Р¤СѓРЅРєС†РёСЏ Conv999}
   function Conv999(M: longint; fm: integer): string;
-    const c1to9m: array [1..9] of string [6]=('один','два','три','четыре','пять','шесть','семь','восемь','девять');
-        c1to9f: array [1..9] of string [6]=('одна','две','три','четыре','пять','шесть','семь','восемь','девять');
-        c11to19: array [1..9] of string [12]=('одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать');
-        c10to90: array [1..9] of string [11]=('десять','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто');
-        c100to900: array [1..9] of string [9] =('сто','двести','триста','четыреста','пятьсот','шестьсот','семьсот','восемьсот','девятьсот');
+    const c1to9m: array [1..9] of string [6]=('РѕРґРёРЅ','РґРІР°','С‚СЂРё','С‡РµС‚С‹СЂРµ','РїСЏС‚СЊ','С€РµСЃС‚СЊ','СЃРµРјСЊ','РІРѕСЃРµРјСЊ','РґРµРІСЏС‚СЊ');
+        c1to9f: array [1..9] of string [6]=('РѕРґРЅР°','РґРІРµ','С‚СЂРё','С‡РµС‚С‹СЂРµ','РїСЏС‚СЊ','С€РµСЃС‚СЊ','СЃРµРјСЊ','РІРѕСЃРµРјСЊ','РґРµРІСЏС‚СЊ');
+        c11to19: array [1..9] of string [12]=('РѕРґРёРЅРЅР°РґС†Р°С‚СЊ','РґРІРµРЅР°РґС†Р°С‚СЊ','С‚СЂРёРЅР°РґС†Р°С‚СЊ','С‡РµС‚С‹СЂРЅР°РґС†Р°С‚СЊ','РїСЏС‚РЅР°РґС†Р°С‚СЊ','С€РµСЃС‚РЅР°РґС†Р°С‚СЊ','СЃРµРјРЅР°РґС†Р°С‚СЊ','РІРѕСЃРµРјРЅР°РґС†Р°С‚СЊ','РґРµРІСЏС‚РЅР°РґС†Р°С‚СЊ');
+        c10to90: array [1..9] of string [11]=('РґРµСЃСЏС‚СЊ','РґРІР°РґС†Р°С‚СЊ','С‚СЂРёРґС†Р°С‚СЊ','СЃРѕСЂРѕРє','РїСЏС‚СЊРґРµСЃСЏС‚','С€РµСЃС‚СЊРґРµСЃСЏС‚','СЃРµРјСЊРґРµСЃСЏС‚','РІРѕСЃРµРјСЊРґРµСЃСЏС‚','РґРµРІСЏРЅРѕСЃС‚Рѕ');
+        c100to900: array [1..9] of string [9] =('СЃС‚Рѕ','РґРІРµСЃС‚Рё','С‚СЂРёСЃС‚Р°','С‡РµС‚С‹СЂРµСЃС‚Р°','РїСЏС‚СЊСЃРѕС‚','С€РµСЃС‚СЊСЃРѕС‚','СЃРµРјСЊСЃРѕС‚','РІРѕСЃРµРјСЊСЃРѕС‚','РґРµРІСЏС‚СЊСЃРѕС‚');
   var s: string; i: longint;
   begin
     s := ''; i := M div 100; if i<>0 then s:=c100to900[i]+' '; M := M mod 100; i := M div 10;
@@ -1232,32 +1231,32 @@ Function SummaPropis2(In_Sum:Double): WideString;
   end;
 var i: longint; j: longint; r: real; t: string; //S:Double;
 begin
-  { Преобразуем строку в тип Double }
+  { РџСЂРµРѕР±СЂР°Р·СѓРµРј СЃС‚СЂРѕРєСѓ РІ С‚РёРї Double }
   //S:=In_Sum;
-  { Выполняем дальнейшие действия }
+  { Р’С‹РїРѕР»РЅСЏРµРј РґР°Р»СЊРЅРµР№С€РёРµ РґРµР№СЃС‚РІРёСЏ }
   t := ''; j := Trunc(In_Sum/1000000000.0); r := j; r := In_Sum - r*1000000000.0; i := Trunc(r);
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллиард'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
+  if j<>0 then begin t:=t+Conv999(j,1)+'РјРёР»Р»РёР°СЂРґ'; j := j mod 100; if (j>10) and (j<20) then t:=t+'РѕРІ ' else case j mod 10 of 0: t:=t+'РѕРІ '; 1: t:=t+' '; 2..4: t:=t+'Р° '; 5..9: t:=t+'РѕРІ '; end; end;
   j := i div 1000000;
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллион'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
+  if j<>0 then begin t:=t+Conv999(j,1)+'РјРёР»Р»РёРѕРЅ'; j := j mod 100; if (j>10) and (j<20) then t:=t+'РѕРІ ' else case j mod 10 of 0: t:=t+'РѕРІ '; 1: t:=t+' '; 2..4: t:=t+'Р° '; 5..9: t:=t+'РѕРІ '; end; end;
   i := i mod 1000000; j := i div 1000;
-  if j<>0 then begin t:=t+Conv999(j,0)+'тысяч'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'а '; 2..4: t:=t+'и '; 5..9: t:=t+' '; end;
+  if j<>0 then begin t:=t+Conv999(j,0)+'С‚С‹СЃСЏС‡'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'Р° '; 2..4: t:=t+'Рё '; 5..9: t:=t+' '; end;
 end;
   i := i mod 1000; j := i; if j<>0 then t:=t+Conv999(j,1);
-  t := t +'руб. ';
+  t := t +'СЂСѓР±. ';
   i := Round(Frac(In_Sum)*100.0);
-  //t := t + IntToStr(i) +' коп.';
-  t := t + beforZero(i,2) +' коп.';
+  //t := t + IntToStr(i) +' РєРѕРї.';
+  t := t + beforZero(i,2) +' РєРѕРї.';
   SummaPropis2:=AnsiUpperCase(COPY(t,1,1))+COPY(t,2,(Length(t)-1));
 end;
 
-// 40. Функция преобразует дату 01.02.2002 в строку '2002-02-01'
+// 40. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.02.2002 РІ СЃС‚СЂРѕРєСѓ '2002-02-01'
 Function StrDateFormat3(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat3:=COPY(DateToStr(in_value),7,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),1,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat3:=COPY(DateToStr(in_value),7,4)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),1,2);
 end;
 
-// 41. Функция передает Год из даты
+// 41. Р¤СѓРЅРєС†РёСЏ РїРµСЂРµРґР°РµС‚ Р“РѕРґ РёР· РґР°С‚С‹
 Function YearFromDate(In_Date:TDate):Word;
 var   YearVar, MonthVar, DayVar: Word;
 begin
@@ -1265,13 +1264,13 @@ begin
   YearFromDate:=YearVar;
 end;
 
-// 42. Функция из исходной строки In_String получает Хэш-функцию MD5
+// 42. Р¤СѓРЅРєС†РёСЏ РёР· РёСЃС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРё In_String РїРѕР»СѓС‡Р°РµС‚ РҐСЌС€-С„СѓРЅРєС†РёСЋ MD5
 Function GenHashMD5(In_String:ShortString):ShortString;
 begin
   GenHashMD5:=MD5DigestToStr(MD5String(In_String));
 end;
 
-// 43. Копирование файла
+// 43. РљРѕРїРёСЂРѕРІР°РЅРёРµ С„Р°Р№Р»Р°
 function WindowsCopyFile(FromFile, ToDir : string) : boolean;
 var F : TShFileOpStruct;
 begin
@@ -1282,66 +1281,66 @@ begin
   result:=ShFileOperation(F) = 0;
 end;
 
-{ 44. Определение в системе переменной "Temp" как C:\Temp\ }
+{ 44. РћРїСЂРµРґРµР»РµРЅРёРµ РІ СЃРёСЃС‚РµРјРµ РїРµСЂРµРјРµРЅРЅРѕР№ "Temp" РєР°Рє C:\Temp\ }
 function GetTempPathSystem: ShortString;
 var Buffer: array[0..1023] of Char;
 begin
   SetString(Result, Buffer, GetTempPath(Sizeof(Buffer)-1,Buffer));
 end;
 
-{ 45. Определение текущего каталога как C:\WORK }
+{ 45. РћРїСЂРµРґРµР»РµРЅРёРµ С‚РµРєСѓС‰РµРіРѕ РєР°С‚Р°Р»РѕРіР° РєР°Рє C:\WORK }
 function GetCurrDir: ShortString;
 var Buffer: array[0..1023] of Char;
 begin
   SetString(Result, Buffer, GetCurrentDirectory(Sizeof(Buffer)-1,Buffer));
 end;
 
-{ 46. Определение короткого имени файла "D:\WORK\read.txt" -> "read.txt" }
+{ 46. РћРїСЂРµРґРµР»РµРЅРёРµ РєРѕСЂРѕС‚РєРѕРіРѕ РёРјРµРЅРё С„Р°Р№Р»Р° "D:\WORK\read.txt" -> "read.txt" }
 function getShortFileName(In_FileName:ShortString):ShortString;
 begin
   Result:=ExtractFileName(In_FileName);
 end;
 
-{ 47. Определение пути по имени файла "D:\WORK\read.txt" -> "D:\WORK\" }
+{ 47. РћРїСЂРµРґРµР»РµРЅРёРµ РїСѓС‚Рё РїРѕ РёРјРµРЅРё С„Р°Р№Р»Р° "D:\WORK\read.txt" -> "D:\WORK\" }
 function getFilePath(In_FileName:ShortString):ShortString;
 begin
   Result:=ExtractFilePath(In_FileName);
 end;
 
-{ 48. Определение короткого имени файла без расширения "D:\WORK\read.txt" -> "read" }
+{ 48. РћРїСЂРµРґРµР»РµРЅРёРµ РєРѕСЂРѕС‚РєРѕРіРѕ РёРјРµРЅРё С„Р°Р№Р»Р° Р±РµР· СЂР°СЃС€РёСЂРµРЅРёСЏ "D:\WORK\read.txt" -> "read" }
 function getShortFileNameWithoutExt(In_FileName:ShortString):ShortString;
 begin
   Result:=COPY(ExtractFileName(In_FileName),1,POS('.',ExtractFileName(In_FileName))-1);
 end;
 
-{ 49. Функция преобразует дату 01.02.2002 в строку '01022002' ДДММГГГГ }
+{ 49. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.02.2002 РІ СЃС‚СЂРѕРєСѓ '01022002' Р”Р”РњРњР“Р“Р“Р“ }
 Function StrDateFormat4(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat4:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat4:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,4);
 end;
 
-{ 50. Функция преобразует дату 01.02.2002 в строку '010202' ДДММГГ }
+{ 50. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.02.2002 РІ СЃС‚СЂРѕРєСѓ '010202' Р”Р”РњРњР“Р“ }
 Function StrDateFormat5(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat5:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat5:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),9,2);
 end;
 
-{ 51. Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГГГЧЧММСС }
+{ 51. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ 23.02.2009 12:37:00 РІ СЃС‚СЂРѕРєСѓ Р”Р”РњРњР“Р“Р“Р“Р§Р§РњРњРЎРЎ }
 Function StrDateFormat6(in_value : TDateTime) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat6:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2) +COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat6:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,4) +COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
 end;
 
-{ 52. Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГЧЧММСС }
+{ 52. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ 23.02.2009 12:37:00 РІ СЃС‚СЂРѕРєСѓ Р”Р”РњРњР“Р“Р§Р§РњРњРЎРЎ }
 Function StrDateFormat7(in_value : TDateTime) : shortString;
 var tmp_StrDateFormat7: shortString;
 begin
   IF Length(DateToStr(in_value))=8 THEN tmp_StrDateFormat7:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
   IF Length(DateToStr(in_value))=10 THEN tmp_StrDateFormat7:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),9,2);
-  { Время - если до 10:00:00 }
+  { Р’СЂРµРјСЏ - РµСЃР»Рё РґРѕ 10:00:00 }
   IF Length(TimeToStr(in_value))=7
     THEN
       begin
@@ -1352,11 +1351,11 @@ begin
       begin
         tmp_StrDateFormat7:=tmp_StrDateFormat7+COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
       end;
-  { Результат }
+  { Р РµР·СѓР»СЊС‚Р°С‚ }
   StrDateFormat7:=tmp_StrDateFormat7;
 end;
 
-{ 53. Функция находит в строке значение мужду двумя символами }
+{ 53. Р¤СѓРЅРєС†РёСЏ РЅР°С…РѕРґРёС‚ РІ СЃС‚СЂРѕРєРµ Р·РЅР°С‡РµРЅРёРµ РјСѓР¶РґСѓ РґРІСѓРјСЏ СЃРёРјРІРѕР»Р°РјРё }
 Function VariableBetweenChars(In_String: shortString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):ShortString;
 var VariableBetweenChars_tmp:ShortString;
 begin
@@ -1365,7 +1364,7 @@ begin
   VariableBetweenChars:=VariableBetweenChars_tmp;
 end;
 
-{ 54. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
+{ 54. Р¤СѓРЅРєС†РёСЏ РЅР°С…РѕРґРёС‚ РІ СЃС‚СЂРѕРєРµ Р·РЅР°С‡РµРЅРёРµ РјСѓР¶РґСѓ РґРІСѓРјСЏ СЃРёРјРІРѕР»Р°РјРё - РІР°СЂРёР°РЅС‚ РѕР±СЂР°Р±РѕС‚РєРё РЁРёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРё }
 Function VariableBetweenCharsWideString(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):ShortString;
 var VariableBetweenChars_tmp:ShortString;
 begin
@@ -1374,7 +1373,7 @@ begin
   VariableBetweenCharsWideString:=VariableBetweenChars_tmp;
 end;
 
-{ 54+. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
+{ 54+. Р¤СѓРЅРєС†РёСЏ РЅР°С…РѕРґРёС‚ РІ СЃС‚СЂРѕРєРµ Р·РЅР°С‡РµРЅРёРµ РјСѓР¶РґСѓ РґРІСѓРјСЏ СЃРёРјРІРѕР»Р°РјРё - РІР°СЂРёР°РЅС‚ РѕР±СЂР°Р±РѕС‚РєРё РЁРёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРё }
 Function VariableBetweenCharsWideString2(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):WideString;
 var VariableBetweenChars_tmp:WideString;
 begin
@@ -1383,7 +1382,7 @@ begin
   VariableBetweenCharsWideString2:=VariableBetweenChars_tmp;
 end;
 
-{ 54++. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
+{ 54++. Р¤СѓРЅРєС†РёСЏ РЅР°С…РѕРґРёС‚ РІ СЃС‚СЂРѕРєРµ Р·РЅР°С‡РµРЅРёРµ РјСѓР¶РґСѓ РґРІСѓРјСЏ СЃРёРјРІРѕР»Р°РјРё - РІР°СЂРёР°РЅС‚ РѕР±СЂР°Р±РѕС‚РєРё РЁРёСЂРѕРєРѕР№ СЃС‚СЂРѕРєРё }
 Function VariableBetweenCharsWideString3(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):WideString;
 var VariableBetweenChars_tmp:WideString;
 begin
@@ -1392,25 +1391,25 @@ begin
   VariableBetweenCharsWideString3:=VariableBetweenChars_tmp;
 end;
 
-{ 55. Функция преобразует строку в формате даты и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDateTime }
+{ 55. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё РРЅС„РѕС‚РѕС‡РєРё ITD '04-04-07 15:22:11' РІ С‚РёРї TDateTime }
 Function StrFormatDateTimeITDToDateTime(In_StrFormatDateTimeITD:ShortString):TDateTime;
 begin
   StrFormatDateTimeITDToDateTime:=StrToDateTime(COPY(In_StrFormatDateTimeITD,1,2)+'.'+COPY(In_StrFormatDateTimeITD,4,2)+'.20'+COPY(In_StrFormatDateTimeITD,7,2)+COPY(In_StrFormatDateTimeITD,9,9));
 end;
 
-{ 56. Функция преобразует строку в формате даты и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDate }
+{ 56. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё РРЅС„РѕС‚РѕС‡РєРё ITD '04-04-07 15:22:11' РІ С‚РёРї TDate }
 Function StrFormatDateTimeITDToDate(In_StrFormatDateTimeITD:ShortString):TDate;
 begin
   StrFormatDateTimeITDToDate:=StrToDate(COPY(In_StrFormatDateTimeITD,1,2)+'.'+COPY(In_StrFormatDateTimeITD,4,2)+'.20'+COPY(In_StrFormatDateTimeITD,7,2));
 end;
 
-{ 57. Функция преобразует тип TDateTime в строковый формат даты и времени ITD }
+{ 57. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ С‚РёРї TDateTime РІ СЃС‚СЂРѕРєРѕРІС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё ITD }
 Function DateTimeToStrFormatITDDateTime(In_DateTime:TDateTime):ShortString;
 begin
   DateTimeToStrFormatITDDateTime:=COPY(DateTimeToStr(In_DateTime),1,2)+'-'+COPY(DateTimeToStr(In_DateTime),4,2)+'-'+COPY(DateTimeToStr(In_DateTime),9,11);
 end;
 
-{ 58. Функция для передаваемой строки In_StringForSign формирует ЭЦП RSA/MD5 с длиной ключа 1024 бит в кодировке hex. В In_fileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
+{ 58. Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРё In_StringForSign С„РѕСЂРјРёСЂСѓРµС‚ Р­Р¦Рџ RSA/MD5 СЃ РґР»РёРЅРѕР№ РєР»СЋС‡Р° 1024 Р±РёС‚ РІ РєРѕРґРёСЂРѕРІРєРµ hex. Р’ In_fileRSAPrivateKey РїРµСЂРµРґР°РµС‚СЃСЏ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ, СЃРѕРґРµСЂР¶Р°С‰РµРјСѓ RSA PRIVATE KEY }
 function Sign_RSA_MD5_hex_WideStr(In_fileRSAPrivateKey:String; In_StringForSign:WideString ): WideString;
 var
    Len: cardinal;
@@ -1424,13 +1423,13 @@ var
    oST : TStringStream;
 begin
 
-     { Проверяем наличие файла, содержащего RSA PRIVATE KEY  }
+     { РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С„Р°Р№Р»Р°, СЃРѕРґРµСЂР¶Р°С‰РµРіРѕ RSA PRIVATE KEY  }
      if FileExists(In_fileRSAPrivateKey) = false
        then
          begin
-           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Файл '+In_fileRSAPrivateKey+' не найден!');
+           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Р¤Р°Р№Р» '+In_fileRSAPrivateKey+' РЅРµ РЅР°Р№РґРµРЅ!');
 
-           { Пример содержимого файла "RSA PRIVATE KEY"
+           { РџСЂРёРјРµСЂ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р° "RSA PRIVATE KEY"
 
            -----BEGIN RSA PRIVATE KEY-----
            MIICXQIBAAKBgQCargbCJN+e7X80hawa+7hv4QjiEv6SisYsaVJ5HYqCCMYVYlsd
@@ -1451,7 +1450,7 @@ begin
 
          end;
 
-     { Передается на вход строка, поэтому не проверяем наличие файла
+     { РџРµСЂРµРґР°РµС‚СЃСЏ РЅР° РІС…РѕРґ СЃС‚СЂРѕРєР°, РїРѕСЌС‚РѕРјСѓ РЅРµ РїСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С„Р°Р№Р»Р°
      if FileExists(In_StringForSign) = false then
      begin
           raise Exception.Create('Arquivo para ser assinado nao foi encontrado.');
@@ -1470,7 +1469,7 @@ begin
         key := PEM_read_bio_PrivateKey(keyfile, a, nil, nil);
         if key = nil then
         begin
-             raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Ошибка чтения PRIVATE KEY из файла '+In_fileRSAPrivateKey+' !');
+             raise Exception.Create('Sign_RSA_MD5_hex_WideStr: РћС€РёР±РєР° С‡С‚РµРЅРёСЏ PRIVATE KEY РёР· С„Р°Р№Р»Р° '+In_fileRSAPrivateKey+' !');
         end;
 
         //FileStream := TFileStream.Create(In_StringForSign, fmOpenRead);
@@ -1480,10 +1479,10 @@ begin
 
         //oST.CopyFrom(FileStream,nTamanho);
 
-        { Запись в oST данных из FileStream }
+        { Р—Р°РїРёСЃСЊ РІ oST РґР°РЅРЅС‹С… РёР· FileStream }
         oST.WriteString(In_StringForSign);
 
-        { Размер строки }
+        { Р Р°Р·РјРµСЂ СЃС‚СЂРѕРєРё }
         nTamanho:=Length(In_StringForSign);
 
         if nTamanho < 1024 then
@@ -1508,7 +1507,7 @@ begin
         BinToHex(pchar(outbuf),pchar(inbuf),Len);
         inbuf[2*Len]:=#0;
 
-        { Результат выводим в символах нижнего регистра - LowerCase }
+        { Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РІРѕРґРёРј РІ СЃРёРјРІРѕР»Р°С… РЅРёР¶РЅРµРіРѕ СЂРµРіРёСЃС‚СЂР° - LowerCase }
         Result := LowerCase( StrPas(pchar(inbuf)) );
 
      finally
@@ -1516,7 +1515,7 @@ begin
      end;
 end;
 
-{ 59. Функция для файла In_StringForSign формирует ЭЦП RSA/MD5 с длиной ключа 1024 бит в кодировке hex. В In_fileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
+{ 59. Р¤СѓРЅРєС†РёСЏ РґР»СЏ С„Р°Р№Р»Р° In_StringForSign С„РѕСЂРјРёСЂСѓРµС‚ Р­Р¦Рџ RSA/MD5 СЃ РґР»РёРЅРѕР№ РєР»СЋС‡Р° 1024 Р±РёС‚ РІ РєРѕРґРёСЂРѕРІРєРµ hex. Р’ In_fileRSAPrivateKey РїРµСЂРµРґР°РµС‚СЃСЏ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ, СЃРѕРґРµСЂР¶Р°С‰РµРјСѓ RSA PRIVATE KEY }
 function Sign_RSA_MD5_hex_File(In_fileRSAPrivateKey:String; In_FileNameForSign:WideString ): WideString;
 var
    Len: cardinal;
@@ -1530,13 +1529,13 @@ var
    oST : TStringStream;
 begin
 
-     { Проверяем наличие файла, содержащего RSA PRIVATE KEY  }
+     { РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С„Р°Р№Р»Р°, СЃРѕРґРµСЂР¶Р°С‰РµРіРѕ RSA PRIVATE KEY  }
      if FileExists(In_fileRSAPrivateKey) = false
        then
          begin
-           raise Exception.Create('Sign_RSA_MD5_hex_File: Файл '+In_fileRSAPrivateKey+' не найден!');
+           raise Exception.Create('Sign_RSA_MD5_hex_File: Р¤Р°Р№Р» '+In_fileRSAPrivateKey+' РЅРµ РЅР°Р№РґРµРЅ!');
 
-           { Пример содержимого файла "RSA PRIVATE KEY"
+           { РџСЂРёРјРµСЂ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р° "RSA PRIVATE KEY"
 
            -----BEGIN RSA PRIVATE KEY-----
            MIICXQIBAAKBgQCargbCJN+e7X80hawa+7hv4QjiEv6SisYsaVJ5HYqCCMYVYlsd
@@ -1557,10 +1556,10 @@ begin
 
          end;
 
-     { Проверяем наличие файла }
+     { РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С„Р°Р№Р»Р° }
      if FileExists(In_FileNameForSign) = false then
      begin
-          raise Exception.Create('Sign_RSA_MD5_hex_File: Не найден файл '+In_FileNameForSign+'!');
+          raise Exception.Create('Sign_RSA_MD5_hex_File: РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» '+In_FileNameForSign+'!');
      end;
 
      a := nil;
@@ -1576,7 +1575,7 @@ begin
         key := PEM_read_bio_PrivateKey(keyfile, a, nil, nil);
         if key = nil then
         begin
-             raise Exception.Create('Sign_RSA_MD5_hex_File: Ошибка чтения PRIVATE KEY из файла '+In_fileRSAPrivateKey+' !');
+             raise Exception.Create('Sign_RSA_MD5_hex_File: РћС€РёР±РєР° С‡С‚РµРЅРёСЏ PRIVATE KEY РёР· С„Р°Р№Р»Р° '+In_fileRSAPrivateKey+' !');
         end;
 
         FileStream := TFileStream.Create(In_FileNameForSign, fmOpenRead);
@@ -1607,7 +1606,7 @@ begin
         BinToHex(pchar(outbuf),pchar(inbuf),Len);
         inbuf[2*Len]:=#0;
 
-        { Результат выводим в символах нижнего регистра - LowerCase }
+        { Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РІРѕРґРёРј РІ СЃРёРјРІРѕР»Р°С… РЅРёР¶РЅРµРіРѕ СЂРµРіРёСЃС‚СЂР° - LowerCase }
         Result := LowerCase( StrPas(pchar(inbuf)) );
 
      finally
@@ -1615,7 +1614,7 @@ begin
      end;
 end;
 
-{ 60. Функция производит перемешку между собой случайным образом символов передаваемых в качестве параметра (перемешка mixing строки) }
+{ 60. Р¤СѓРЅРєС†РёСЏ РїСЂРѕРёР·РІРѕРґРёС‚ РїРµСЂРµРјРµС€РєСѓ РјРµР¶РґСѓ СЃРѕР±РѕР№ СЃР»СѓС‡Р°Р№РЅС‹Рј РѕР±СЂР°Р·РѕРј СЃРёРјРІРѕР»РѕРІ РїРµСЂРµРґР°РІР°РµРјС‹С… РІ РєР°С‡РµСЃС‚РІРµ РїР°СЂР°РјРµС‚СЂР° (РїРµСЂРµРјРµС€РєР° mixing СЃС‚СЂРѕРєРё) }
 Function mixingString(In_String:ShortString):ShortString;
 var maxLengtIn_String:Word;
     s_tmp :ShortString;
@@ -1623,25 +1622,25 @@ var maxLengtIn_String:Word;
     i, posInS : Word;
 begin
 
-  { Временной срез }
+  { Р’СЂРµРјРµРЅРЅРѕР№ СЃСЂРµР· }
   DecodeTime(Time, myHour, myMin, mySecStamp, myMilli);
 
-  { Определяем длину в исходной строке }
+  { РћРїСЂРµРґРµР»СЏРµРј РґР»РёРЅСѓ РІ РёСЃС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРµ }
   maxLengtIn_String:=Length(In_String);
 
-  { Алгоритм работает для строки с нечетным количеством символов }
+  { РђР»РіРѕСЂРёС‚Рј СЂР°Р±РѕС‚Р°РµС‚ РґР»СЏ СЃС‚СЂРѕРєРё СЃ РЅРµС‡РµС‚РЅС‹Рј РєРѕР»РёС‡РµСЃС‚РІРѕРј СЃРёРјРІРѕР»РѕРІ }
   IF (maxLengtIn_String MOD 2)=0
     THEN
       begin
-        { Если длина четна, то добавляем 1 символ }
+        { Р•СЃР»Рё РґР»РёРЅР° С‡РµС‚РЅР°, С‚Рѕ РґРѕР±Р°РІР»СЏРµРј 1 СЃРёРјРІРѕР» }
         In_String:=In_String+COPY(In_String,1,1);
       end; // If
 
-  { Цикл }
+  { Р¦РёРєР» }
   FOR i:=1 TO (mySecStamp+7) DO
     begin
 
-      { Выполняем перемешку при каждом четном цикле }
+      { Р’С‹РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµС€РєСѓ РїСЂРё РєР°Р¶РґРѕРј С‡РµС‚РЅРѕРј С†РёРєР»Рµ }
       IF (i MOD 2)=0
         THEN
           begin
@@ -1649,62 +1648,62 @@ begin
           end // If
         ELSE
           begin
-            { Выполняем перемешку при каждом нечетном цикле }
+            { Р’С‹РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµС€РєСѓ РїСЂРё РєР°Р¶РґРѕРј РЅРµС‡РµС‚РЅРѕРј С†РёРєР»Рµ }
             In_String:=COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1), (Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2), Length(COPY(In_String,1,(Length(In_String) DIV 2)-1))-(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)+1)+COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1),1,(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)-1)
                     + COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1);
           end;
 
-      { Временной срез }
+      { Р’СЂРµРјРµРЅРЅРѕР№ СЃСЂРµР· }
       DecodeTime(Time, myHour, myMin, mySec, myMilli);
 
-      { Выполняем перемешку в зависимости от четности Миллисекунд }
+      { Р’С‹РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµС€РєСѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‡РµС‚РЅРѕСЃС‚Рё РњРёР»Р»РёСЃРµРєСѓРЅРґ }
       IF (myMilli MOD 2)=0
         THEN In_String:=COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)+COPY(In_String,1,(Length(In_String) DIV 2)-1);
 
-      { Выполняем перемешку в зависимости от четности Секунд }
+      { Р’С‹РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµС€РєСѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‡РµС‚РЅРѕСЃС‚Рё РЎРµРєСѓРЅРґ }
       IF (mySec mod 2)=0
         THEN In_String:=COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1), (Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2), Length(COPY(In_String,1,(Length(In_String) DIV 2)-1))-(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)+1)+COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1),1,(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)-1)
                     + COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1);
 
-      { Выполняем перемешку в зависимости от четности Минут }
+      { Р’С‹РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµС€РєСѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‡РµС‚РЅРѕСЃС‚Рё РњРёРЅСѓС‚ }
       IF (myMin mod 2)=0
         THEN In_String:=COPY(In_String,1,(Length(In_String) DIV 2)-1)+COPY(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1), (Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2), Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1))-(Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2)+1)+COPY(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1),1,(Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2)-1);
 
-      { Делаем перестановку между 1-ым и 2-ым символом и так до конца посмледовательности }
+      { Р”РµР»Р°РµРј РїРµСЂРµСЃС‚Р°РЅРѕРІРєСѓ РјРµР¶РґСѓ 1-С‹Рј Рё 2-С‹Рј СЃРёРјРІРѕР»РѕРј Рё С‚Р°Рє РґРѕ РєРѕРЅС†Р° РїРѕСЃРјР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё }
       s_tmp:=''; posInS:=1;
       WHILE (posInS<Length(In_String)) DO
         begin
           //Application.ProcessMessages;
-          { Новые миллисекунды }
+          { РќРѕРІС‹Рµ РјРёР»Р»РёСЃРµРєСѓРЅРґС‹ }
           DecodeTime(Time, myHour, myMin, mySec, myMilli);
           IF (Random(myMilli) MOD 2)=0 THEN s_tmp:=s_tmp+In_String[posInS]+In_String[posInS+1] ELSE s_tmp:=s_tmp+In_String[posInS+1]+In_String[posInS];
           posInS:=posInS+2;
         end;
       IF posInS>=Length(In_String) THEN s_tmp:=s_tmp+In_String[posInS];
-      { Результат }
+      { Р РµР·СѓР»СЊС‚Р°С‚ }
       In_String:=s_tmp;
       //Application.ProcessMessages;
     end; // For
 
-  { Приводим длину к исходной }
+  { РџСЂРёРІРѕРґРёРј РґР»РёРЅСѓ Рє РёСЃС…РѕРґРЅРѕР№ }
   IF maxLengtIn_String<>Length(In_String) THEN In_String:=COPY(In_String,2,Length(In_String)-1);
 
   Result:=In_String;
 end;
 
-{ 61. Функция выполняет StrToFloat с проверкой в In_String разделителя, соответствующего системно-установленному }
+{ 61. Р¤СѓРЅРєС†РёСЏ РІС‹РїРѕР»РЅСЏРµС‚ StrToFloat СЃ РїСЂРѕРІРµСЂРєРѕР№ РІ In_String СЂР°Р·РґРµР»РёС‚РµР»СЏ, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРіРѕ СЃРёСЃС‚РµРјРЅРѕ-СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРјСѓ }
 Function StrToFloat2(In_String:ShortString):Extended;
 var pcLCA: array [0..20] of Char;
 begin
 
-  { Определяем системную переменную LOCALE_SDECIMAL }
+  { РћРїСЂРµРґРµР»СЏРµРј СЃРёСЃС‚РµРјРЅСѓСЋ РїРµСЂРµРјРµРЅРЅСѓСЋ LOCALE_SDECIMAL }
   GetLocaleInfo(LOCALE_SYSTEM_DEFAULT, LOCALE_SDECIMAL, pcLCA, 19);
 
-  { Если в In_String разделитель "." а в системе "," }
+  { Р•СЃР»Рё РІ In_String СЂР°Р·РґРµР»РёС‚РµР»СЊ "." Р° РІ СЃРёСЃС‚РµРјРµ "," }
   IF (POS('.', In_String)<>0)AND(POS(',', In_String)=0)AND(pcLCA[0]=',')
     THEN  In_String:=StringReplace(In_String, '.', pcLCA[0], [rfReplaceAll, rfIgnoreCase]);
 
-  { Если в In_String разделитель "," а в системе "." }
+  { Р•СЃР»Рё РІ In_String СЂР°Р·РґРµР»РёС‚РµР»СЊ "," Р° РІ СЃРёСЃС‚РµРјРµ "." }
   IF (POS(',', In_String)<>0)AND(POS('.', In_String)=0)AND(pcLCA[0]='.')
     THEN  In_String:=StringReplace(In_String, ',', pcLCA[0], [rfReplaceAll, rfIgnoreCase]);
 
@@ -1712,7 +1711,7 @@ begin
 
 end;
 
-{ 62. Функция получает сумму в строковом виде и преобразует разделитель к точке, запятой и копейки
+{ 62. Р¤СѓРЅРєС†РёСЏ РїРѕР»СѓС‡Р°РµС‚ СЃСѓРјРјСѓ РІ СЃС‚СЂРѕРєРѕРІРѕРј РІРёРґРµ Рё РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЂР°Р·РґРµР»РёС‚РµР»СЊ Рє С‚РѕС‡РєРµ, Р·Р°РїСЏС‚РѕР№ Рё РєРѕРїРµР№РєРё
     123 -> 123.00
     123 -> 123,00
 
@@ -1726,7 +1725,7 @@ begin
 
   In_SumStr:=Trim(In_SumStr);
 
-  { Определяем знак }
+  { РћРїСЂРµРґРµР»СЏРµРј Р·РЅР°Рє }
   IF COPY(In_SumStr,1,1)='-'
     THEN
       begin
@@ -1735,7 +1734,7 @@ begin
       end
     ELSE minus:=False;
 
-  { Определяем - есть ли разделитель. Он может быть: "." "," "=" }
+  { РћРїСЂРµРґРµР»СЏРµРј - РµСЃС‚СЊ Р»Рё СЂР°Р·РґРµР»РёС‚РµР»СЊ. РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ: "." "," "=" }
   tmp_Sum:='';
 
   FOR i:=1 TO Length(In_SumStr) DO
@@ -1744,16 +1743,16 @@ begin
       IF ((In_SumStr[i]<>' ')AND((In_SumStr[i]='0')OR(In_SumStr[i]='1')OR(In_SumStr[i]='2')OR(In_SumStr[i]='3')OR(In_SumStr[i]='4')OR(In_SumStr[i]='5')OR(In_SumStr[i]='6')OR(In_SumStr[i]='7')OR(In_SumStr[i]='8')OR(In_SumStr[i]='9')))
         THEN tmp_Sum:=tmp_Sum+In_SumStr[i];
 
-      // Замена разделителя дробной части
+      // Р—Р°РјРµРЅР° СЂР°Р·РґРµР»РёС‚РµР»СЏ РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё
       IF (In_SumStr[i]='-')or(In_SumStr[i]='.')or(In_SumStr[i]=',')or(In_SumStr[i]='=') THEN tmp_Sum:=tmp_Sum+In_Separator;
 
     end; // For
 
-  { Разделитель }
+  { Р Р°Р·РґРµР»РёС‚РµР»СЊ }
   IF (POS(In_Separator, tmp_Sum)=0)AND(In_Decimal<>0)
     THEN tmp_Sum:=tmp_Sum+In_Separator;
 
-  { Если In_Decimal=0, то удаляем справа за разделителем все символы 0 }
+  { Р•СЃР»Рё In_Decimal=0, С‚Рѕ СѓРґР°Р»СЏРµРј СЃРїСЂР°РІР° Р·Р° СЂР°Р·РґРµР»РёС‚РµР»РµРј РІСЃРµ СЃРёРјРІРѕР»С‹ 0 }
   IF (In_Decimal=0)
     THEN
       begin
@@ -1761,7 +1760,7 @@ begin
           THEN tmp_Sum:=COPY(tmp_Sum, 1, POS(In_Separator, tmp_Sum)-1 );
       end; // If
 
-  { Если есть разделитель, то считаем число знаков после него и если это число меньше чем In_Decimal - добавляем нулями }
+  { Р•СЃР»Рё РµСЃС‚СЊ СЂР°Р·РґРµР»РёС‚РµР»СЊ, С‚Рѕ СЃС‡РёС‚Р°РµРј С‡РёСЃР»Рѕ Р·РЅР°РєРѕРІ РїРѕСЃР»Рµ РЅРµРіРѕ Рё РµСЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ РјРµРЅСЊС€Рµ С‡РµРј In_Decimal - РґРѕР±Р°РІР»СЏРµРј РЅСѓР»СЏРјРё }
   IF (POS(In_Separator, tmp_Sum)<>0)AND( ( Length(tmp_Sum) - POS(In_Separator, tmp_Sum) ) <In_Decimal)
     THEN
       begin
@@ -1771,7 +1770,7 @@ begin
           end;
       end; // If
 
-  { Подставляем знак }
+  { РџРѕРґСЃС‚Р°РІР»СЏРµРј Р·РЅР°Рє }
   IF minus=True THEN Result:='-'+tmp_Sum ELSE Result:=tmp_Sum;
 
 end;
@@ -1779,40 +1778,40 @@ end;
 
 
 
-{ Функция преобразует тип TDateTime в строковый формат даты и времени для сервера "Сирены" 2009-06-09T01:01:01.123456 }
+{ Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ С‚РёРї TDateTime РІ СЃС‚СЂРѕРєРѕРІС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё РґР»СЏ СЃРµСЂРІРµСЂР° "РЎРёСЂРµРЅС‹" 2009-06-09T01:01:01.123456 }
 Function DateTimeToStrFormatSirenaDateTime(In_DateTime:TDateTime):ShortString;
 var  myHour, myMin, mySec, myMilli : Word;
 begin
-  { Временной срез }
+  { Р’СЂРµРјРµРЅРЅРѕР№ СЃСЂРµР· }
   DecodeTime( In_DateTime, myHour, myMin, mySec, myMilli );
   DateTimeToStrFormatSirenaDateTime:=COPY(DateTimeToStr(In_DateTime),7,4)+'-'+COPY(DateTimeToStr(In_DateTime),4,2)+'-'+COPY(DateTimeToStr(In_DateTime),1,2)
                                        +'T'
-                                         { Время }
+                                         { Р’СЂРµРјСЏ }
                                          +beforZero(myHour,2)+':'+beforZero(myMin,2)+':'+beforZero(mySec,2)
                                          {+COPY(DateTimeToStr(In_DateTime), POS(' ', DateTimeToStr(In_DateTime))+1, Length(DateTimeToStr(In_DateTime))-POS(' ', DateTimeToStr(In_DateTime)))}
-                                           { миллисекунды через точку }
+                                           { РјРёР»Р»РёСЃРµРєСѓРЅРґС‹ С‡РµСЂРµР· С‚РѕС‡РєСѓ }
                                            +'.'+beforZero(myMilli,6);
 end;
 
-{ Функция преобразует дату 01.02.2002 в строку '020201' ГГММДД }
+{ Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.02.2002 РІ СЃС‚СЂРѕРєСѓ '020201' Р“Р“РњРњР”Р” }
 Function StrDateFormat8(in_value : TDate) : shortString;
 begin
   IF Length(DateToStr(in_value))=8  THEN StrDateFormat8:=COPY(DateToStr(in_value),7,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),1,2);
   IF Length(DateToStr(in_value))=10 THEN StrDateFormat8:=COPY(DateToStr(in_value),9,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),1,2);
 end;
 
-{ Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГЧЧММССMs }
+{ Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ 23.02.2009 12:37:00 РІ СЃС‚СЂРѕРєСѓ Р”Р”РњРњР“Р“Р§Р§РњРњРЎРЎMs }
 Function StrDateFormat9(In_DateTime : TDateTime) : shortString;
 var tmp_StrDateFormat9: shortString;
     myHour, myMin, mySec, myMilli : Word;
 begin
 
-  { Временной срез }
+  { Р’СЂРµРјРµРЅРЅРѕР№ СЃСЂРµР· }
   DecodeTime( In_DateTime, myHour, myMin, mySec, myMilli );
 
   IF Length(DateToStr(In_DateTime))=8 THEN tmp_StrDateFormat9:=COPY(DateToStr(In_DateTime),1,2)+COPY(DateToStr(In_DateTime),4,2)+COPY(DateToStr(In_DateTime),7,2);
   IF Length(DateToStr(In_DateTime))=10 THEN tmp_StrDateFormat9:=COPY(DateToStr(In_DateTime),1,2)+COPY(DateToStr(In_DateTime),4,2)+COPY(DateToStr(In_DateTime),9,2);
-  { Время - если до 10:00:00 }
+  { Р’СЂРµРјСЏ - РµСЃР»Рё РґРѕ 10:00:00 }
   IF Length(TimeToStr(In_DateTime))=7
     THEN
       begin
@@ -1823,11 +1822,11 @@ begin
       begin
         tmp_StrDateFormat9:=tmp_StrDateFormat9+COPY(TimeToStr(In_DateTime),1,2)+COPY(TimeToStr(In_DateTime),4,2)+COPY(TimeToStr(In_DateTime),7,2);
       end;
-  { Результат }
+  { Р РµР·СѓР»СЊС‚Р°С‚ }
   StrDateFormat9:=tmp_StrDateFormat9+IntToStr(myMilli);
 end;
 
-{  Функция преобразует дату и время 23.02.2009 12:37:00 в строку ГГГГММДДЧЧММСС }
+{  Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ 23.02.2009 12:37:00 РІ СЃС‚СЂРѕРєСѓ Р“Р“Р“Р“РњРњР”Р”Р§Р§РњРњРЎРЎ }
 Function StrDateFormat10(in_value : TDateTime) : shortString;
 begin
   Result:='';
@@ -1851,90 +1850,90 @@ begin
 end;
 
 
-{ Генерация UserName }
+{ Р“РµРЅРµСЂР°С†РёСЏ UserName }
 Function RandomUserName(PWLen: Word): ShortString;
 var
   StrTableUserName: ShortString;
-  N, K, X, Y: integer;// проверяем максимальную длину пароля
+  N, K, X, Y: integer;// РїСЂРѕРІРµСЂСЏРµРј РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РґР»РёРЅСѓ РїР°СЂРѕР»СЏ
   Flags: TReplaceFlags;
 begin
 
-  { таблица символов, используемых в пароле }
+  { С‚Р°Р±Р»РёС†Р° СЃРёРјРІРѕР»РѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РІ РїР°СЂРѕР»Рµ }
   StrTableUserName:='1234567890';
 
-  { Создаем уникальность таблицы символов, используя - mixingString }
+  { РЎРѕР·РґР°РµРј СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ, РёСЃРїРѕР»СЊР·СѓСЏ - mixingString }
   StrTableUserName:=DateTimeToStrFormat(Now)+StrTableUserName+DateTimeToStrFormat(Now);
   StrTableUserName:=mixingString(StrTableUserName);
 
-  { Удаляем из этой уникальности: Нуль }
+  { РЈРґР°Р»СЏРµРј РёР· СЌС‚РѕР№ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё: РќСѓР»СЊ }
   Flags:= [rfReplaceAll, rfIgnoreCase];
   StrTableUserName:=StringReplace(StrTableUserName, '0', '', Flags);
 
   if (PWlen > Length(StrTableUserName))
     then K := Length(StrTableUserName)-1
       else K := PWLen;
-  SetLength(result, K); // устанавливаем длину конечной строки
-  Y := Length(StrTableUserName); // Длина Таблицы для внутреннего цикла
-  N := 0; // начальное значение цикла
+  SetLength(result, K); // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РґР»РёРЅСѓ РєРѕРЅРµС‡РЅРѕР№ СЃС‚СЂРѕРєРё
+  Y := Length(StrTableUserName); // Р”Р»РёРЅР° РўР°Р±Р»РёС†С‹ РґР»СЏ РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ С†РёРєР»Р°
+  N := 0; // РЅР°С‡Р°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ С†РёРєР»Р°
 
   while N < K do
-    begin// цикл для создания K символов
-      X := Random(Y) + 1; // берём следующий случайный символ
-      // проверяем присутствие этого символа в конечной строке
+    begin// С†РёРєР» РґР»СЏ СЃРѕР·РґР°РЅРёСЏ K СЃРёРјРІРѕР»РѕРІ
+      X := Random(Y) + 1; // Р±РµСЂС‘Рј СЃР»РµРґСѓСЋС‰РёР№ СЃР»СѓС‡Р°Р№РЅС‹Р№ СЃРёРјРІРѕР»
+      // РїСЂРѕРІРµСЂСЏРµРј РїСЂРёСЃСѓС‚СЃС‚РІРёРµ СЌС‚РѕРіРѕ СЃРёРјРІРѕР»Р° РІ РєРѕРЅРµС‡РЅРѕР№ СЃС‚СЂРѕРєРµ
       if (pos(StrTableUserName[X], result) = 0)
         then
           begin
-            inc(N); // символ не найден
-            Result[N]:=StrTableUserName[X]; // теперь его сохраняем
+            inc(N); // СЃРёРјРІРѕР» РЅРµ РЅР°Р№РґРµРЅ
+            Result[N]:=StrTableUserName[X]; // С‚РµРїРµСЂСЊ РµРіРѕ СЃРѕС…СЂР°РЅСЏРµРј
           end; // If
     end; // While
 end;
 
-{ Генерация UserPassword }
+{ Р“РµРЅРµСЂР°С†РёСЏ UserPassword }
 Function RandomUserPassword(PWLen: Word): ShortString;
 var
-  N, K, X, Y: integer;// проверяем максимальную длину пароля
+  N, K, X, Y: integer;// РїСЂРѕРІРµСЂСЏРµРј РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РґР»РёРЅСѓ РїР°СЂРѕР»СЏ
   StrTableUserPassword:ShortString;
   Flags: TReplaceFlags;
 begin
 
-  { таблица символов, используемых в пароле }
+  { С‚Р°Р±Р»РёС†Р° СЃРёРјРІРѕР»РѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РІ РїР°СЂРѕР»Рµ }
   // StrTableUserPassword:='1lwEkj532hefy89r4U38LEL384FV37847rfWFWKLlvhEERnsdfkiesu38KL543789JH332U84hfgHFgfdDY7Jhh8u4jc878weDfq534sxnewg4653sHyt28dh37dh36dh3kglgnbvhrf743jdjh437edhgafdh46sgd63g63GDJASG36d4GD5Wj5gf32HGXD';
   StrTableUserPassword:='qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456789';
 
-  { Создаем уникальность таблицы символов, используя - mixingString }
+  { РЎРѕР·РґР°РµРј СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ, РёСЃРїРѕР»СЊР·СѓСЏ - mixingString }
   StrTableUserPassword:=DateTimeToStrFormat(Now)+StrTableUserPassword+DateTimeToStrFormat(Now);
   StrTableUserPassword:=mixingString(StrTableUserPassword);
 
-  { Удаляем из этой уникальности: Нуль }
+  { РЈРґР°Р»СЏРµРј РёР· СЌС‚РѕР№ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё: РќСѓР»СЊ }
   Flags:= [rfReplaceAll, rfIgnoreCase];
   StrTableUserPassword:=StringReplace(StrTableUserPassword, '0', '', Flags);
 
-  { Удаляем из этой уникальности: "o" и "O" }
+  { РЈРґР°Р»СЏРµРј РёР· СЌС‚РѕР№ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё: "o" Рё "O" }
   StrTableUserPassword:=StringReplace(StrTableUserPassword, 'o', '', Flags);
   StrTableUserPassword:=StringReplace(StrTableUserPassword, 'O', '', Flags);
 
   if (PWlen > Length(StrTableUserPassword))
     then K := Length(StrTableUserPassword)-1
       else K := PWLen;
-  SetLength(result, K); // устанавливаем длину конечной строки
-  Y := Length(StrTableUserPassword); // Длина Таблицы для внутреннего цикла
-  N := 0; // начальное значение цикла
+  SetLength(result, K); // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РґР»РёРЅСѓ РєРѕРЅРµС‡РЅРѕР№ СЃС‚СЂРѕРєРё
+  Y := Length(StrTableUserPassword); // Р”Р»РёРЅР° РўР°Р±Р»РёС†С‹ РґР»СЏ РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ С†РёРєР»Р°
+  N := 0; // РЅР°С‡Р°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ С†РёРєР»Р°
 
   while N < K do
-    begin// цикл для создания K символов
-      X := Random(Y) + 1; // берём следующий случайный символ
-      // проверяем присутствие этого символа в конечной строке
+    begin// С†РёРєР» РґР»СЏ СЃРѕР·РґР°РЅРёСЏ K СЃРёРјРІРѕР»РѕРІ
+      X := Random(Y) + 1; // Р±РµСЂС‘Рј СЃР»РµРґСѓСЋС‰РёР№ СЃР»СѓС‡Р°Р№РЅС‹Р№ СЃРёРјРІРѕР»
+      // РїСЂРѕРІРµСЂСЏРµРј РїСЂРёСЃСѓС‚СЃС‚РІРёРµ СЌС‚РѕРіРѕ СЃРёРјРІРѕР»Р° РІ РєРѕРЅРµС‡РЅРѕР№ СЃС‚СЂРѕРєРµ
       if (pos(StrTableUserPassword[X], result) = 0)
         then
           begin
-            inc(N); // символ не найден
-            Result[N]:=StrTableUserPassword[X]; // теперь его сохраняем
+            inc(N); // СЃРёРјРІРѕР» РЅРµ РЅР°Р№РґРµРЅ
+            Result[N]:=StrTableUserPassword[X]; // С‚РµРїРµСЂСЊ РµРіРѕ СЃРѕС…СЂР°РЅСЏРµРј
           end; // If
     end; // While
 end;
 
-// Функция преобразует американский расчет дня недели в российский
+// Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Р°РјРµСЂРёРєР°РЅСЃРєРёР№ СЂР°СЃС‡РµС‚ РґРЅСЏ РЅРµРґРµР»Рё РІ СЂРѕСЃСЃРёР№СЃРєРёР№
 Function RussianDayOfWeek(In_DayOfWeek:Byte):Byte;
 begin
   IF in_DayOfWeek = 1
@@ -1944,7 +1943,7 @@ begin
       RussianDayOfWeek:=in_DayOfWeek-1
 end;
 
-// Функция преобразует американский расчет дня недели в российский из даты
+// Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Р°РјРµСЂРёРєР°РЅСЃРєРёР№ СЂР°СЃС‡РµС‚ РґРЅСЏ РЅРµРґРµР»Рё РІ СЂРѕСЃСЃРёР№СЃРєРёР№ РёР· РґР°С‚С‹
 Function RussianDayOfWeekFromDate(In_Date:TDate):Byte;
 var DayOfWeekVar:Byte;
 begin
@@ -1956,7 +1955,7 @@ begin
       ELSE Result:=DayOfWeekVar-1
 end;
 
-{ Количество выходных дней (субб., вскр.) между 2-мя датами }
+{ РљРѕР»РёС‡РµСЃС‚РІРѕ РІС‹С…РѕРґРЅС‹С… РґРЅРµР№ (СЃСѓР±Р±., РІСЃРєСЂ.) РјРµР¶РґСѓ 2-РјСЏ РґР°С‚Р°РјРё }
 Function daysOffBetweenDates(In_DateBegin:TDate; In_DateEnd:TDate):Word;
 var currDate:TDate;
 begin
@@ -1971,25 +1970,25 @@ begin
     end;
 end;
 
-{ Получение параметра (ShortString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+{ РџРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° (ShortString) РёР· СЃС‚СЂРѕРєРё "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1 Рё РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_11 }
 Function paramFromString(In_StringAnswer:WideString; In_Param:ShortString):ShortString;
 begin
-  { Версия не адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
+  { Р’РµСЂСЃРёСЏ РЅРµ Р°РґР°РїС‚РёСЂРѕРІР°РЅР° Рє СЂРµРіРёСЃС‚СЂСѓ: "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" Рё "РїРђСЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" }
   IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
   IF POS(In_Param, In_StringAnswer)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)))-1) ELSE Result:='';
 end;
 
-{ Получение параметра (WideString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+{ РџРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° (WideString) РёР· СЃС‚СЂРѕРєРё "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1 Рё РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_11 }
 Function paramFromString2(In_StringAnswer:WideString; In_Param:ShortString):WideString;
 begin
-  { Версия не адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
+  { Р’РµСЂСЃРёСЏ РЅРµ Р°РґР°РїС‚РёСЂРѕРІР°РЅР° Рє СЂРµРіРёСЃС‚СЂСѓ: "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" Рё "РїРђСЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" }
   IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
   IF POS(In_Param, In_StringAnswer)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)))-1) ELSE Result:='';
 end;
 
-{ Получение параметра (WideString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; "
-   - Адаптирована к параметр_номер_1 и параметр_номер_11.
-   - Адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
+{ РџРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° (WideString) РёР· СЃС‚СЂРѕРєРё "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; "
+   - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1 Рё РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_11.
+   - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє СЂРµРіРёСЃС‚СЂСѓ: "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" Рё "РїРђСЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1" }
 Function paramFromString3(In_StringAnswer:WideString; In_Param:ShortString):WideString;
 var In_StringAnswer_tmp:WideString;
     In_Param_tmp:ShortString;
@@ -2003,12 +2002,12 @@ begin
   IF POS(In_Param_tmp, In_StringAnswer_tmp)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param)+1)))-1) ELSE Result:='';
 end;
 
-{ Сохранение значение параметра в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
+{ РЎРѕС…СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РІ СЃС‚СЂРѕРєРµ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " }
 Function setParamFromString(In_StringAnswer:WideString; In_Param:ShortString; In_Value:ShortString):ShortString;
 var beforeSubstring, afterSubstring:ShortString; //str1:ShortString;
 begin
   IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-  { Если параметр есть в строке }
+  { Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂ РµСЃС‚СЊ РІ СЃС‚СЂРѕРєРµ }
   IF POS(In_Param, In_StringAnswer)<>0
     THEN
       begin
@@ -2018,25 +2017,25 @@ begin
       end
     ELSE
       begin
-        { Если параметра нет в строке, то дописываем его в конец }
+        { Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂР° РЅРµС‚ РІ СЃС‚СЂРѕРєРµ, С‚Рѕ РґРѕРїРёСЃС‹РІР°РµРј РµРіРѕ РІ РєРѕРЅРµС† }
         Result:=In_StringAnswer+' '+In_Param+In_Value+';';
       end;
 end;
 
-{ Сохранение значение параметра (WideString) в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " Версия, адаптированная к регистру! }
+{ РЎРѕС…СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° (WideString) РІ СЃС‚СЂРѕРєРµ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " Р’РµСЂСЃРёСЏ, Р°РґР°РїС‚РёСЂРѕРІР°РЅРЅР°СЏ Рє СЂРµРіРёСЃС‚СЂСѓ! }
 Function setParamFromString2(In_StringAnswer:WideString; In_Param:ShortString; In_Value:ShortString):WideString;
 var beforeSubstring, afterSubstring:WideString;
     In_StringAnswer_tmp:WideString;
     In_Param_tmp:ShortString;
 begin
 
-  { Версия, адаптированная к регистру! }
+  { Р’РµСЂСЃРёСЏ, Р°РґР°РїС‚РёСЂРѕРІР°РЅРЅР°СЏ Рє СЂРµРіРёСЃС‚СЂСѓ! }
   In_Param_tmp:=AnsiLowerCase(In_Param);
   In_StringAnswer_tmp:=AnsiLowerCase(In_StringAnswer);
 
   IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
 
-  { Если параметр есть в строке }
+  { Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂ РµСЃС‚СЊ РІ СЃС‚СЂРѕРєРµ }
   IF POS(In_Param_tmp, In_StringAnswer_tmp)<>0
     THEN
       begin
@@ -2046,22 +2045,22 @@ begin
       end
     ELSE
       begin
-        { Если параметра нет в строке, то дописываем его в конец }
+        { Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂР° РЅРµС‚ РІ СЃС‚СЂРѕРєРµ, С‚Рѕ РґРѕРїРёСЃС‹РІР°РµРј РµРіРѕ РІ РєРѕРЅРµС† }
         Result:=In_StringAnswer+' '+In_Param+In_Value+';';
       end;
 end;
 
-{ Получение количества параметров в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
+{ РџРѕР»СѓС‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїР°СЂР°РјРµС‚СЂРѕРІ РІ СЃС‚СЂРѕРєРµ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " }
 Function countParamFromString(In_StringAnswer:WideString):Word;
 var countChar:Word;
     findChar:Boolean;
     subStrForFind:WideString;
 begin
-  { Число параметров равно числу знаков = }
+  { Р§РёСЃР»Рѕ РїР°СЂР°РјРµС‚СЂРѕРІ СЂР°РІРЅРѕ С‡РёСЃР»Сѓ Р·РЅР°РєРѕРІ = }
   countChar:=0;
   findChar:=True;
   subStrForFind:=In_StringAnswer;
-  { Поиск в подстроке }
+  { РџРѕРёСЃРє РІ РїРѕРґСЃС‚СЂРѕРєРµ }
   WHILE findChar=True DO
     begin
       IF POS('=', subStrForFind)=0
@@ -2078,19 +2077,19 @@ begin
   Result:=countChar;
 end;
 
-{ Получение наименование параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = параметр_номер_2 }
+{ РџРѕР»СѓС‡РµРЅРёРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ РїР°СЂР°РјРµС‚СЂР° РїРѕ РµРіРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ. Р”Р»СЏ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ = РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2 }
 Function paramNameFromString(In_StringAnswer:WideString; In_ParamNumber:Word):ShortString;
 var countChar:Word;
     findChar:Boolean;
     subStrForFind:WideString;
     posRAVNO, posCurrent:Word;
 begin
-  { Определим в posRAVNO позицию знака "=" для искомого параметра }
+  { РћРїСЂРµРґРµР»РёРј РІ posRAVNO РїРѕР·РёС†РёСЋ Р·РЅР°РєР° "=" РґР»СЏ РёСЃРєРѕРјРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° }
   countChar:=0;
   findChar:=True;
   subStrForFind:=In_StringAnswer;
   posRAVNO:=0;
-  { Поиск в подстроке }
+  { РџРѕРёСЃРє РІ РїРѕРґСЃС‚СЂРѕРєРµ }
   WHILE (findChar=True)AND(countChar<In_ParamNumber) DO
     begin
       IF POS('=', subStrForFind)=0
@@ -2107,7 +2106,7 @@ begin
           end;
     end; // While
 
-  { Определим в подстроке "начало-posRAVNO" }
+  { РћРїСЂРµРґРµР»РёРј РІ РїРѕРґСЃС‚СЂРѕРєРµ "РЅР°С‡Р°Р»Рѕ-posRAVNO" }
   IF posRAVNO<>0
     THEN
       begin
@@ -2119,7 +2118,7 @@ begin
             Result:=Result+COPY(subStrForFind, posCurrent, 1);
             posCurrent:=posCurrent-1;
           end; // While
-        { Получили имя параметра в зеркальном отображении: 2_ртемарап ("параметр_2"). Выполняем обратное преобразование }
+        { РџРѕР»СѓС‡РёР»Рё РёРјСЏ РїР°СЂР°РјРµС‚СЂР° РІ Р·РµСЂРєР°Р»СЊРЅРѕРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРё: 2_СЂС‚РµРјР°СЂР°Рї ("РїР°СЂР°РјРµС‚СЂ_2"). Р’С‹РїРѕР»РЅСЏРµРј РѕР±СЂР°С‚РЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ }
         posCurrent:=Length(Result);
         subStrForFind:=Result;
         Result:='';
@@ -2135,19 +2134,19 @@ begin
       end;
 end;
 
-{ Получение значение параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
+{ РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РїРѕ РµРіРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ. Р”Р»СЏ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ = 200.00 }
 Function paramValueFromString(In_StringAnswer:WideString; In_ParamNumber:Word):WideString;
 var countChar:Word;
     findChar:Boolean;
     subStrForFind:WideString;
     posRAVNO, posCurrent:Word;
 begin
-  { Определим в posRAVNO позицию знака "=" для искомого параметра }
+  { РћРїСЂРµРґРµР»РёРј РІ posRAVNO РїРѕР·РёС†РёСЋ Р·РЅР°РєР° "=" РґР»СЏ РёСЃРєРѕРјРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° }
   countChar:=0;
   findChar:=True;
   subStrForFind:=In_StringAnswer;
   posRAVNO:=0;
-  { Поиск в подстроке }
+  { РџРѕРёСЃРє РІ РїРѕРґСЃС‚СЂРѕРєРµ }
   WHILE (findChar=True)AND(countChar<In_ParamNumber) DO
     begin
       IF POS('=', subStrForFind)=0
@@ -2163,7 +2162,7 @@ begin
             subStrForFind:=COPY(subStrForFind, POS('=', subStrForFind)+1, Length(subStrForFind)-POS('=', subStrForFind) );
           end;
     end; // While
-  { Определим в подстроке "(posRAVNO+1)-конец" }
+  { РћРїСЂРµРґРµР»РёРј РІ РїРѕРґСЃС‚СЂРѕРєРµ "(posRAVNO+1)-РєРѕРЅРµС†" }
   IF posRAVNO<>0
     THEN
       begin
@@ -2182,40 +2181,40 @@ begin
       end;
 end;
 
-{ Функция из двойного параметра 1234-9044951501 выделяет первый 1234 (при In_ParamNumber=1) или второй 9044951501 (при In_ParamNumber=2) параметр }
+{ Р¤СѓРЅРєС†РёСЏ РёР· РґРІРѕР№РЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° 1234-9044951501 РІС‹РґРµР»СЏРµС‚ РїРµСЂРІС‹Р№ 1234 (РїСЂРё In_ParamNumber=1) РёР»Рё РІС‚РѕСЂРѕР№ 9044951501 (РїСЂРё In_ParamNumber=2) РїР°СЂР°РјРµС‚СЂ }
 Function getParamFromDoublePayment(In_DoubleAutData:ShortString; In_ParamNumber:Byte):ShortString;
 var  autData, autData1, autData2:ShortString;
 begin
 
-  { В autData удаляем пробелы }
+  { Р’ autData СѓРґР°Р»СЏРµРј РїСЂРѕР±РµР»С‹ }
   autData:=StringReplace(In_DoubleAutData, ' ', '', [rfReplaceAll]);
 
-  { Разбиваем autData на autData1 и autData2 }
+  { Р Р°Р·Р±РёРІР°РµРј autData РЅР° autData1 Рё autData2 }
   IF (POS('-',autData)<>0)
     THEN
       begin
-        { Номер телефона }
+        { РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° }
         autData2:=COPY(autData, POS('-',autData)+1, Length(autData)-POS('-',autData) );
-        { Данные для авторизации в Элси ДДММГГNNNNN }
+        { Р”Р°РЅРЅС‹Рµ РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё РІ Р­Р»СЃРё Р”Р”РњРњР“Р“NNNNN }
         autData1:=COPY(autData, 1, POS('-',autData)-1 );
       end
     ELSE
       begin
-        { Номер телефона }
+        { РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° }
         autData2:='';
-        { Данные для авторизации в Элси ДДММГГNNNNN }
+        { Р”Р°РЅРЅС‹Рµ РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё РІ Р­Р»СЃРё Р”Р”РњРњР“Р“NNNNN }
         autData1:=autData;
       end; // If
 
-  { Результат }
+  { Р РµР·СѓР»СЊС‚Р°С‚ }
   IF In_ParamNumber=1 THEN Result:=autData1 ELSE Result:=autData2;
 
 end;
 
-{ Перед передачей разультата для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) спецсимволы " ; = # необходимо замаскировать функцией ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - производит маскирование. In_Mask_DeMask=DeMask - производит де-маскирование }
+{ РџРµСЂРµРґ РїРµСЂРµРґР°С‡РµР№ СЂР°Р·СѓР»СЊС‚Р°С‚Р° РґР»СЏ PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) СЃРїРµС†СЃРёРјРІРѕР»С‹ " ; = # РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РјР°СЃРєРёСЂРѕРІР°С‚СЊ С„СѓРЅРєС†РёРµР№ ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - РїСЂРѕРёР·РІРѕРґРёС‚ РјР°СЃРєРёСЂРѕРІР°РЅРёРµ. In_Mask_DeMask=DeMask - РїСЂРѕРёР·РІРѕРґРёС‚ РґРµ-РјР°СЃРєРёСЂРѕРІР°РЅРёРµ }
 Function ps_paymGate_maskSymbol(In_String:WideString; In_Mask_DeMask:ShortString ):WideString;
 begin
-  { Если задано маскирование }
+  { Р•СЃР»Рё Р·Р°РґР°РЅРѕ РјР°СЃРєРёСЂРѕРІР°РЅРёРµ }
   IF In_Mask_DeMask='Mask'
     THEN
       begin
@@ -2229,7 +2228,7 @@ begin
         In_String:=StringReplace(In_String, '#', '&quo3', [rfReplaceAll] );
       end; // If
 
-  { Если задано Де-маскирование }
+  { Р•СЃР»Рё Р·Р°РґР°РЅРѕ Р”Рµ-РјР°СЃРєРёСЂРѕРІР°РЅРёРµ }
   IF In_Mask_DeMask='DeMask'
     THEN
       begin
@@ -2242,11 +2241,11 @@ begin
         { &quo3 -> # }
         In_String:=StringReplace(In_String, '&quo3', '#', [rfReplaceAll] );
       end; // If
-  { Результат }
+  { Р РµР·СѓР»СЊС‚Р°С‚ }
   Result:=In_String;
 end;
 
-{ Функция определяет локальный Ip адрес }
+{ Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ Р»РѕРєР°Р»СЊРЅС‹Р№ Ip Р°РґСЂРµСЃ }
 Function GetLocalIP: ShortString;
 const WSVer = $101; var wsaData: TWSAData; P: PHostEnt; Buf: array [0..127] of Char;
 begin
@@ -2260,22 +2259,22 @@ begin
   end;
 end;
 
-{ Маскирование середины строки }
+{ РњР°СЃРєРёСЂРѕРІР°РЅРёРµ СЃРµСЂРµРґРёРЅС‹ СЃС‚СЂРѕРєРё }
 Function maskString(In_StringForMask:ShortString):ShortString;
 var startPosMask, endPosMask, i:Word;
 begin
   Result:='';
-  { Позиция начала маскирования }
+  { РџРѕР·РёС†РёСЏ РЅР°С‡Р°Р»Р° РјР°СЃРєРёСЂРѕРІР°РЅРёСЏ }
   startPosMask:= ((Length(In_StringForMask) Div 2) Div 2)+2;
-  { Позиция окончания маскирования }
+  { РџРѕР·РёС†РёСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ РјР°СЃРєРёСЂРѕРІР°РЅРёСЏ }
   endPosMask:= (Length(In_StringForMask) Div 2) + ((Length(In_StringForMask) Div 2) Div 2);
   FOR i:=1 TO Length(In_StringForMask) DO
     begin
-      { Находимся в диапазоне маскирования? }
+      { РќР°С…РѕРґРёРјСЃСЏ РІ РґРёР°РїР°Р·РѕРЅРµ РјР°СЃРєРёСЂРѕРІР°РЅРёСЏ? }
       IF (i>=startPosMask)AND(i<=endPosMask)
         THEN
           begin
-            { Маскируем }
+            { РњР°СЃРєРёСЂСѓРµРј }
             Result:=Result+'X';
           end
         ELSE
@@ -2285,81 +2284,81 @@ begin
     end; // For
 end;
 
-    { *** Конец раздела описания процедур и функций DLL *** }
+    { *** РљРѕРЅРµС† СЂР°Р·РґРµР»Р° РѕРїРёСЃР°РЅРёСЏ РїСЂРѕС†РµРґСѓСЂ Рё С„СѓРЅРєС†РёР№ DLL *** }
 
     exports
 
-{ *** Начало перечня экспортируемых из Dll процедур и функций *** }
+{ *** РќР°С‡Р°Р»Рѕ РїРµСЂРµС‡РЅСЏ СЌРєСЃРїРѕСЂС‚РёСЂСѓРµРјС‹С… РёР· Dll РїСЂРѕС†РµРґСѓСЂ Рё С„СѓРЅРєС†РёР№ *** }
 
-// 1. Функция RoundCurrency округляет передаваемое ей значение до указанного количества знаков после запятой
+// 1. Р¤СѓРЅРєС†РёСЏ RoundCurrency РѕРєСЂСѓРіР»СЏРµС‚ РїРµСЂРµРґР°РІР°РµРјРѕРµ РµР№ Р·РЅР°С‡РµРЅРёРµ РґРѕ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·РЅР°РєРѕРІ РїРѕСЃР»Рµ Р·Р°РїСЏС‚РѕР№
 RoundCurrency Name 'RoundCurrency',
 
-// 2. Функция DosToWin преобразует Dos кодировку входящей строки в символы кодировки Windows
+// 2. Р¤СѓРЅРєС†РёСЏ DosToWin РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Dos РєРѕРґРёСЂРѕРІРєСѓ РІС…РѕРґСЏС‰РµР№ СЃС‚СЂРѕРєРё РІ СЃРёРјРІРѕР»С‹ РєРѕРґРёСЂРѕРІРєРё Windows
 DosToWin Name 'DosToWin',
 
-// 3. Функция WinToDos преобразует Windows кодировку входящей строки в символы кодировки Dos
+// 3. Р¤СѓРЅРєС†РёСЏ WinToDos РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Windows РєРѕРґРёСЂРѕРІРєСѓ РІС…РѕРґСЏС‰РµР№ СЃС‚СЂРѕРєРё РІ СЃРёРјРІРѕР»С‹ РєРѕРґРёСЂРѕРІРєРё Dos
 WinToDos Name 'WinToDos',
 
-// 4. Преобразование разделителя целой и дробной части (, -> .), представленного в строковом виде
+// 4. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЂР°Р·РґРµР»РёС‚РµР»СЏ С†РµР»РѕР№ Рё РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё (, -> .), РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅРѕРіРѕ РІ СЃС‚СЂРѕРєРѕРІРѕРј РІРёРґРµ
 ChangeSeparator Name 'ChangeSeparator',
 
-// 5. Преобразование разделителя целой и дробной части (. -> ,), представленного в строковом виде
+// 5. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЂР°Р·РґРµР»РёС‚РµР»СЏ С†РµР»РѕР№ Рё РґСЂРѕР±РЅРѕР№ С‡Р°СЃС‚Рё (. -> ,), РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅРѕРіРѕ РІ СЃС‚СЂРѕРєРѕРІРѕРј РІРёРґРµ
 ChangeSeparator2 Name 'ChangeSeparator2',
 
-// 6. Фиксированная строка выравнивание влево
+// 6. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РІР»РµРІРѕ
 LeftFixString Name 'LeftFixString',
 
-// 7. Фиксированная строка выравнивание вправо
+// 7. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РІРїСЂР°РІРѕ
 RightFixString Name 'RightFixString',
 
-// 8. Фиксированная строка выравнивание по центру
+// 8. Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° РІС‹СЂР°РІРЅРёРІР°РЅРёРµ РїРѕ С†РµРЅС‚СЂСѓ
 CentrFixString Name 'CentrFixString',
 
-// 9. Преобразование суммы из prn-файла
+// 9. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃСѓРјРјС‹ РёР· prn-С„Р°Р№Р»Р°
 prnSum Name 'prnSum',
 
-// 10. Преобразование строки '25 000,25' в число 25000,25
+// 10. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё '25 000,25' РІ С‡РёСЃР»Рѕ 25000,25
 TrSum Name 'TrSum',
 
-// 11. Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int
+// 11. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РµРєСЃС‚РѕРІРѕР№ РґР°С‚С‹ "Р”Р”.РњРњ.Р“Р“Р“Р“" РІ Р±Р°РЅРєРѕРІСЃРєРёР№ РґРµРЅСЊ С‚РёРїР° Int
 bnkDay Name 'bnkDay',
 
-// 12. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
+// 12. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '01/01/2002'
 DiaStrDate Name 'DiaStrDate',
 
-// 13. Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.'
+// 13. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '"01" СЏРЅРІР°СЂСЏ 2002 Рі.'
 PropisStrDate Name 'PropisStrDate',
 
-// 14. Функция определяет в передаваемой строке, позицию номера сепаратора ^
+// 14. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° СЃРµРїР°СЂР°С‚РѕСЂР° ^
 FindSeparator Name 'FindSeparator',
 
-// 15. Функция определяет в передаваемой строке, позицию номера передаваемого символа
+// 15. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРёРјРІРѕР»Р°
 FindChar Name 'FindChar',
 
-// 15+. Функция определяет в передаваемой строке, позицию номера передаваемого символа
+// 15+. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РЅРѕРјРµСЂР° РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРёРјРІРѕР»Р°
 FindCharWideString Name 'FindCharWideString',
 
 FindCharWideString2 Name 'FindCharWideString2',
 
-// 16. Функция определяет в передаваемой строке, позицию пробела
+// 16. Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ РІ РїРµСЂРµРґР°РІР°РµРјРѕР№ СЃС‚СЂРѕРєРµ, РїРѕР·РёС†РёСЋ РїСЂРѕР±РµР»Р°
 FindSpace Name 'FindSpace',
 
-{ Подсчет числа вхождений символа In_Char в строку In_String }
+{ РџРѕРґСЃС‡РµС‚ С‡РёСЃР»Р° РІС…РѕР¶РґРµРЅРёР№ СЃРёРјРІРѕР»Р° In_Char РІ СЃС‚СЂРѕРєСѓ In_String }
 countCharInString Name 'countCharInString',
 
-// 17. Функция преобразует Win строку 'Abcd' -> 'ABCD'
+// 17. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'Abcd' -> 'ABCD'
 Upper Name 'Upper',
 
-// 18. Функция преобразует Win строку 'abcd' -> 'Abcd'
+// 18. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'abcd' -> 'Abcd'
 Proper Name 'Proper',
 
-// 19. Функция преобразует Win строку 'ABCD' -> 'abcd'
+// 19. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ Win СЃС‚СЂРѕРєСѓ 'ABCD' -> 'abcd'
 Lower Name 'Lower',
 
-// 20. Функция преобразует строку '1000,00' -> '1 000,00'
+// 20. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ '1000,00' -> '1 000,00'
 Divide1000 Name 'Divide1000',
 
-// 21. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
+// 21. Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂР°РјРµС‚СЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј РёР· ini-С„Р°Р№Р»Р°; Р•СЃР»Рё РЅРµС‚ ini - 'INIFILE_NOT_FOUND'. Р•СЃР»Рё РЅРµС‚ РїР°СЂР°РјРµС‚СЂР° - 'PARAMETR_NOT_FOUND'
 paramFromIniFile Name 'paramFromIniFile',
 
 paramFromIniFileWithOutMessDlg Name 'paramFromIniFileWithOutMessDlg',
@@ -2370,25 +2369,25 @@ paramFromIniFileWithFullPath Name 'paramFromIniFileWithFullPath',
 
 paramFromIniFileWithFullPathWithOutMessDlg Name 'paramFromIniFileWithFullPathWithOutMessDlg',
 
-// 22. Функция ищет ini файл и параметр в нем; Если все нормально - возвращается значение параметра, если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND'
+// 22. Р¤СѓРЅРєС†РёСЏ РёС‰РµС‚ ini С„Р°Р№Р» Рё РїР°СЂР°РјРµС‚СЂ РІ РЅРµРј; Р•СЃР»Рё РІСЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ - РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°, РµСЃР»Рё РЅРµС‚ - С‚Рѕ Р·Р°РЅР°С‡РµРЅРёРµ С„СѓРЅРєС†РёРёР№ 'INIFILE_NOT_FOUND' РёР»Рё 'PARAMETR_NOT_FOUND'
 paramFoundFromIniFile Name 'paramFoundFromIniFile',
 
-// 23. Функция добавляет перед числом нули 1 до нужного количества знаков-> '0001'
+// 23. Р¤СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚ РїРµСЂРµРґ С‡РёСЃР»РѕРј РЅСѓР»Рё 1 РґРѕ РЅСѓР¶РЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·РЅР°РєРѕРІ-> '0001'
 beforZero Name 'beforZero',
 
-// 24. Автонумерация документа из 12-х знаков с ведением электронного жунала
+// 24. РђРІС‚РѕРЅСѓРјРµСЂР°С†РёСЏ РґРѕРєСѓРјРµРЅС‚Р° РёР· 12-С… Р·РЅР°РєРѕРІ СЃ РІРµРґРµРЅРёРµРј СЌР»РµРєС‚СЂРѕРЅРЅРѕРіРѕ Р¶СѓРЅР°Р»Р°
 ID12docFromJournal Name 'ID12docFromJournal',
 
-// 25. Преобразование Строки '01-01-05 01:01:01'
+// 25. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЎС‚СЂРѕРєРё '01-01-05 01:01:01'
 dateTimeToSec Name 'dateTimeToSec',
 
-// 26. Преобразование String в PChar
+// 26. РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ String РІ PChar
 StrToPchar Name 'StrToPchar',
 
-// 27. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
+// 27. РџСЂРѕС†РµРґСѓСЂР° РІС‹РІРѕРґРёС‚ РІ Р»РѕРі С„Р°Р№Р» СЃ РёРјРµРЅРµРј InFileName СЃС‚СЂРѕРєСѓ InString СЃ РїРµСЂРµРІРѕРґРѕРј РєР°СЂРµС‚РєРё РµСЃР»Рё InLn='Ln'
 ToLogFileWithName Name 'ToLogFileWithName',
 
-// 27+. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
+// 27+. РџСЂРѕС†РµРґСѓСЂР° РІС‹РІРѕРґРёС‚ РІ Р»РѕРі С„Р°Р№Р» СЃ РёРјРµРЅРµРј InFileName СЃС‚СЂРѕРєСѓ InString СЃ РїРµСЂРµРІРѕРґРѕРј РєР°СЂРµС‚РєРё РµСЃР»Рё InLn='Ln'
 ToLogFileWideStringWithName Name 'ToLogFileWideStringWithName',
 
 // 27++.
@@ -2396,19 +2395,19 @@ ToLogFileWithFullName Name 'ToLogFileWithFullName',
 
 ToLogFileWideStringWithFullName Name 'ToLogFileWideStringWithFullName',
 
-// 28. Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации с www.beonline.ru
+// 28. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РљРёСЂРёР»Р»РёС†С‹ РІ Р›Р°С‚РёРЅРёС†Сѓ РїРѕ С‚Р°Р±Р»РёС†Рµ С‚СЂР°РЅСЃР»РёС‚РµСЂР°С†РёРё СЃ www.beonline.ru
 TranslitBeeLine Name 'TranslitBeeLine',
 
-// 29. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
+// 29. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ 01.01.2002 РІ СЃС‚СЂРѕРєСѓ '01/01/2002'
 formatMSSqlDate Name 'formatMSSqlDate',
 
-// 30. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime ( корректировку часового пояса +0300 пока не учитываем )
+// 30. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё TTimeStamp '04-04-2007 15:22:11 +0300' РІ С‚РёРї TDateTime ( РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєСѓ С‡Р°СЃРѕРІРѕРіРѕ РїРѕСЏСЃР° +0300 РїРѕРєР° РЅРµ СѓС‡РёС‚С‹РІР°РµРј )
 StrFormatTimeStampToDateTime Name 'StrFormatTimeStampToDateTime',
 
-// 31. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'  ( корректировку часового пояса +0300 пока не учитываем )
+// 31. Р¤СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ С„РѕСЂРјР°С‚Рµ РґР°С‚С‹ Рё РІСЂРµРјРµРЅРё TTimeStamp '04-04-2007 15:22:11 +0300' РІ СЃС‚СЂРѕРєСѓ '04.04.2007 15:22:11'  ( РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєСѓ С‡Р°СЃРѕРІРѕРіРѕ РїРѕСЏСЃР° +0300 РїРѕРєР° РЅРµ СѓС‡РёС‚С‹РІР°РµРј )
 StrTimeStampToStrDateTime Name 'StrTimeStampToStrDateTime',
 
-// 32. Функция DateTimeToStrFormat преобразует дату и время  01.01.2007 1:02:00 в строку '0101200710200'
+// 32. Р¤СѓРЅРєС†РёСЏ DateTimeToStrFormat РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РґР°С‚Сѓ Рё РІСЂРµРјСЏ  01.01.2007 1:02:00 РІ СЃС‚СЂРѕРєСѓ '0101200710200'
 DateTimeToStrFormat Name 'DateTimeToStrFormat',
 
 decodeCurCodeToISO  Name 'decodeCurCodeToISO',
@@ -2501,50 +2500,50 @@ RussianDayOfWeekFromDate Name 'RussianDayOfWeekFromDate',
 
 daysOffBetweenDates Name 'daysOffBetweenDates',
 
-{ Результат ShortString: Получение параметра из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+{ Р РµР·СѓР»СЊС‚Р°С‚ ShortString: РџРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РёР· СЃС‚СЂРѕРєРё "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1 Рё РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_11 }
 paramFromString Name 'paramFromString',
 
-{ Получение количества параметров в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
+{ РџРѕР»СѓС‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїР°СЂР°РјРµС‚СЂРѕРІ РІ СЃС‚СЂРѕРєРµ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " }
 countParamFromString Name 'countParamFromString',
 
-{ Получение наименование параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = параметр_номер_2 }
+{ РџРѕР»СѓС‡РµРЅРёРµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ РїР°СЂР°РјРµС‚СЂР° РїРѕ РµРіРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ. Р”Р»СЏ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ = РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2 }
 paramNameFromString Name 'paramNameFromString',
 
-{ Получение значение параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
+{ РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РїРѕ РµРіРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ. Р”Р»СЏ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ = 200.00 }
 paramValueFromString Name 'paramValueFromString',
 
-{ Результат WideString: Получение параметра из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+{ Р РµР·СѓР»СЊС‚Р°С‚ WideString: РџРѕР»СѓС‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РёР· СЃС‚СЂРѕРєРё "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " - РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1 Рё РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_11 }
 paramFromString2 Name 'paramFromString2',
 
-{ Результат WideString, адаптирована к регистру! }
+{ Р РµР·СѓР»СЊС‚Р°С‚ WideString, Р°РґР°РїС‚РёСЂРѕРІР°РЅР° Рє СЂРµРіРёСЃС‚СЂСѓ! }
 paramFromString3 Name 'paramFromString3',
 
-{ Сохранение значение параметра в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
+{ РЎРѕС…СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° РІ СЃС‚СЂРѕРєРµ "РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_1=100.00; РїР°СЂР°РјРµС‚СЂ_РЅРѕРјРµСЂ_2=200.00; " }
 setParamFromString Name 'setParamFromString',
 
-{ Широкая строка! Адаптирована к регистру }
+{ РЁРёСЂРѕРєР°СЏ СЃС‚СЂРѕРєР°! РђРґР°РїС‚РёСЂРѕРІР°РЅР° Рє СЂРµРіРёСЃС‚СЂСѓ }
 setParamFromString2 Name 'setParamFromString2',
 
 getParamFromDoublePayment Name 'getParamFromDoublePayment',
 
-{ Перед передачей разультата для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) спецсимволы " ; = # необходимо замаскировать функцией ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - производит маскирование. In_Mask_DeMask=DeMask - производит де-маскирование }
+{ РџРµСЂРµРґ РїРµСЂРµРґР°С‡РµР№ СЂР°Р·СѓР»СЊС‚Р°С‚Р° РґР»СЏ PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) СЃРїРµС†СЃРёРјРІРѕР»С‹ " ; = # РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РјР°СЃРєРёСЂРѕРІР°С‚СЊ С„СѓРЅРєС†РёРµР№ ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - РїСЂРѕРёР·РІРѕРґРёС‚ РјР°СЃРєРёСЂРѕРІР°РЅРёРµ. In_Mask_DeMask=DeMask - РїСЂРѕРёР·РІРѕРґРёС‚ РґРµ-РјР°СЃРєРёСЂРѕРІР°РЅРёРµ }
 ps_paymGate_maskSymbol Name 'ps_paymGate_maskSymbol',
 
-{ Функция определяет локальный Ip адрес }
+{ Р¤СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»СЏРµС‚ Р»РѕРєР°Р»СЊРЅС‹Р№ Ip Р°РґСЂРµСЃ }
 GetLocalIP Name 'GetLocalIP',
 
-{ Маскирование середины строки }
+{ РњР°СЃРєРёСЂРѕРІР°РЅРёРµ СЃРµСЂРµРґРёРЅС‹ СЃС‚СЂРѕРєРё }
 maskString Name 'maskString'
 
 ;
 
-{ *** Конец перечня экспортируемых из Dll процедур и функций *** }
+{ *** РљРѕРЅРµС† РїРµСЂРµС‡РЅСЏ СЌРєСЃРїРѕСЂС‚РёСЂСѓРµРјС‹С… РёР· Dll РїСЂРѕС†РµРґСѓСЂ Рё С„СѓРЅРєС†РёР№ *** }
 
 begin
-{ *** Начало блока инициализации Dll *** }
-{ Код, помещенный в блоке инициализации автоматически выполняется при загрузке Dll }
+{ *** РќР°С‡Р°Р»Рѕ Р±Р»РѕРєР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Dll *** }
+{ РљРѕРґ, РїРѕРјРµС‰РµРЅРЅС‹Р№ РІ Р±Р»РѕРєРµ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ Dll }
 
 
 
-{ *** Конец блока инициализации библиотеки *** }
+{ *** РљРѕРЅРµС† Р±Р»РѕРєР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Р±РёР±Р»РёРѕС‚РµРєРё *** }
 end.
