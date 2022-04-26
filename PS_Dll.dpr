@@ -1,108 +1,144 @@
-﻿Library PS_Dll;
+﻿
+{************************************************************}
+{                                                            }
+{       Библиотека PS_Dll сожержит процедуры и функции       }
+{       наиболее часто использующиеся в проектах             }
+{                                                            }
+{       ver. 1.2                                             }
+{                                                            }
+{       Delphi Coding Style Guide bit.ly/3EQTgh8             }
+{                                 bit.ly/396wwO8             }
+{                                                            }
+{************************************************************}
+
+Library PS_Dll;
 
 uses
-  ShareMem,
-  SysUtils,
-  Classes,
-  Des in 'Des.pas',
-  psnMD5 in 'psnMD5.pas',
-  ShellApi,
-  Windows,
-  libeay32 in 'libeay32.pas',
-  WinSock
-  { D7 Controls,
-  Dialogs }
+  ShareMem, SysUtils, Classes, Des in 'Des.pas', psnMD5 in 'psnMD5.pas',
+    ShellApi, Windows, libeay32 in 'libeay32.pas',
+    WinSock { D7 Controls, Dialogs };
 
-  ;
 
-{ *** Начало раздела описания процедур и функций DLL *** }
+{ Функция RoundCurrency округляет передаваемое ей значение до указанного
+  количества знаков после запятой }
 
-// 1. Функция RoundCurrency округляет передаваемое ей значение до указанного количества знаков после запятой
-Function RoundCurrency(in_value : Double; accuracy : Byte) : Double;
+Function RoundCurrency(Value: Double; Accuracy: Byte): Double;
 begin
-  case accuracy of
-    0 : RoundCurrency:=Round(in_value);
-    1 : RoundCurrency:=Round((in_value+0.0001)*10)/10;
-    2 : RoundCurrency:=Round((in_value+0.00001)*100)/100;
-    else
-      RoundCurrency:=in_value;
+  case Accuracy of
+    0: RoundCurrency := Round(Value);
+    1: RoundCurrency := Round((Value + 0.0001) * 10) / 10;
+    2: RoundCurrency := Round((Value + 0.00001) * 100) / 100;
+  else
+    RoundCurrency := Value;
   end;
 end;
 
-// 2. Функция DosToWin преобразует Dos кодировку входящей строки в символы кодировки Windows
-Function DosToWin(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
+
+{ Функция DosToWin преобразует кодировку строки из Dos CP866
+  в кодировку Windows-1251 }
+
+Function DosToWin(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalString: string;
 begin
-  FOR i:=1 TO Length(in_string) DO
+  for I := 1 to Length(InString) do
     begin
-      CASE ORD(in_string[i]) OF
-          128..178 : localStr:=localStr + CHR(ORD(in_string[i])+64);
-             179   : localStr:=localStr + CHR(124);
-             180   : localStr:=localStr + CHR(43);
-             191   : localStr:=localStr + CHR(43);
-             192   : localStr:=localStr + CHR(43);
-             193   : localStr:=localStr + CHR(43);
-             194   : localStr:=localStr + CHR(43);
-             195   : localStr:=localStr + CHR(43);
-             196   : localStr:=localStr + CHR(45);
-             197   : localStr:=localStr + CHR(43);
-             217   : localStr:=localStr + CHR(43);
-             218   : localStr:=localStr + CHR(43);
-          224..239 : localStr:=localStr + CHR(ORD(in_string[i])+16);
-        ELSE
-          localStr:=localStr+in_string[i];
-      end; // Case
-    end;// begin
-  DosToWin:=localStr;
+      case Ord(InString[I]) of
+          128..178: LocalString := LocalString + Chr(Ord(InString[I]) + 64);
+          179: LocalString := LocalString + Chr(124);
+          180: LocalString := LocalString + Chr(43);
+          191: LocalString := LocalString + Chr(43);
+          192: LocalString := LocalString + Chr(43);
+          193: LocalString := LocalString + Chr(43);
+          194: LocalString := LocalString + Chr(43);
+          195: LocalString := LocalString + Chr(43);
+          196: LocalString := LocalString + Chr(45);
+          197: LocalString := LocalString + Chr(43);
+          217: LocalString := LocalString + Chr(43);
+          218: LocalString := LocalString + Chr(43);
+          224..239: LocalString := LocalString + Chr(Ord(InString[I]) + 16);
+      else
+        LocalString := LocalString + InString[I];
+      end;
+    end;
+  DosToWin := LocalString;
 end;
 
-// 3. Функция WinToDos преобразует Windows кодировку входящей строки в символы кодировки Dos
-Function WinToDos(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
+
+{ Функция WinToDos преобразует кодировку строки из Windows-1251
+  в кодировку Dos CP866 }
+
+Function WinToDos(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalString: string;
 begin
-  FOR i:=1 TO Length(in_string) DO
+  for I := 1 to Length(InString) do
     begin
-      CASE ORD(in_string[i]) OF
-             166   : localStr:=localStr + CHR(124);
-             185   : localStr:=localStr + ' ';
-          192..239 : localStr:=localStr + CHR(ORD(in_string[i])-64);
-          240..255 : localStr:=localStr + CHR(ORD(in_string[i])-16);
-        ELSE
-          localStr:=localStr+in_string[i];
-      end; // Case
-    end;// begin
-  WinToDos:=localStr;
+      case Ord(InString[I]) of
+          166: LocalString := LocalString + Chr(124);
+          185: LocalString := LocalString + ' ';
+          192..239: LocalString := LocalString + Chr(Ord(InString[I]) - 64);
+          240..255: LocalString := LocalString + Chr(Ord(InString[I]) - 16);
+      else
+          LocalString := LocalString + InString[I];
+      end;
+    end;
+  WinToDos := LocalString;
 end;
 
-// 4. Преобразование разделителя целой и дробной части (, -> .), представленного в строковом виде
-Function ChangeSeparator(In_StringFloat: shortString): shortString;
-var tranzVar: shortString;
+
+{ Преобразование разделителя целой и дробной части (, -> .), представленного
+  в строковом виде }
+
+Function ChangeSeparator(InStringFloat: ShortString): ShortString;
+var
+  LocalString: ShortString;
 begin
-  IF Pos(',' ,In_StringFloat)<>0
-    THEN
+  if Pos(',' ,InStringFloat) <> 0
+    then
       begin
-        tranzVar:=COPY(In_StringFloat, 1, Pos(',' ,In_StringFloat)-1)+'.'+COPY(In_StringFloat, Pos(',' ,In_StringFloat)+1, Length(In_StringFloat)-Pos(',' ,In_StringFloat));
-        IF (Length(tranzVar)-Pos('.', tranzVar))=1 THEN tranzVar:=tranzVar+'0';
-        ChangeSeparator:=tranzVar;
+
+        LocalString := Copy(InStringFloat, 1, Pos(',', InStringFloat) - 1) + '.'
+          + COPY(InStringFloat, Pos(',', InStringFloat) + 1,
+          Length(InStringFloat) - Pos(',' , InStringFloat));
+
+        if (Length(LocalString) - Pos('.', LocalString)) = 1 then
+          LocalString:=LocalString+'0';
+
+        ChangeSeparator := LocalString;
+
       end
-    ELSE ChangeSeparator:=In_StringFloat+'.00';
+    else ChangeSeparator := InStringFloat + '.00';
 end;
 
-// 5. Преобразование разделителя целой и дробной части (. -> ,), представленного в строковом виде
-Function ChangeSeparator2(In_StringFloat: shortString): shortString;
-var tranzVar: shortString;
+
+{ Преобразование разделителя целой и дробной части (. -> ,), представленного
+  в строковом виде }
+
+Function ChangeSeparator2(InStringFloat: ShortString): ShortString;
+var
+  LocalString: ShortString;
 begin
-  IF Pos('.' ,In_StringFloat)<>0
-    THEN
+  if Pos('.', InStringFloat)<>0
+    then
       begin
-        tranzVar:=COPY(In_StringFloat, 1, Pos('.' ,In_StringFloat)-1)+','+COPY(In_StringFloat, Pos('.' ,In_StringFloat)+1, Length(In_StringFloat)-Pos('.' ,In_StringFloat));
-        IF (Length(tranzVar)-Pos('.', tranzVar))=1 THEN tranzVar:=tranzVar+'0';
-        ChangeSeparator2:=tranzVar;
+        LocalString := Copy(InStringFloat, 1, Pos('.' ,InStringFloat) - 1)
+          + ',' + COPY(InStringFloat, Pos('.' , InStringFloat) + 1,
+          Length(InStringFloat) - Pos('.', InStringFloat));
+
+        if (Length(LocalString) - Pos('.', LocalString)) = 1 then
+          LocalString := LocalString + '0';
+
+        ChangeSeparator2 := LocalString;
+
       end
-    ELSE ChangeSeparator2:=In_StringFloat+',00';
+    else ChangeSeparator2 := InStringFloat + ',00';
 end;
+
+
+// ---- Waiting Coding Style ---
 
 // 6. Фиксированная строка выравнивание влево
 Function LeftFixString (In_String: shortString; In_FixPosition: Byte): shortString;
