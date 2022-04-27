@@ -4,7 +4,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.2                                             }
+{       ver. 1.3                                             }
 {                                                            }
 {       Delphi Coding Style Guide bit.ly/3EQTgh8             }
 {                                 bit.ly/396wwO8             }
@@ -22,7 +22,7 @@ uses
 { Функция RoundCurrency округляет передаваемое ей значение до указанного
   количества знаков после запятой }
 
-Function RoundCurrency(Value: Double; Accuracy: Byte): Double;
+Function RoundCurrency (Value: Double; Accuracy: Byte): Double;
 begin
   case Accuracy of
     0: RoundCurrency := Round(Value);
@@ -37,7 +37,7 @@ end;
 { Функция DosToWin преобразует кодировку строки из Dos CP866
   в кодировку Windows-1251 }
 
-Function DosToWin(InString: ShortString): ShortString;
+Function DosToWin (InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalString: string;
@@ -69,7 +69,7 @@ end;
 { Функция WinToDos преобразует кодировку строки из Windows-1251
   в кодировку Dos CP866 }
 
-Function WinToDos(InString: ShortString): ShortString;
+Function WinToDos (InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalString: string;
@@ -92,7 +92,7 @@ end;
 { Преобразование разделителя целой и дробной части (, -> .), представленного
   в строковом виде }
 
-Function ChangeSeparator(InStringFloat: ShortString): ShortString;
+Function ChangeSeparator (InStringFloat: ShortString): ShortString;
 var
   LocalString: ShortString;
 begin
@@ -110,14 +110,14 @@ begin
         ChangeSeparator := LocalString;
 
       end
-    else ChangeSeparator := InStringFloat + '.00';
+  else ChangeSeparator := InStringFloat + '.00';
 end;
 
 
 { Преобразование разделителя целой и дробной части (. -> ,), представленного
   в строковом виде }
 
-Function ChangeSeparator2(InStringFloat: ShortString): ShortString;
+Function ChangeSeparator2 (InStringFloat: ShortString): ShortString;
 var
   LocalString: ShortString;
 begin
@@ -134,68 +134,82 @@ begin
         ChangeSeparator2 := LocalString;
 
       end
-    else ChangeSeparator2 := InStringFloat + ',00';
+  else ChangeSeparator2 := InStringFloat + ',00';
 end;
 
+
+{ Фиксированная строка, выравнивание влево }
+
+Function LeftFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+begin
+  if Length(Trim(InString)) >= InFixPosition then
+    LeftFixString := Copy(Trim(InString), 1, InFixPosition)
+  else LeftFixString := Trim(InString) + StringOfChar(' ', InFixPosition - Length(Trim(InString)));
+end;
+
+{ Фиксированная строка, выравнивание вправо }
+Function RightFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+begin
+  if Length(Trim(InString)) >= InFixPosition then
+    RightFixString := Copy(Trim(InString), 1, InFixPosition)
+  else RightFixString:=StringOfChar(' ', InFixPosition - Length(Trim(InString)))
+    + Trim(InString);
+end;
+
+{ Фиксированная строка, выравнивание по центру }
+Function CentrFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+begin
+  InString := Trim(InString);
+  if Length(Trim(InString)) >= InFixPosition then
+    CentrFixString := Copy(Trim(InString), 1, InFixPosition)
+  else
+    begin
+      CentrFixString:=StringOfChar(' ', Trunc((InFixPosition
+        - Length(Trim(InString))) / 2)) + Trim(InString)
+        + StringOfChar(' ', InFixPosition
+        - Trunc((InFixPosition - Length(Trim(InString)))/2));
+    end;
+end;
+
+{ Преобразование суммы из prn-файла }
+Function prnSum (InString: ShortString): ShortString;
+var
+    I: 0..50;
+    TrSum: ShortString;
+begin
+  TrSum := '';
+  for I := 1 to Length(InString) do
+    begin
+      if ((InString[I] <> ' ') and ((InString[I] = '0') or (InString[I] = '1')
+        or (InString[I] = '2') or (InString[I] = '3') or (InString[I] = '4')
+        or (InString[I] = '5') or (InString[I] = '6') or (InString[I] = '7')
+        or (InString[I] = '8') or (InString[I]='9'))) then
+        TrSum := TrSum + InString[I];
+      if (InString[I] = '-') or (InString[I] = '.') or (InString[I] = ',') then
+        TrSum:=TrSum + ',';
+    end;
+  prnSum:=TrSum;
+end;
+
+
+{ Преобразование строки '25 000,25' в число 25000,25 }
+
+Function TrSum (InString: ShortString): Double;
+var
+  I: 0..50;
+  TrSumStr: ShortString;
+begin
+  TrSumStr := '';
+  for I := 1 to Length(InString) do
+    if ((InString[I] <> ' ') and ((InString[I] = ',') or (InString[I] = '0')
+      or (InString[I] = '1') or (InString[I] = '2') or (InString[I] = '3')
+      or (InString[I] = '4') or (InString[I] = '5') or (InString[I] = '6')
+      or (InString[I] = '7') or (InString[I] = '8') or (InString[I] = '9'))) then
+        TrSumStr := TrSumStr + InString[I];
+  TrSum := StrToFloat(TrSumStr);
+end;
 
 // ---- Waiting Coding Style ---
-
-// 6. Фиксированная строка выравнивание влево
-Function LeftFixString (In_String: shortString; In_FixPosition: Byte): shortString;
-begin
-  IF Length(Trim(In_String)) >= In_FixPosition
-    THEN LeftFixString:=Copy(Trim(In_String), 1, In_FixPosition)
-    ELSE LeftFixString:=Trim(In_String) + StringOfChar(' ', In_FixPosition - Length(Trim(In_String)));
-end;
-
-// 7. Фиксированная строка выравнивание вправо
-Function RightFixString (In_String: shortString; In_FixPosition: Byte): shortString;
-begin
-  IF Length(Trim(In_String)) >= In_FixPosition
-    THEN RightFixString:=Copy(Trim(In_String), 1, In_FixPosition)
-    ELSE RightFixString:=StringOfChar(' ', In_FixPosition - Length(Trim(In_String))) + Trim(In_String);
-end;
-
-// 8. Фиксированная строка выравнивание по центру
-Function CentrFixString (In_String: shortString; In_FixPosition: Byte): shortString;
-begin
-  In_String:=Trim(In_String);
-  IF Length(Trim(In_String)) >= In_FixPosition
-    THEN CentrFixString:=Copy(Trim(In_String), 1, In_FixPosition)
-    ELSE
-      begin
-        CentrFixString:=StringOfChar(' ', Trunc((In_FixPosition - Length(Trim(In_String)))/2)) + Trim(In_String) + StringOfChar(' ', In_FixPosition - Trunc((In_FixPosition - Length(Trim(In_String)))/2));
-      end;
-end;
-
-// 9. Преобразование суммы из prn-файла
-Function prnSum(In_String: shortString): shortString;
-var i : 0..50;
-    tmp_TrSum : ShortString;
-begin
-  tmp_TrSum:='';
-  FOR i:=1 TO Length(In_String) DO
-    begin
-      IF ((In_String[i]<>' ')AND((In_String[i]='0')OR(In_String[i]='1')OR(In_String[i]='2')OR(In_String[i]='3')OR(In_String[i]='4')OR(In_String[i]='5')OR(In_String[i]='6')OR(In_String[i]='7')OR(In_String[i]='8')OR(In_String[i]='9')))
-        THEN tmp_TrSum:=tmp_TrSum+In_String[i];
-      // На всякй случай проверяем наличие тире, точки и запятой - как разделтелей дробной части
-      IF (In_String[i]='-')or(In_String[i]='.')or(In_String[i]=',')
-        THEN tmp_TrSum:=tmp_TrSum+',';
-    end;
-  prnSum:=tmp_TrSum;
-end;
-
-// 10. Преобразование строки '25 000,25' в число 25000,25
-Function TrSum(In_String: ShortString):Double;
-var i : 0..50;
-    tmp_TrSum : ShortString;
-begin
-  tmp_TrSum:='';
-  FOR i:=1 TO Length(In_String) DO
-    IF ((In_String[i]<>' ')AND((In_String[i]=',')OR(In_String[i]='0')OR(In_String[i]='1')OR(In_String[i]='2')OR(In_String[i]='3')OR(In_String[i]='4')OR(In_String[i]='5')OR(In_String[i]='6')OR(In_String[i]='7')OR(In_String[i]='8')OR(In_String[i]='9')))
-      THEN tmp_TrSum:=tmp_TrSum+In_String[i];
-  TrSum:=StrToFloat(tmp_TrSum);
-end;
 
 // 11. Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int
 Function bnkDay(in_value : ShortString) : Word;
