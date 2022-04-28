@@ -4,7 +4,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.3                                             }
+{       ver. 1.4 28-04-2022                                  }
 {                                                            }
 {       Delphi Coding Style Guide bit.ly/3EQTgh8             }
 {                                 bit.ly/396wwO8             }
@@ -22,8 +22,9 @@ uses
 { Функция RoundCurrency округляет передаваемое ей значение до указанного
   количества знаков после запятой }
 
-Function RoundCurrency (Value: Double; Accuracy: Byte): Double;
+function RoundCurrency(Value: Double; Accuracy: Byte): Double;
 begin
+
   case Accuracy of
     0: RoundCurrency := Round(Value);
     1: RoundCurrency := Round((Value + 0.0001) * 10) / 10;
@@ -31,19 +32,22 @@ begin
   else
     RoundCurrency := Value;
   end;
+
 end;
 
 
 { Функция DosToWin преобразует кодировку строки из Dos CP866
   в кодировку Windows-1251 }
 
-Function DosToWin (InString: ShortString): ShortString;
+function DosToWin(InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalString: string;
 begin
+
   for I := 1 to Length(InString) do
     begin
+
       case Ord(InString[I]) of
           128..178: LocalString := LocalString + Chr(Ord(InString[I]) + 64);
           179: LocalString := LocalString + Chr(124);
@@ -61,21 +65,26 @@ begin
       else
         LocalString := LocalString + InString[I];
       end;
+
     end;
+
   DosToWin := LocalString;
+
 end;
 
 
 { Функция WinToDos преобразует кодировку строки из Windows-1251
   в кодировку Dos CP866 }
 
-Function WinToDos (InString: ShortString): ShortString;
+function WinToDos(InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalString: string;
 begin
+
   for I := 1 to Length(InString) do
     begin
+
       case Ord(InString[I]) of
           166: LocalString := LocalString + Chr(124);
           185: LocalString := LocalString + ' ';
@@ -85,6 +94,7 @@ begin
           LocalString := LocalString + InString[I];
       end;
     end;
+
   WinToDos := LocalString;
 end;
 
@@ -92,10 +102,11 @@ end;
 { Преобразование разделителя целой и дробной части (, -> .), представленного
   в строковом виде }
 
-Function ChangeSeparator (InStringFloat: ShortString): ShortString;
+function ChangeSeparator  (InStringFloat: ShortString): ShortString;
 var
   LocalString: ShortString;
 begin
+
   if Pos(',' ,InStringFloat) <> 0
     then
       begin
@@ -111,18 +122,19 @@ begin
 
       end
   else ChangeSeparator := InStringFloat + '.00';
+
 end;
 
 
 { Преобразование разделителя целой и дробной части (. -> ,), представленного
   в строковом виде }
 
-Function ChangeSeparator2 (InStringFloat: ShortString): ShortString;
+function ChangeSeparator2(InStringFloat: ShortString): ShortString;
 var
   LocalString: ShortString;
 begin
-  if Pos('.', InStringFloat)<>0
-    then
+
+  if Pos('.', InStringFloat)<>0 then
       begin
         LocalString := Copy(InStringFloat, 1, Pos('.' ,InStringFloat) - 1)
           + ',' + COPY(InStringFloat, Pos('.' , InStringFloat) + 1,
@@ -135,31 +147,43 @@ begin
 
       end
   else ChangeSeparator2 := InStringFloat + ',00';
+
 end;
 
 
 { Фиксированная строка, выравнивание влево }
 
-Function LeftFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+function LeftFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
+
   if Length(Trim(InString)) >= InFixPosition then
     LeftFixString := Copy(Trim(InString), 1, InFixPosition)
-  else LeftFixString := Trim(InString) + StringOfChar(' ', InFixPosition - Length(Trim(InString)));
+  else LeftFixString := Trim(InString) + StringOfChar(' ', InFixPosition
+    - Length(Trim(InString)));
+
 end;
 
+
 { Фиксированная строка, выравнивание вправо }
-Function RightFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+
+function RightFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
+
   if Length(Trim(InString)) >= InFixPosition then
     RightFixString := Copy(Trim(InString), 1, InFixPosition)
   else RightFixString:=StringOfChar(' ', InFixPosition - Length(Trim(InString)))
     + Trim(InString);
+
 end;
 
+
 { Фиксированная строка, выравнивание по центру }
-Function CentrFixString (InString: ShortString; InFixPosition: Byte): ShortString;
+
+function CentrFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
+
   InString := Trim(InString);
+
   if Length(Trim(InString)) >= InFixPosition then
     CentrFixString := Copy(Trim(InString), 1, InFixPosition)
   else
@@ -169,15 +193,20 @@ begin
         + StringOfChar(' ', InFixPosition
         - Trunc((InFixPosition - Length(Trim(InString)))/2));
     end;
+
 end;
 
+
 { Преобразование суммы из prn-файла }
-Function prnSum (InString: ShortString): ShortString;
+
+function PrnSum(InString: ShortString): ShortString;
 var
     I: 0..50;
     TrSum: ShortString;
 begin
+
   TrSum := '';
+
   for I := 1 to Length(InString) do
     begin
       if ((InString[I] <> ' ') and ((InString[I] = '0') or (InString[I] = '1')
@@ -188,207 +217,279 @@ begin
       if (InString[I] = '-') or (InString[I] = '.') or (InString[I] = ',') then
         TrSum:=TrSum + ',';
     end;
+
   prnSum:=TrSum;
+
 end;
 
 
 { Преобразование строки '25 000,25' в число 25000,25 }
 
-Function TrSum (InString: ShortString): Double;
+function TrSum(InString: ShortString): Double;
 var
   I: 0..50;
   TrSumStr: ShortString;
 begin
+
   TrSumStr := '';
+
   for I := 1 to Length(InString) do
     if ((InString[I] <> ' ') and ((InString[I] = ',') or (InString[I] = '0')
       or (InString[I] = '1') or (InString[I] = '2') or (InString[I] = '3')
       or (InString[I] = '4') or (InString[I] = '5') or (InString[I] = '6')
       or (InString[I] = '7') or (InString[I] = '8') or (InString[I] = '9'))) then
         TrSumStr := TrSumStr + InString[I];
+
   TrSum := StrToFloat(TrSumStr);
+
+end;
+
+
+{ Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int }
+
+function BnkDay(InValue: ShortString): Word;
+var
+  CountDate: Word;
+  WorkindDate: TDate;
+  YearVar, MonthVar, DayVar: Word;
+begin
+
+  CountDate := 1;
+
+  DecodeDate(StrToDate(InValue), YearVar, MonthVar, DayVar);
+
+  WorkindDate := StrToDate('01.01.' + IntToStr(YearVar));
+
+  while WorkindDate < StrToDate(InValue) do
+    begin
+      WorkindDate := WorkindDate + 1;
+      CountDate := CountDate + 1;
+    end;
+
+  BnkDay := CountDate;
+
+end;
+
+
+{ Функция преобразует дату 01.01.2002 в строку '01/01/2002' }
+
+function DiaStrDate(InValue: TDate): ShortString;
+begin
+
+  DiaStrDate := Copy(DateToStr(InValue), 1, 2) + '/'
+    + Copy(DateToStr(InValue), 4, 2) +'/' + Copy(DateToStr(InValue), 7, 4);
+
+end;
+
+
+{ Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.' }
+
+function PropisStrDate(InValue: TDate): ShortString;
+var
+  PropisStrDateTmp: ShortString;
+begin
+
+  PropisStrDateTmp := '"' + Copy(DateToStr(InValue), 1, 2) + '"';
+
+  case StrToInt(COPY(DateToStr(InValue), 4, 2)) of
+      1: PropisStrDateTmp := PropisStrDateTmp + ' января ';
+      2: PropisStrDateTmp := PropisStrDateTmp + ' февраля ';
+      3: PropisStrDateTmp := PropisStrDateTmp + ' марта ';
+      4: PropisStrDateTmp := PropisStrDateTmp + ' апреля ';
+      5: PropisStrDateTmp := PropisStrDateTmp + ' мая ';
+      6: PropisStrDateTmp := PropisStrDateTmp + ' июня ';
+      7: PropisStrDateTmp := PropisStrDateTmp + ' июля ';
+      8: PropisStrDateTmp := PropisStrDateTmp + ' августа ';
+      9: PropisStrDateTmp := PropisStrDateTmp + ' сентября ';
+      10: PropisStrDateTmp := PropisStrDateTmp + ' октября ';
+      11: PropisStrDateTmp := PropisStrDateTmp + ' ноября ';
+      12: PropisStrDateTmp := PropisStrDateTmp + ' декабря ';
+     end;
+
+  PropisStrDateTmp := PropisStrDateTmp + COPY(DateToStr(InValue), 7, 4) + ' г.';
+  PropisStrDate := PropisStrDateTmp;
+
+end;
+
+
+{ Функция определяет в передаваемой строке, позицию номера сепаратора ^ }
+
+function FindSeparator(InString: ShortString; NumberOfSeparator: Byte): Byte;
+var
+  I, CounterSeparatorVar: Byte;
+begin
+
+  FindSeparator := 0;
+  CounterSeparatorVar := 0;
+
+  for I := 1 to Length(InString) do
+    begin
+
+      if InString[I] = '^' then
+        CounterSeparatorVar := CounterSeparatorVar + 1;
+
+      if (CounterSeparatorVar = NumberOfSeparator) then
+          begin
+            FindSeparator := I;
+            Exit;
+          end;
+    end;
+
+end;
+
+
+{ Функция определяет в передаваемой строке, позицию номера передаваемого символа }
+
+function FindChar(InString: ShortString; InChar: Char; NumberOfSeparator: Byte): Byte;
+var
+  I, CounterSeparatorVar: Byte;
+begin
+
+  FindChar:=0;
+  CounterSeparatorVar:=0;
+
+  for I:=1 to Length(InString) do
+    begin
+
+      if Copy(InString, I, 1) = InChar then
+        CounterSeparatorVar := CounterSeparatorVar + 1;
+
+      if (CounterSeparatorVar = NumberOfSeparator) then
+          begin
+            FindChar := I;
+            Exit;
+          end;
+    end;
+
+end;
+
+
+{ Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа }
+
+function FindCharWideString(InString: String; InChar: Char; NumberOfSeparator: Word): Word;
+var
+  I, CounterSeparatorVar: Word;
+begin
+
+  FindCharWideString := 0;
+  CounterSeparatorVar := 0;
+
+  for I:=1 to Length(InString) do
+    begin
+      if InString[I] = InChar then
+        CounterSeparatorVar := CounterSeparatorVar + 1;
+
+      if (CounterSeparatorVar = NumberOfSeparator) then
+        begin
+          FindCharWideString := I;
+          Exit;
+        end;
+    end;
+
+end;
+
+
+{ Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа }
+
+function FindCharWideString2(InString: WideString; InChar: Char; NumberOfSeparator: Word): Longword;
+var
+  I: Longword;
+  CounterSeparatorVar: Word;
+begin
+
+  FindCharWideString2:=0;
+  CounterSeparatorVar:=0;
+
+  for I := 1 to Length(InString) do
+    begin
+
+      if Copy(InString, I, 1) = InChar then
+        CounterSeparatorVar := CounterSeparatorVar + 1;
+
+      if (CounterSeparatorVar = NumberOfSeparator) then
+        begin
+          FindCharWideString2 := I;
+          Exit;
+        end;
+    end;
+end;
+
+
+{ Функция определяет в передаваемой строке, позицию пробела }
+
+function FindSpace(InString: ShortString; NumberOfSpace: Byte): Byte;
+var
+  I, CounterSpaceVar: Byte;
+begin
+
+  FindSpace := 0;
+  CounterSpaceVar := 0;
+
+  for I := 1 to Length(InString) do
+    begin
+
+      if InString[I] = ' ' then
+        CounterSpaceVar := CounterSpaceVar + 1;
+
+      if (CounterSpaceVar = NumberOfSpace) then
+        begin
+          FindSpace := I;
+          Exit;
+        end;
+
+    end;
+
+end;
+
+
+{ Подсчет числа вхождений символа InChar в строку InString }
+
+function countCharInString(InString: WideString; InChar: ShortString): Word;
+var InStringTmp: WideString;
+    Count: Word;
+begin
+
+  Count := 0;
+  InStringTmp := InString;
+
+  while Pos(InChar, InStringTmp) <> 0 do
+    begin
+      Count := Count + 1;
+      InStringTmp := Copy(InStringTmp, Pos(InChar, InStringTmp) + 1,
+        Length(InStringTmp) - Pos(InChar, InStringTmp));
+    end;
+
+  Result := Count;
+
+end;
+
+
+{ Функция преобразует Win строку 'Abcd' -> 'ABCD' }
+
+function Upper(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalStr: string;
+begin
+
+  for I := 1 to Length(InString) do
+    begin
+
+      case Ord(InString[I]) of
+        97..122: LocalStr := LocalStr + Chr(Ord(InString[I]) - 32);
+        184: LocalStr := LocalStr + Chr(Ord(InString[I]) - 16);
+        224..255: LocalStr := LocalStr + Chr(Ord(InString[I]) - 32);
+      else
+        LocalStr := LocalStr + InString[I];
+      end;
+
+    end;
+
+  Upper := LocalStr;
+
 end;
 
 // ---- Waiting Coding Style ---
-
-// 11. Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int
-Function bnkDay(in_value : ShortString) : Word;
-var countDate : Word;
-    workindDate : TDate;
-    year_var, month_var, day_var:Word;
-begin
-  countDate:=1;
-  DecodeDate(StrToDate(in_value), year_var, month_var, day_var);
-  workindDate:=StrToDate('01.01.'+IntToStr(year_var));
-  WHILE workindDate<StrToDate(in_value) DO
-    begin
-      workindDate:=workindDate+1;
-      countDate:=countDate+1;
-    end; // While
-  bnkDay:=countDate;
-end;
-
-// 12. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
-Function DiaStrDate(in_value : TDate) : shortString;
-begin
-  DiaStrDate:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,4);
-end;
-
-// 13. Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.'
-Function PropisStrDate(in_value : TDate) : shortString;
-var PropisStrDateTmp:shortString;
-begin
-  PropisStrDateTmp:='"'+COPY(DateToStr(in_value),1,2)+'"';
-  CASE StrToInt(COPY(DateToStr(in_value),4,2)) OF
-       1: PropisStrDateTmp:=PropisStrDateTmp+' января ';
-       2: PropisStrDateTmp:=PropisStrDateTmp+' февраля ';
-       3: PropisStrDateTmp:=PropisStrDateTmp+' марта ';
-       4: PropisStrDateTmp:=PropisStrDateTmp+' апреля ';
-       5: PropisStrDateTmp:=PropisStrDateTmp+' мая ';
-       6: PropisStrDateTmp:=PropisStrDateTmp+' июня ';
-       7: PropisStrDateTmp:=PropisStrDateTmp+' июля ';
-       8: PropisStrDateTmp:=PropisStrDateTmp+' августа ';
-       9: PropisStrDateTmp:=PropisStrDateTmp+' сентября ';
-      10: PropisStrDateTmp:=PropisStrDateTmp+' октября ';
-      11: PropisStrDateTmp:=PropisStrDateTmp+' ноября ';
-      12: PropisStrDateTmp:=PropisStrDateTmp+' декабря ';
-     end;
-  PropisStrDateTmp:=PropisStrDateTmp+COPY(DateToStr(in_value),7,4)+' г.';
-  PropisStrDate:=PropisStrDateTmp;
-end;
-
-// 14. Функция определяет в передаваемой строке, позицию номера сепаратора ^
-Function FindSeparator(In_String: shortString; number_of_separator: Byte): Byte;
-var i,counterSeparatorVar:Byte;
-begin
-  FindSeparator:=0;
-  counterSeparatorVar:=0;
-  FOR i:=1 TO Length(In_String) DO
-    begin
-      IF In_String[i]='^'
-        THEN  counterSeparatorVar:=counterSeparatorVar+1;
-      IF (counterSeparatorVar = number_of_separator)
-        THEN
-          begin
-            FindSeparator:=i;
-            Exit;
-          end;
-    end;
-end;
-
-// 15. Функция определяет в передаваемой строке, позицию номера передаваемого символа
-Function FindChar(In_String: shortString; In_Char: Char; number_of_separator: Byte): Byte;
-var i, counterSeparatorVar : Byte;
-begin
-  FindChar:=0;
-  counterSeparatorVar:=0;
-  FOR i:=1 TO Length(In_String) DO
-    begin
-
-      IF Copy(In_String, i, 1) = In_Char
-        THEN  counterSeparatorVar:=counterSeparatorVar+1;
-      IF (counterSeparatorVar = number_of_separator)
-        THEN
-          begin
-            FindChar:=i;
-            Exit;
-          end;
-    end;
-end;
-
-// 15+. Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа
-Function FindCharWideString(In_String: String; In_Char: Char; number_of_separator: Word): Word;
-var i,counterSeparatorVar:Word;
-begin
-  FindCharWideString:=0;
-  counterSeparatorVar:=0;
-  FOR i:=1 TO Length(In_String) DO
-    begin
-      IF In_String[i]=In_Char
-        THEN  counterSeparatorVar:=counterSeparatorVar+1;
-      IF (counterSeparatorVar = number_of_separator)
-        THEN
-          begin
-            FindCharWideString:=i;
-            Exit;
-          end;
-    end;
-end;
-
-// 15++. Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа
-Function FindCharWideString2(In_String: WideString; In_Char: Char; number_of_separator: Word): Longword;
-var i:Longword; counterSeparatorVar:Word;
-begin
-  FindCharWideString2:=0;
-  counterSeparatorVar:=0;
-
-  FOR i:=1 TO Length(In_String) DO
-    begin
-
-      IF COPY(In_String, i, 1)=In_Char
-        THEN  counterSeparatorVar:=counterSeparatorVar+1;
-
-      IF (counterSeparatorVar = number_of_separator)
-        THEN
-          begin
-            FindCharWideString2:=i;
-            Exit;
-          end;
-    end;
-end;
-
-
-// 16. Функция определяет в передаваемой строке, позицию пробела
-Function FindSpace(In_String: shortString; number_of_space: Byte): Byte;
-var i,counterSpaceVar:Byte;
-begin
-  FindSpace:=0;
-  counterSpaceVar:=0;
-  FOR i:=1 TO Length(In_String) DO
-    begin
-      IF In_String[i]=' '
-        THEN  counterSpaceVar:=counterSpaceVar+1;
-      IF (counterSpaceVar = number_of_space)
-        THEN
-          begin
-            FindSpace:=i;
-            Exit;
-          end;
-    end;
-end;
-
-{ Подсчет числа вхождений символа In_Char в строку In_String }
-Function countCharInString(In_String:WideString;In_Char:ShortString):Word;
-var In_String_tmp:WideString;
-    count:Word;
-begin
-  count:=0;
-  In_String_tmp:=In_String;
-  WHILE POS(In_Char, In_String_tmp)<>0 DO
-    begin
-      count:=count+1;
-      In_String_tmp:=COPY(In_String_tmp, POS(In_Char, In_String_tmp)+1, Length(In_String_tmp)-POS(In_Char, In_String_tmp));
-    end; // While
-  Result:=count;
-end;
-
-// 17. Функция преобразует Win строку 'Abcd' -> 'ABCD'
-Function Upper(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
-begin
-  FOR i:=1 TO Length(in_string) DO
-    begin
-      CASE ORD(in_string[i]) OF
-          97..122  : localStr:=localStr + CHR(ORD(in_string[i])-32);
-          184      : localStr:=localStr + CHR(ORD(in_string[i])-16);
-          224..255 : localStr:=localStr + CHR(ORD(in_string[i])-32);
-        ELSE
-          localStr:=localStr+in_string[i];
-      end; // Case
-    end;// begin
-  Upper:=localStr;
-end;
 
 // 18. Функция преобразует Win строку 'abcd' -> 'Abcd'
 Function Proper(in_string:ShortString):ShortString;
