@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.4 28-04-2022                                  }
+{       ver. 1.5 29-04-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -251,9 +251,7 @@ var
 begin
 
   CountDate := 1;
-
   DecodeDate(StrToDate(InValue), YearVar, MonthVar, DayVar);
-
   WorkindDate := StrToDate('01.01.' + IntToStr(YearVar));
 
   while WorkindDate < StrToDate(InValue) do
@@ -481,365 +479,378 @@ begin
 
     end;
 
-  Upper := LocalStr;
+  Result := LocalStr;
 
 end;
+
+
+{ Функция преобразует Win строку 'abcd' -> 'Abcd' }
+
+function Proper(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalStr: String;
+begin
+
+  for I := 1 to Length(InString) do
+    begin
+      if I = 1 then
+        case Ord(InString[I]) of
+          97..122: LocalStr := LocalStr + Chr(Ord(InString[I]) - 32);
+          184: LocalStr := LocalStr + Chr(Ord(InString[I]) - 16);
+          224..255: LocalStr := LocalStr + Chr(Ord(InString[I]) - 32);
+        else
+          LocalStr := LocalStr + InString[I];
+        end
+      else
+          case Ord(InString[I]) of
+            65..90   : LocalStr:=LocalStr + Chr(Ord(InString[I]) + 32);
+            168      : LocalStr:=LocalStr + Chr(Ord(InString[I]) + 16);
+            192..223 : LocalStr:=LocalStr + Chr(Ord(InString[I]) + 32);
+          else
+            LocalStr := LocalStr + InString[I];
+          end;
+    end;
+
+  Result := LocalStr;
+end;
+
+
+{ Функция преобразует Win строку 'ABCD' -> 'abcd' }
+
+function Lower(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalStr: string;
+begin
+  for I:=1 to Length(InString) do
+    begin
+      case Ord(InString[I]) of
+        65..90: LocalStr := LocalStr + Chr(Ord(InString[I]) + 32);
+        168: LocalStr := LocalStr + Chr(Ord(InString[I]) + 16);
+        192..223: LocalStr := LocalStr + Chr(Ord(InString[I]) + 32);
+      else
+        LocalStr := LocalStr + InString[I];
+      end;
+    end;
+  Result := LocalStr;
+end;
+
+
+{ Функция преобразует строку '1000,00' -> '1 000,00' }
+
+function Divide1000(InString: ShortString): ShortString;
+var
+  I, Count: -1..100;
+  AfterPoint: boolean;
+  TmpString: ShortString;
+begin
+  TmpString:='';
+  if (Pos('.', InString) <> 0) or (Pos(',', InString)<>0) then
+    begin
+      AfterPoint := False;
+      Count := -1;
+    end
+  else
+    begin
+      AfterPoint:=True;
+      Count:=0;
+    end;
+
+  for I := 0 to Length(InString) - 1 do
+    begin
+      if (Copy(InString, Length(InString) - I, 1) = '.')
+        or (Copy(InString, Length(InString) -I, 1) = ',') then
+          AfterPoint := True;
+
+      if (AfterPoint = True) then
+        Count := Count + 1;
+
+      if (AfterPoint = True) and ((Count = 3) or (Count = 6) or (Count = 9)
+        or (Count = 12)) then
+          TmpString := ' ' + Copy(InString, Length(InString) -I, 1) + TmpString
+      else TmpString := Copy(InString, Length(InString) -I, 1) + TmpString;
+
+    end;
+
+  Result := Trim(TmpString);
+end;
+
+
+{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
+  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND' }
+
+function paramFromIniFile(InIniFile: ShortString; InParam: ShortString): ShortString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: string[255];
+  StrokaVar: ANSIString;
+begin
+
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
+
+  if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InIniFile)) = True then
+    begin
+        AssignFile(IniFileVar, ExtractFilePath(ParamStr(0)) + Trim(InIniFile));
+        Reset(IniFileVar);
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (COPY(StrokaVar, 1, 1)<>';') then
+              begin
+
+                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                  ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
+
+              end;
+
+          end;
+        CloseFile(IniFileVar);
+    end
+  else
+    begin
+      ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+      { D7 MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0); }
+    end;
+
+  { D7 if ParamFromIniFileVar = 'PARAMETR_NOT_FOUND' then
+     MessageDlg('В файле ' + ExtractFilePath(ParamStr(0)) + Trim(inIniFile)+' не найден параметр ' + Trim(inParam) + '!', mtError, [mbOk],0); }
+
+  Result := ParamFromIniFileVar;
+end;
+
+
+{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
+  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND' }
+
+function ParamFromIniFileWithOutMessDlg(InIniFile: ShortString; InParam: ShortString): ShortString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: string[255];
+  StrokaVar: ANSIString;
+begin
+
+  ParamFromIniFileVar:='PARAMETR_NOT_FOUND';
+
+  if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InIniFile)) = True then
+    begin
+        AssignFile(IniFileVar, ExtractFilePath(ParamStr(0)) + Trim(InIniFile));
+        Reset(IniFileVar);
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (Copy(StrokaVar, 1, 1) <> ';') then
+                begin
+
+                  if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                    ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
+
+                end;
+
+          end;
+        CloseFile(IniFileVar);
+    end
+  else
+    begin
+      ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+    end;
+
+  Result := ParamFromIniFileVar;
+
+end;
+
+
+{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
+  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
+  Результат в WideString }
+
+function ParamFromIniFileWithOutMessDlg2(InIniFile: ShortString; InParam: ShortString): WideString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: WideString;
+  StrokaVar: WideString;
+begin
+
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
+
+  if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InIniFile)) = True then
+    begin
+        AssignFile(IniFileVar, ExtractFilePath(ParamStr(0)) + Trim(InIniFile));
+        Reset(IniFileVar);
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (Copy(StrokaVar, 1, 1) <> ';') then
+              begin
+                if Trim(Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) ) = Trim(InParam) then
+                  ParamFromIniFileVar := Trim(Copy(StrokaVar, (POS('=', StrokaVar) + 1), 255));
+              end;
+
+          end;
+        CloseFile(IniFileVar);
+      end
+    else
+      begin
+        ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+      end;
+
+  Result:=ParamFromIniFileVar;
+
+end;
+
+
+{ Имя к ini-файлу полное - Функция возвращает параметр с заданным
+  именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'.
+  Если нет параметра - 'PARAMETR_NOT_FOUND' }
+
+function ParamFromIniFileWithFullPath(InIniFile: ShortString; InParam: ShortString): ShortString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: string[255];
+  StrokaVar: ANSIString;
+begin
+
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
+  InIniFile := Trim(InIniFile);
+  if FileExists(InIniFile) = True then
+    begin
+        AssignFile(IniFileVar, InIniFile);
+        Reset(IniFileVar);
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (Copy(StrokaVar, 1, 1) <> ';') then
+              begin
+
+                IF (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                  ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
+
+              end;
+
+          end;
+        CloseFile(IniFileVar);
+    end
+  else
+    begin
+        ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+        { D7 MessageDlg('Не найден файл ' + InIniFile + '!', mtError, [mbOk],0); }
+    end;
+
+  { D7 IF ParamFromIniFileVar = 'PARAMETR_NOT_FOUND' then
+   MessageDlg('В файле ' + ExtractFilePath(InIniFile) + ' не найден параметр '
+     + Trim(InParam) + '!', mtError, [mbOk], 0); }
+
+  Result := ParamFromIniFileVar;
+
+end;
+
+
+{ Имя к ini-файлу полное - Функция возвращает параметр с заданным именем
+  из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'.
+  Если нет параметра - 'PARAMETR_NOT_FOUND' без MessageDlg }
+
+function ParamFromIniFileWithFullPathWithOutMessDlg(InIniFile: ShortString; InParam: ShortString): ShortString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: string[255];
+  StrokaVar: ANSIString;
+begin
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
+  InIniFile := Trim(InIniFile);
+
+  if FileExists(InIniFile) = True then
+    begin
+        AssignFile(IniFileVar, InIniFile);
+        Reset(IniFileVar);
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (Copy(StrokaVar, 1, 1) <> ';') then
+              begin
+
+                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                  ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
+
+              end;
+
+          end;
+        CloseFile(IniFileVar);
+    end
+    else
+      begin
+        ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+      end;
+
+  Result := ParamFromIniFileVar;
+
+end;
+
+
+{ Функция ищет ini файл и параметр в нем; Если все нормально
+  - возвращается значение параметра,
+  если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND' }
+
+function ParamFoundFromIniFile(InIniFile: ShortString; InParam: ShortString): ShortString;
+var
+  IniFileVar: Textfile;
+  ParamFromIniFileVar: string[255];
+  StrokaVar: ANSIString;
+begin
+
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
+
+  if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InIniFile)) = True then
+    begin
+        AssignFile(IniFileVar, ExtractFilePath(ParamStr(0)) + Trim(InIniFile));
+        Reset(IniFileVar);
+
+        while Eof(IniFileVar) = false do
+          begin
+            Readln(IniFileVar, StrokaVar);
+
+            if (Copy(StrokaVar, 1, 1) <> ';') then
+              begin
+
+                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1) = Trim(InParam)) then
+                  ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
+
+              end;
+
+          end;
+        CloseFile(IniFileVar);
+    end
+  else
+    begin
+      ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
+    end;
+
+  Result := ParamFromIniFileVar;
+end;
+
+
+{ Функция добавляет перед числом нули 1 до нужного количества знаков '0001' }
+
+function BeforZero(InValue: Integer; InLength: Word): ShortString;
+var
+  I: Word;
+  StringZero: ShortString;
+begin
+  StringZero:='';
+
+  for I := 1 to (InLength - Length(IntToStr(InValue))) do
+    StringZero:=StringZero + '0';
+
+  Result := StringZero + IntToStr(InValue);
+end;
+
 
 // ---- Waiting Coding Style ---
 
-// 18. Функция преобразует Win строку 'abcd' -> 'Abcd'
-Function Proper(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
-begin
-  FOR i:=1 TO Length(in_string) DO
-    begin
-      IF i=1
-        THEN
-          CASE ORD(in_string[i]) OF
-              97..122  : localStr:=localStr + CHR(ORD(in_string[i])-32);
-              184      : localStr:=localStr + CHR(ORD(in_string[i])-16);
-              224..255 : localStr:=localStr + CHR(ORD(in_string[i])-32);
-            ELSE
-              localStr:=localStr+in_string[i];
-          end // Case
-        ELSE
-          CASE ORD(in_string[i]) OF
-              65..90   : localStr:=localStr + CHR(ORD(in_string[i])+32);
-              168      : localStr:=localStr + CHR(ORD(in_string[i])+16);
-              192..223 : localStr:=localStr + CHR(ORD(in_string[i])+32);
-            ELSE
-              localStr:=localStr+in_string[i];
-          end; // Case
-    end;// begin
-  Proper:=localStr;
-end;
-
-// 19. Функция преобразует Win строку 'ABCD' -> 'abcd'
-Function Lower(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
-begin
-  FOR i:=1 TO Length(in_string) DO
-    begin
-      CASE ORD(in_string[i]) OF
-          65..90   : localStr:=localStr + CHR(ORD(in_string[i])+32);
-          168      : localStr:=localStr + CHR(ORD(in_string[i])+16);
-          192..223 : localStr:=localStr + CHR(ORD(in_string[i])+32);
-        ELSE
-          localStr:=localStr+in_string[i];
-      end; // Case
-    end;// begin
-  Lower:=localStr;
-end;
-
-// 20. Функция преобразует строку '1000,00' -> '1 000,00'
-Function Divide1000(in_string:ShortString):ShortString;
-var i, count1000: -1..100;
-    afterPoint:boolean;
-    tmpString:ShortString;
-begin
-  tmpString:='';
-  IF (POS('.', in_string)<>0)or(POS(',', in_string)<>0)
-    THEN
-      begin
-        afterPoint:=False;
-        count1000:=-1;
-      end
-    ELSE
-      begin
-        afterPoint:=True;
-        count1000:=0;
-      end;
-  FOR i:=0 TO Length(in_string)-1 DO
-    begin
-      IF (COPY(in_string, Length(in_string)-i, 1)='.')or(COPY(in_string, Length(in_string)-i, 1)=',') THEN afterPoint:=True;
-      IF (afterPoint=True) THEN count1000:=count1000+1;
-      IF (afterPoint=True)AND((count1000=3)or(count1000=6)or(count1000=9)or(count1000=12))
-        THEN tmpString:=' '+COPY(in_string, Length(in_string)-i, 1)+tmpString
-        ELSE tmpString:=COPY(in_string, Length(in_string)-i, 1)+tmpString;
-    end;
-  Divide1000:=Trim(tmpString);
-end;
-
-// 21. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-Function paramFromIniFile(inIniFile:ShortString; inParam:ShortString):ShortString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:String[255];
-    StrokaVar:ANSIString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
-    THEN
-      begin
-        AssignFile(iniFileVar, ExtractFilePath(ParamStr(0)) {+'\'} +Trim(inIniFile));
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-
-            {IF (COPY(StrokaVar, 1, 1)<>';')AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))
-              THEN
-                begin
-                  tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end;}
-
-            IF (COPY(StrokaVar, 1, 1)<>';') {AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))}
-              THEN
-                begin
-
-                  IF (COPY(StrokaVar, 1, POS('=', StrokaVar)-1 )=Trim(inParam))
-                    THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-
-                end; // If
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        { D7 MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0); }
-      end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN { D7 MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0); }
-  paramFromIniFile:=tmp_paramFromIniFile;
-end;
-
-// 21++. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-Function paramFromIniFileWithOutMessDlg(inIniFile:ShortString; inParam:ShortString):ShortString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:String[255];
-    StrokaVar:ANSIString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
-    THEN
-      begin
-        AssignFile(iniFileVar, ExtractFilePath(ParamStr(0)) {+'\'} +Trim(inIniFile));
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-
-            {IF (COPY(StrokaVar, 1, 1)<>';')AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))
-              THEN
-                begin
-                  tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end;}
-
-            IF (COPY(StrokaVar, 1, 1)<>';') {AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))}
-              THEN
-                begin
-
-                  IF (COPY(StrokaVar, 1, POS('=', StrokaVar)-1 )=Trim(inParam))
-                    THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-
-                end; // If
-
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        //MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0);
-      end;
-  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
-
-  paramFromIniFileWithOutMessDlg:=tmp_paramFromIniFile;
-
-end;
-
-{ 21+++. В отличие от paramFromIniFileWithOutMessDlg - результат WideString }
-Function paramFromIniFileWithOutMessDlg2(inIniFile:ShortString; inParam:ShortString):WideString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:WideString;
-    StrokaVar:WideString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
-    THEN
-      begin
-        AssignFile(iniFileVar, ExtractFilePath(ParamStr(0)) {+'\'} +Trim(inIniFile));
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-
-            IF (COPY(StrokaVar, 1, 1)<>';')
-              THEN
-                begin
-                  IF Trim(COPY(StrokaVar, 1, POS('=', StrokaVar)-1) )=Trim(inParam) THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end; // If
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-      end;
-
-  paramFromIniFileWithOutMessDlg2:=tmp_paramFromIniFile;
-
-end;
-
-
-// 21+. Тоже самое, но имя к инишнику-полное - Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-Function paramFromIniFileWithFullPath(inIniFile:ShortString; inParam:ShortString):ShortString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:String[255];
-    StrokaVar:ANSIString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  inIniFile:=Trim(inIniFile);
-  IF FileExists(inIniFile)=True
-    THEN
-      begin
-        AssignFile(iniFileVar, inIniFile);
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-
-            {IF (COPY(StrokaVar, 1, 1)<>';')AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))
-              THEN
-                begin
-                  tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end;}
-
-            IF (COPY(StrokaVar, 1, 1)<>';') {AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))}
-              THEN
-                begin
-
-                  IF (COPY(StrokaVar, 1, POS('=', StrokaVar)-1 )=Trim(inParam))
-                    THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-
-                end; // If
-
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        { D7 MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0); }
-      end;
-  IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN { D7 MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0); }
-  paramFromIniFileWithFullPath:=tmp_paramFromIniFile;
-end;
-
-// 21++. Тоже самое, но имя к инишнику-полное - Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-// без MessageDlg
-Function paramFromIniFileWithFullPathWithOutMessDlg(inIniFile:ShortString; inParam:ShortString):ShortString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:String[255];
-    StrokaVar:ANSIString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  inIniFile:=Trim(inIniFile);
-  IF FileExists(inIniFile)=True
-    THEN
-      begin
-        AssignFile(iniFileVar, inIniFile);
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-
-            { IF (COPY(StrokaVar, 1, 1)<>';')AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))
-              THEN
-                begin
-                  tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end;}
-
-            IF (COPY(StrokaVar, 1, 1)<>';') {AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))}
-              THEN
-                begin
-
-                  IF (COPY(StrokaVar, 1, POS('=', StrokaVar)-1 )=Trim(inParam))
-                    THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-
-                end; // If
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-        // MessageDlg('Не найден файл '+inIniFile+'!', mtError, [mbOk],0);
-      end;
-  // IF tmp_paramFromIniFile='PARAMETR_NOT_FOUND' THEN MessageDlg('В файле '+ExtractFilePath(inIniFile)+' не найден параметр '+Trim(inParam)+'!', mtError, [mbOk],0);
-
-  paramFromIniFileWithFullPathWithOutMessDlg:=tmp_paramFromIniFile;
-
-end;
-
-
-// 22. Функция ищет ini файл и параметр в нем; Если все нормально - возвращается значение параметра, если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND'
-Function paramFoundFromIniFile(inIniFile:ShortString; inParam:ShortString):ShortString;
-var iniFileVar:Textfile;
-    tmp_paramFromIniFile:String[255];
-    StrokaVar:ANSIString;
-begin
-  // Параметр не найден
-  tmp_paramFromIniFile:='PARAMETR_NOT_FOUND';
-  IF FileExists(ExtractFilePath(ParamStr(0))+Trim(inIniFile))=True
-    THEN
-      begin
-        AssignFile(iniFileVar, ExtractFilePath(ParamStr(0)) {+'\'}+Trim(inIniFile));
-        Reset(iniFileVar);
-        WHILE EOF(iniFileVar)=false DO
-          begin
-            Readln(iniFileVar, StrokaVar);
-            { IF (COPY(StrokaVar, 1, 1)<>';')AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))
-              THEN
-                begin
-                  tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-                end;}
-
-            IF (COPY(StrokaVar, 1, 1)<>';') {AND(COPY(StrokaVar, 1, Length(inParam))=Trim(inParam))}
-              THEN
-                begin
-
-                  IF (COPY(StrokaVar, 1, POS('=', StrokaVar)-1 )=Trim(inParam))
-                    THEN tmp_paramFromIniFile:=Trim(COPY(StrokaVar, (POS('=', StrokaVar)+1), 255));
-
-                end; // If
-
-          end; // While
-        CloseFile(iniFileVar);
-      end
-    ELSE
-      begin
-        // Если инишника нет
-        tmp_paramFromIniFile:='INIFILE_NOT_FOUND';
-      end;
-  paramFoundFromIniFile:=tmp_paramFromIniFile;
-end;
-
-// 23. Функция добавляет перед числом нули 1 до нужного количества знаков-> '0001'
-Function beforZero(in_value:Integer; in_length:Word):ShortString;
-var i:Word;
-    string_0:ShortString;
-begin
-  string_0:='';
-  FOR i:=1 TO (in_length - Length(IntToStr(in_value))) DO string_0:=string_0+'0';
-  beforZero:=string_0+IntToStr(in_value);
-end;
 
 // 24. Автонумерация документа из 12-х знаков с ведением электронного жунала
 Function ID12docFromJournal(In_Journal:ShortString; In_NameDoc:ShortString):Word;
