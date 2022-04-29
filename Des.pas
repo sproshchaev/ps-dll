@@ -1,4 +1,4 @@
-unit Des;
+п»їunit Des;
 
 {
  DataEncryptionStandard: A unit for encrypting information via the Data
@@ -90,13 +90,13 @@ type
     class function CiphertextLength(const PlaintextLength: Longint): Longint;
   end;
 
-  { Функции CryptDES/DeCryptDES }
+  { Р¤СѓРЅРєС†РёРё CryptDES/DeCryptDES }
   function CryptDES(s:ShortString):ShortString;
   function DeCryptDES(s:ShortString):ShortString;
 
-  { Функция StrToHex }
+  { Р¤СѓРЅРєС†РёСЏ StrToHex }
   function StrToHex(s:string): string;
-  { Функция HexToStr }
+  { Р¤СѓРЅРєС†РёСЏ HexToStr }
   function HexToStr(s:string): string;
 
 implementation
@@ -105,7 +105,7 @@ const
   LowSixBits = $3f;
   LowTwoBits = $03;
 
-{ Функция CryptDES }
+{ Р¤СѓРЅРєС†РёСЏ CryptDES }
 function CryptDES(s:ShortString):ShortString;
 var
   N : Longint;
@@ -130,7 +130,7 @@ begin
   C.Free;
 end;
 
-{ Функция DeCryptDES }
+{ Р¤СѓРЅРєС†РёСЏ DeCryptDES }
 function DeCryptDES(s:ShortString):ShortString;
 var
   N : Longint;
@@ -157,7 +157,7 @@ begin
   C.Free;
 end;
 
-{ Функция StrToHex }
+{ Р¤СѓРЅРєС†РёСЏ StrToHex }
 function StrToHex(s:string): string;
 var i : integer;
 begin
@@ -165,7 +165,7 @@ begin
   for i := 1 to Length(s) do Result := Result + IntToHex(byte(s[i]),2);
 end;
 
-{ Функция HexToStr }
+{ Р¤СѓРЅРєС†РёСЏ HexToStr }
 function HexToStr(s:string): string;
 var
   l : integer;

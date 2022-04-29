@@ -1,13 +1,13 @@
-(******************************************************************************
+Ôªø(******************************************************************************
  Delphi import unit for OpenSSL libeay, version 0.7g, 2007-09-14
 
  For OpenSSL libeay32.dll version 0.9.6b, DLL compiled by GnuWin32.
  Tested with Borland Delphi 6, 7 Personal
 
  Copyright (C) 2002-2007, Marco Ferrante.
- 2002-2006, CSITA - Universit‡ di Genova (IT).
+ 2002-2006, CSITA - Universit–∞ di Genova (IT).
      http://www.csita.unige.it/.
- 2007, DISI - Universit‡ di Genova (IT).
+ 2007, DISI - Universit–∞ di Genova (IT).
      http://www.disi.unige.it/.
  Thanks to:
    - Michal Hlavac (Slovakia)
