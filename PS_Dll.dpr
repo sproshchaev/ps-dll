@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.5 29-04-2022                                  }
+{       ver. 1.6 04-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -849,203 +849,267 @@ begin
 end;
 
 
-// ---- Waiting Coding Style ---
+ { Автонумерация документа из 12-х знаков с ведением электронного жунала }
 
-
-// 24. Автонумерация документа из 12-х знаков с ведением электронного жунала
-Function ID12docFromJournal(In_Journal:ShortString; In_NameDoc:ShortString):Word;
-var txtJournal:TextFile; StrokaVar:ShortString; tmpIDdoc:Word;
-begin
-  // Открываем журнал для чтения, если он есть, иначе tmpIDdoc:=0;
-  tmpIDdoc:=0;
-  IF FileExists(ExtractFilePath(ParamStr(0))+In_Journal)=True
-    THEN
-      begin
-        AssignFile(txtJournal, ExtractFilePath(ParamStr(0))+In_Journal);
-        Reset(txtJournal);
-        WHILE EOF(txtJournal)=false DO
-          begin
-            Readln(txtJournal, StrokaVar);
-            // Найти в журнале самый последний номер записи
-            IF ((COPY(StrokaVar, 1, 1)='0')or(COPY(StrokaVar, 1, 1)='1')or(COPY(StrokaVar, 1, 1)='2')or(COPY(StrokaVar, 1, 1)='3')or(COPY(StrokaVar, 1, 1)='4')or(COPY(StrokaVar, 1, 1)='5')or(COPY(StrokaVar, 1, 1)='6')or(COPY(StrokaVar, 1, 1)='7')or(COPY(StrokaVar, 1, 1)='8')or(COPY(StrokaVar, 1, 1)='9'))
-              THEN tmpIDdoc:=StrToInt(Trim(COPY(StrokaVar, 1, 12)));
-          end;  // While
-        CloseFile(txtJournal);
-      end; // If
-  // Если номер из журнала больше 999999999999
-  IF tmpIDdoc=999999999999 THEN tmpIDdoc:=1 ELSE tmpIDdoc:=tmpIDdoc+1;
-  // Открываем журнал для записи
-  AssignFile(txtJournal, ExtractFilePath(ParamStr(0))+In_Journal);
-  IF FileExists(ExtractFilePath(ParamStr(0))+In_Journal)=True
-    THEN Append(txtJournal)
-    ELSE
-      begin
-        ReWrite(txtJournal);
-        WriteLn(txtJournal, 'Филиал АБ "Газпромбанк" (ЗАО) в г.Белоярский');
-        WriteLn(txtJournal, 'Отдел Банковских карт');
-        WriteLn(txtJournal, ' ');
-        WriteLn(txtJournal, 'Электронный журнал регистрации документов');
-        WriteLn(txtJournal, 'Начат: '+DateToStr(Now));
-        WriteLn(txtJournal, '------------------------------------------------------------------------------------------');
-        WriteLn(txtJournal, '      #     |   Дата   |                        Примечание                               |');
-        WriteLn(txtJournal, '------------------------------------------------------------------------------------------');
-      end;
-  WriteLn(txtJournal, LeftFixString(IntToStr(tmpIDdoc),12)+'|'+DateToStr(Now)+'|'+DosToWin(In_NameDoc) );
-  CloseFile(txtJournal);
-  // Результат
-  ID12docFromJournal:=tmpIDdoc;
-end;
-
-// 25. Преобразование Строки в Integer
-Function dateTimeToSec(in_value_str:ShortString):Integer;
-begin
-  Result:=Round((StrToDate(COPY(in_value_str,1,2)+'.'+COPY(in_value_str,4,2)+'.20'+COPY(in_value_str,7,2))-StrToDate('01.01.2000')))*86400+
-  StrToInt(COPY(in_value_str,16,2))+
-  StrToInt(COPY(in_value_str,13,2))*60+
-  StrToInt(COPY(in_value_str,10,2))*3600;
-end;
-
-
-// 26. Преобразование String в PChar
-Function StrToPchar(In_string:string):Pchar;
-begin
-  In_string:=In_string+#0;
-  result:=StrPCopy(@In_string[1], In_string);
-end;
-
-// 27. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
-Procedure ToLogFileWithName(InFileName : shortString; InString : shortString; InLn : shortString);
-var LogFile:TextFile;
+function ID12docFromJournal(InJournal: ShortString; InNameDoc: ShortString): Word;
+var
+  TxtJournal: TextFile;
+  StrokaVar: ShortString;
+  IdDocVar: Word;
 begin
 
-  { Обработка ошибок:
-    ErrCode := AssignFile(F, 'SomeFile.Txt');
-    if ErrCode = FILE_NOT_FOUND then ...
-
-    ErrCode := ResetFile(F);
-    if ErrCode = FILE_NO_ACCESS then
-    if ErrCode = FILE_ALREADY_OPEN then
-
-    ErrCode := ReadLn(F, S); //Let's assume this means read from F into S
-    if ErrCode = NOT_ENOUGH_TEXT then
-  }
-
-  try
-    AssignFile(LogFile, ExtractFilePath(ParamStr(0))+Trim(InFileName));
-    // Открыть файл с протоколом работы системы
-    IF FileExists(ExtractFilePath(ParamStr(0))+Trim(InFileName))=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-    // Занести строку
-    IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-    // Закрыть файл с протоколом работы системы
-    CloseFile(LogFile);
-  except
-    {on E: Exception do WriteLn(E.Message);}
-  end;
-
-end;
-
-// 27+. Процедура выводит в лог файл с Широкой строкой с именем InFileName строку InString с переводом каретки если InLn='Ln'
-Procedure ToLogFileWideStringWithName(InFileName : shortString; InString : String; InLn : shortString);
-var LogFile:TextFile;
-begin
-
-  { Обработка ошибок:
-    ErrCode := AssignFile(F, 'SomeFile.Txt');
-    if ErrCode = FILE_NOT_FOUND then ...
-
-    ErrCode := ResetFile(F);
-    if ErrCode = FILE_NO_ACCESS then
-    if ErrCode = FILE_ALREADY_OPEN then
-
-    ErrCode := ReadLn(F, S); //Let's assume this means read from F into S
-    if ErrCode = NOT_ENOUGH_TEXT then
-  }
-
-  try
-    AssignFile(LogFile, ExtractFilePath(ParamStr(0))+Trim(InFileName));
-    // Открыть файл с протоколом работы системы
-    IF FileExists(ExtractFilePath(ParamStr(0))+Trim(InFileName))=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-    // Занести строку
-    IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-    // Закрыть файл с протоколом работы системы
-    CloseFile(LogFile);
-  except
-    {on E: Exception do WriteLn(E.Message);}
-  end;
-
-end;
-
-// 27++ Полный путь к лог-файлу
-Procedure ToLogFileWithFullName(InFileName : shortString; InString : shortString; InLn : shortString);
-var LogFile:TextFile;
-begin
-  AssignFile(LogFile, InFileName);
-  // Открыть файл с протоколом работы системы
-  IF FileExists(InFileName)=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-  // Занести строку
-  IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-  // Закрыть файл с протоколом работы системы
-  CloseFile(LogFile);
-end;
-
-// 27+++ Полный путь к лог-файлу (WideString)
-Procedure ToLogFileWideStringWithFullName(InFileName : shortString; InString : WideString; InLn : shortString);
-var LogFile:TextFile;
-begin
-  AssignFile(LogFile, InFileName);
-  // Открыть файл с протоколом работы системы
-  IF FileExists(InFileName)=True THEN Append(LogFile) ELSE ReWrite(LogFile);
-  // Занести строку
-  IF InLn='Ln' THEN WriteLn(LogFile, DateToStr(Now)+' '+TimeToStr(Now)+': '+InString) ELSE Write(LogFile, ' '+InString);
-  // Закрыть файл с протоколом работы системы
-  CloseFile(LogFile);
-end;
-
-
-// 28. Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации с www.beonline.ru
-Function TranslitBeeLine(in_string:ShortString):ShortString;
-var i:1..1000;
-    localStr:String;
-begin
-  FOR i:=1 TO Length(in_string) DO
+  IdDocVar:=0;
+  if FileExists(ExtractFilePath(ParamStr(0)) + InJournal) = True then
     begin
-      CASE in_string[i] OF
-           'Й' : localStr:=localStr + 'J'; 'Ц' : localStr:=localStr + 'TS'; 'У' : localStr:=localStr + 'U'; 'К' : localStr:=localStr + 'K';
-           'Е' : localStr:=localStr + 'E'; 'Н' : localStr:=localStr + 'N'; 'Г' : localStr:=localStr + 'G'; 'Ш' : localStr:=localStr + 'SH';
-           'Щ' : localStr:=localStr + 'SCH'; 'З' : localStr:=localStr + 'Z'; 'Х' : localStr:=localStr + 'H'; 'Ъ' : localStr:=localStr + '"';
-           'Ф' : localStr:=localStr + 'F'; 'Ы' : localStr:=localStr + 'Y'; 'В' : localStr:=localStr + 'V'; 'А' : localStr:=localStr + 'A';
-           'П' : localStr:=localStr + 'P'; 'Р' : localStr:=localStr + 'R'; 'О' : localStr:=localStr + 'O'; 'Л' : localStr:=localStr + 'L';
-           'Д' : localStr:=localStr + 'D'; 'Ж' : localStr:=localStr + 'ZH'; 'Э' : localStr:=localStr + 'E'; 'Я' : localStr:=localStr + 'YA';
-           'Ч' : localStr:=localStr + 'CH'; 'С' : localStr:=localStr + 'S'; 'М' : localStr:=localStr + 'M'; 'И' : localStr:=localStr + 'I';
-           'Т' : localStr:=localStr + 'T'; 'Ь' : localStr:=localStr + '"'; 'Б' : localStr:=localStr + 'B'; 'Ю' : localStr:=localStr + 'YU';
-           //
-           'й' : localStr:=localStr + 'j'; 'ц' : localStr:=localStr + 'ts'; 'у' : localStr:=localStr + 'u'; 'к' : localStr:=localStr + 'k';
-           'е' : localStr:=localStr + 'e'; 'н' : localStr:=localStr + 'n'; 'г' : localStr:=localStr + 'g'; 'ш' : localStr:=localStr + 'sh';
-           'щ' : localStr:=localStr + 'sch'; 'з' : localStr:=localStr + 'z'; 'х' : localStr:=localStr + 'h'; 'ъ' : localStr:=localStr + '"';
-           'ф' : localStr:=localStr + 'f'; 'ы' : localStr:=localStr + 'y'; 'в' : localStr:=localStr + 'v'; 'а' : localStr:=localStr + 'a';
-           'п' : localStr:=localStr + 'p'; 'р' : localStr:=localStr + 'r'; 'о' : localStr:=localStr + 'o'; 'л' : localStr:=localStr + 'l';
-           'д' : localStr:=localStr + 'd'; 'ж' : localStr:=localStr + 'zh'; 'э' : localStr:=localStr + 'e'; 'я' : localStr:=localStr + 'ya';
-           'ч' : localStr:=localStr + 'ch'; 'с' : localStr:=localStr + 's'; 'м' : localStr:=localStr + 'm'; 'и' : localStr:=localStr + 'i';
-           'т' : localStr:=localStr + 't'; 'ь' : localStr:=localStr + '"'; 'б' : localStr:=localStr + 'b'; 'ю' : localStr:=localStr + 'yu';
-        ELSE
-          localStr:=localStr+in_string[i];
-      end; // Case
-    end;// begin
-  TranslitBeeLine:=localStr;
+      AssignFile(TxtJournal, ExtractFilePath(ParamStr(0)) + InJournal);
+      Reset(TxtJournal);
+      while Eof(TxtJournal) = false do
+        begin
+          Readln(TxtJournal, StrokaVar);
+          if ((Copy(StrokaVar, 1, 1) = '0') or (Copy(StrokaVar, 1, 1) = '1')
+            or(Copy(StrokaVar, 1, 1) = '2') or (Copy(StrokaVar, 1, 1) = '3')
+            or(Copy(StrokaVar, 1, 1) = '4') or (Copy(StrokaVar, 1, 1) = '5')
+            or(Copy(StrokaVar, 1, 1) = '6') or (Copy(StrokaVar, 1, 1) = '7')
+            or(Copy(StrokaVar, 1, 1) = '8') or (Copy(StrokaVar, 1, 1) = '9'))
+            then IdDocVar := StrToInt(Trim(Copy(StrokaVar, 1, 12)));
+        end;
+        CloseFile(TxtJournal);
+    end;
+
+  if IdDocVar = 999999999999 then
+    IdDocVar:=1
+  else IdDocVar := IdDocVar + 1;
+
+  AssignFile(TxtJournal, ExtractFilePath(ParamStr(0)) + InJournal);
+  if FileExists(ExtractFilePath(ParamStr(0))+InJournal)=True then
+    Append(TxtJournal)
+  else
+    begin
+      ReWrite(TxtJournal);
+      WriteLn(TxtJournal, 'Филиал АБ "Газпромбанк" (ЗАО) в г.Белоярский');
+      WriteLn(TxtJournal, 'Отдел Банковских карт');
+      WriteLn(TxtJournal, ' ');
+      WriteLn(TxtJournal, 'Электронный журнал регистрации документов');
+      WriteLn(TxtJournal, 'Начат: '+DateToStr(Now));
+      WriteLn(TxtJournal, '------------------------------------------------------------------------------------------');
+      WriteLn(TxtJournal, '      #     |   Дата   |                        Примечание                               |');
+      WriteLn(TxtJournal, '------------------------------------------------------------------------------------------');
+    end;
+  WriteLn(TxtJournal, LeftFixString(IntToStr(IdDocVar), 12) + '|'
+    + DateToStr(Now) + '|' + DosToWin(InNameDoc));
+  CloseFile(TxtJournal);
+  Result:=IdDocVar;
 end;
 
-// 29. Функция преобразует дату 06.05.2006 (06 мая 2006) в строку формата MS SQL '05.06.2006'
-//     06.05.2006 10:01:05
-Function formatMSSqlDate(in_value:TDate):ShortString;
+
+{ Преобразование даты в формате cтроки в Integer }
+
+function DateTimeToSec(InValue: ShortString): Integer;
 begin
-  formatMSSqlDate:=COPY(DateToStr(in_value),4,2)+'.'+COPY(DateToStr(in_value),1,2)+'.'+COPY(DateToStr(in_value),7,4);
+  Result := Round((StrToDate(Copy(InValue, 1, 2) + '.' + Copy(InValue, 4, 2) + '.20'
+    + Copy(InValue, 7, 2)) - StrToDate('01.01.2000'))) * 86400
+    + StrToInt(Copy(InValue, 16, 2)) + StrToInt(Copy(InValue, 13, 2)) * 60
+    + StrToInt(Copy(InValue, 10, 2)) * 3600;
 end;
 
-// 30. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime ( корректировку часового пояса +0300 пока не учитываем )
-Function StrFormatTimeStampToDateTime(In_StrFormatTimeStamp:ShortString):TDateTime;
+
+{ Преобразование стироки String в PChar }
+
+function StrToPchar(InString: string): Pchar;
 begin
-  StrFormatTimeStampToDateTime:=StrToDateTime(COPY(In_StrFormatTimeStamp,1,2)+'.'+COPY(In_StrFormatTimeStamp,4,2)+'.'+COPY(In_StrFormatTimeStamp,7,4)+'.'+' '+COPY(In_StrFormatTimeStamp,12,8));
+  InString := InString + #0;
+  Result := StrPCopy(@InString[1], InString);
 end;
+
+
+{ Процедура выводит в лог файл с именем InFileName строку InString
+с переводом каретки если InLn = 'Ln' }
+
+procedure ToLogFileWithName(InFileName: ShortString; InString: ShortString; InLn: ShortString);
+var
+  LogFile: TextFile;
+begin
+
+  try
+    AssignFile(LogFile, ExtractFilePath(ParamStr(0)) + Trim(InFileName));
+    if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InFileName)) = True then
+      Append(LogFile)
+    else ReWrite(LogFile);
+
+    if InLn = 'Ln' then
+      WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now) + ': ' + InString)
+      else Write(LogFile, ' ' + InString);
+    CloseFile(LogFile);
+  except
+    on E: Exception do WriteLn(E.Message);
+  end;
+
+end;
+
+
+{ Процедура выводит в лог файл с Широкой строкой с именем InFileName
+строку InString с переводом каретки если InLn = 'Ln' }
+
+procedure ToLogFileWideStringWithName(InFileName: ShortString; InString: string; InLn: ShortString);
+var
+  LogFile:TextFile;
+begin
+
+  try
+    AssignFile(LogFile, ExtractFilePath(ParamStr(0)) + Trim(InFileName));
+    if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InFileName)) = True then
+      Append(LogFile)
+    else ReWrite(LogFile);
+    if InLn = 'Ln' then WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now)
+      + ': ' + InString)
+    else Write(LogFile, ' ' + InString);
+    CloseFile(LogFile);
+  except
+    on E: Exception do WriteLn(E.Message);
+  end;
+
+end;
+
+
+{ Полный путь к log-файлу }
+
+procedure ToLogFileWithFullName(InFileName: ShortString; InString: ShortString; InLn: ShortString);
+var
+  LogFile: TextFile;
+begin
+  AssignFile(LogFile, InFileName);
+  if FileExists(InFileName) = True then
+    Append(LogFile)
+  else ReWrite(LogFile);
+  if InLn = 'Ln' then
+    WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now) + ': ' + InString)
+  else Write(LogFile, ' ' + InString);
+  CloseFile(LogFile);
+end;
+
+
+{ Полный путь к лог-файлу с использованием WideString }
+
+procedure ToLogFileWideStringWithFullName(InFileName: ShortString; InString: WideString; InLn: ShortString);
+var
+  LogFile: TextFile;
+begin
+  AssignFile(LogFile, InFileName);
+  if FileExists(InFileName) = True then
+    Append(LogFile)
+  else ReWrite(LogFile);
+  if InLn = 'Ln' then
+    WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now) + ': ' + InString)
+  else Write(LogFile, ' ' + InString);
+  CloseFile(LogFile);
+end;
+
+
+{ Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации
+  с www.beonline.ru }
+
+function TranslitBeeLine(InString: ShortString): ShortString;
+var
+  I: 1..1000;
+  LocalStr: string;
+begin
+  for I := 1 to Length(InString) do
+    begin
+      case InString[I] of
+        'Й': LocalStr := LocalStr + 'J';
+        'Ц': LocalStr := LocalStr + 'TS';
+        'У': LocalStr := LocalStr + 'U';
+        'К': LocalStr := LocalStr + 'K';
+        'Е': LocalStr := LocalStr + 'E';
+        'Н': LocalStr := LocalStr + 'N';
+        'Г': LocalStr := LocalStr + 'G';
+        'Ш': LocalStr := LocalStr + 'SH';
+        'Щ': LocalStr := LocalStr + 'SCH';
+        'З': LocalStr := LocalStr + 'Z';
+        'Х': LocalStr := LocalStr + 'H';
+        'Ъ': LocalStr := LocalStr + '"';
+        'Ф': LocalStr := LocalStr + 'F';
+        'Ы': LocalStr := LocalStr + 'Y';
+        'В': LocalStr := LocalStr + 'V';
+        'А': LocalStr := LocalStr + 'A';
+        'П': LocalStr := LocalStr + 'P';
+        'Р': LocalStr := LocalStr + 'R';
+        'О': LocalStr := LocalStr + 'O';
+        'Л': LocalStr := LocalStr + 'L';
+        'Д': LocalStr := LocalStr + 'D';
+        'Ж': LocalStr := LocalStr + 'ZH';
+        'Э': LocalStr := LocalStr + 'E';
+        'Я': LocalStr := LocalStr + 'YA';
+        'Ч': LocalStr := LocalStr + 'CH';
+        'С': LocalStr := LocalStr + 'S';
+        'М': LocalStr := LocalStr + 'M';
+        'И': LocalStr := LocalStr + 'I';
+        'Т': LocalStr := LocalStr + 'T';
+        'Ь': LocalStr := LocalStr + '"';
+        'Б': LocalStr := LocalStr + 'B';
+        'Ю': LocalStr := LocalStr + 'YU';
+        'й': LocalStr := LocalStr + 'j';
+        'ц': LocalStr := LocalStr + 'ts';
+        'у': LocalStr := LocalStr + 'u';
+        'к': LocalStr := LocalStr + 'k';
+        'е': LocalStr := LocalStr + 'e';
+        'н': LocalStr := LocalStr + 'n';
+        'г': LocalStr := LocalStr + 'g';
+        'ш': LocalStr := LocalStr + 'sh';
+        'щ': LocalStr := LocalStr + 'sch';
+        'з': LocalStr := LocalStr + 'z';
+        'х': LocalStr := LocalStr + 'h';
+        'ъ': LocalStr := LocalStr + '"';
+        'ф': LocalStr := LocalStr + 'f';
+        'ы': LocalStr := LocalStr + 'y';
+        'в': LocalStr := LocalStr + 'v';
+        'а': LocalStr := LocalStr + 'a';
+        'п': LocalStr := LocalStr + 'p';
+        'р': LocalStr := LocalStr + 'r';
+        'о': LocalStr := LocalStr + 'o';
+        'л': LocalStr := LocalStr + 'l';
+        'д': LocalStr := LocalStr + 'd';
+        'ж': LocalStr := LocalStr + 'zh';
+        'э': LocalStr := LocalStr + 'e';
+        'я': LocalStr := LocalStr + 'ya';
+        'ч': LocalStr := LocalStr + 'ch';
+        'с': LocalStr := LocalStr + 's';
+        'м': LocalStr := LocalStr + 'm';
+        'и': LocalStr := LocalStr + 'i';
+        'т': LocalStr := LocalStr + 't';
+        'ь': LocalStr := LocalStr + '"';
+        'б': LocalStr := LocalStr + 'b';
+        'ю': LocalStr := LocalStr + 'yu';
+        else LocalStr := LocalStr + InString[I];
+      end;
+    end;
+  Result := LocalStr;
+end;
+
+
+{ Функция преобразует дату 06.05.2006 (06 мая 2006) в строку формата MS SQL '05.06.2006'
+     06.05.2006 10:01:05 }
+
+function FormatMsSqlDate(InValue: TDate): ShortString;
+begin
+  Result := Copy(DateToStr(InValue), 4, 2) + '.' + Copy(DateToStr(InValue), 1, 2)
+    + '.' + Copy(DateToStr(InValue), 7, 4);
+end;
+
+
+{ Функция преобразует строку в формате даты и времени
+  TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime
+  ( корректировку часового пояса +0300 не учитывая ) }
+
+function StrFormatTimeStampToDateTime(InStrFormatTimeStamp: ShortString): TDateTime;
+begin
+  Result := StrToDateTime(Copy(InStrFormatTimeStamp, 1, 2) + '.'
+    + Copy(InStrFormatTimeStamp, 4, 2) + '.'
+    + Copy(InStrFormatTimeStamp, 7, 4) + '.'
+    + ' ' + Copy(InStrFormatTimeStamp, 12, 8));
+end;
+
+// ---- Waiting Coding Style ---
 
 // 31. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'  ( корректировку часового пояса +0300 пока не учитываем )
 Function StrTimeStampToStrDateTime(In_StrFormatTimeStamp:ShortString):ShortString;
