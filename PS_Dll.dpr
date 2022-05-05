@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.6 04-05-2022                                  }
+{       ver. 1.7 05-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -98,7 +98,7 @@ end;
 { Преобразование разделителя целой и дробной части (, -> .), представленного
   в строковом виде }
 
-function ChangeSeparator  (InStringFloat: ShortString): ShortString;
+function ChangeSeparator(InStringFloat: ShortString): ShortString;
 var
   LocalString: ShortString;
 begin
@@ -1109,377 +1109,607 @@ begin
     + ' ' + Copy(InStrFormatTimeStamp, 12, 8));
 end;
 
-// ---- Waiting Coding Style ---
 
-// 31. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'  ( корректировку часового пояса +0300 пока не учитываем )
-Function StrTimeStampToStrDateTime(In_StrFormatTimeStamp:ShortString):ShortString;
+{ Функция преобразует строку в формате даты и времени
+  TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'
+  ( корректировку часового пояса +0300 не учитываем ) }
+
+function StrTimeStampToStrDateTime(InStrFormatTimeStamp: ShortString): ShortString;
 begin
-  StrTimeStampToStrDateTime:=COPY(In_StrFormatTimeStamp,1,2)+'.'+COPY(In_StrFormatTimeStamp,4,2)+'.'+COPY(In_StrFormatTimeStamp,7,4)+'.'+' '+COPY(In_StrFormatTimeStamp,12,8);
+
+  StrTimeStampToStrDateTime := Copy(InStrFormatTimeStamp, 1, 2) + '.'
+    + Copy(InStrFormatTimeStamp, 4, 2) + '.'
+    + Copy(InStrFormatTimeStamp, 7, 4) + '. '
+    + Copy(InStrFormatTimeStamp, 12, 8);
+
 end;
 
-// 32. Функция DateTimeToStrFormat преобразует дату и время  01.01.2007 1:02:00 в строку '0101200710200'
-Function DateTimeToStrFormat(In_DateTime:TDateTime):ShortString;
-var DateTimeToStrFormatVar:ShortString;
+
+{ Функция DateTimeToStrFormat преобразует дату и время  01.01.2007 1:02:00
+  в строку '0101200710200' }
+
+function DateTimeToStrFormat(In_DateTime: TDateTime): ShortString;
+var
+  DateTimeToStrFormatVar: ShortString;
 begin
-  DateTimeToStrFormatVar:=StringReplace(DateTimeToStr(In_DateTime), ' ', '', [rfReplaceAll, rfIgnoreCase]);
-  DateTimeToStrFormatVar:=StringReplace(DateTimeToStrFormatVar, '.', '', [rfReplaceAll, rfIgnoreCase]);
-  DateTimeToStrFormatVar:=StringReplace(DateTimeToStrFormatVar, ':', '', [rfReplaceAll, rfIgnoreCase]);
-  DateTimeToStrFormat:=DateTimeToStrFormatVar;
+
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStr(In_DateTime), ' ', '', [rfReplaceAll, rfIgnoreCase]);
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, '.', '', [rfReplaceAll, rfIgnoreCase]);
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, ':', '', [rfReplaceAll, rfIgnoreCase]);
+  Result := DateTimeToStrFormatVar;
+
 end;
 
-// 33. Функция преобразует код валюты 810 в ISO: "RUR"
-Function decodeCurCodeToISO(In_CurrCode:Word):ShortString;
+
+{ Функция DecodeCurCodeToISO преобразует код валюты 810 в ISO: "RUR" }
+
+function DecodeCurCodeToISO(InCurrCode: Word): ShortString;
 begin
-  case In_CurrCode of
-    0   : decodeCurCodeToISO:='RUR';
-    4   : decodeCurCodeToISO:='AFA';  //    Афгани
-    8   : decodeCurCodeToISO:='ALL';  //    Лек
-    12  : decodeCurCodeToISO:='DZD';  //    Алжирский динар
-    20  : decodeCurCodeToISO:='ADP';  //    Андорская песета
-    31  : decodeCurCodeToISO:='AZM';  //    Азербайджанский манат
-    32  : decodeCurCodeToISO:='ARS';  //    Аргентинское песо
-    36  : decodeCurCodeToISO:='AUD';  //    Австралийский доллар
-    40  : decodeCurCodeToISO:='ATS';  //    Шиллинг
-    44  : decodeCurCodeToISO:='BSD';  //    Багамский доллар
-    48  : decodeCurCodeToISO:='BHD';  //    Бахрейнский динар
-    50  : decodeCurCodeToISO:='BDT';  //    Така
-    51  : decodeCurCodeToISO:='AMD';  //    Армянский драм
-    52  : decodeCurCodeToISO:='BBD';  //    Барбадосский доллар
-    56  : decodeCurCodeToISO:='BEF';  //    Бельгийский франк
-    60  : decodeCurCodeToISO:='BMD';  //    Бермудский доллар
-    64  : decodeCurCodeToISO:='BTN';  //    Нгултрум
-    68  : decodeCurCodeToISO:='BOB';  //    Боливиано
-    72  : decodeCurCodeToISO:='BWP';  //    Пула
-    84  : decodeCurCodeToISO:='BZD';  //    Белизский доллар
-    90  : decodeCurCodeToISO:='SBD';  //    Доллар Соломоновых
-    96  : decodeCurCodeToISO:='BND';  //    Брунейский доллар
-    100 : decodeCurCodeToISO:='BGL';  //    Лев
-    104 : decodeCurCodeToISO:='MMK';  //    Кьят
-    108 : decodeCurCodeToISO:='BIF';  //    Бурундийский франк
-    116 : decodeCurCodeToISO:='KHR';  //    Риель
-    124 : decodeCurCodeToISO:='CAD';  //    Канадский доллар
-    132 : decodeCurCodeToISO:='CVE';  //    Эскудо Кабо - Верде
-    136 : decodeCurCodeToISO:='KYD';  //    Доллар Каймановых
-    144 : decodeCurCodeToISO:='LKR';  //    Шри - Ланкийская рупия
-    152 : decodeCurCodeToISO:='CLP';  //    Чилийское песо
-    156 : decodeCurCodeToISO:='CNY';  //    Юань Ренминби
-    170 : decodeCurCodeToISO:='COP';  //    Колумбийское песо
-    174 : decodeCurCodeToISO:='KMF';  //    Франк Коморских
-    188 : decodeCurCodeToISO:='CRC';  //    Костариканский колон
-    191 : decodeCurCodeToISO:='HRK';  //    Куна
-    192 : decodeCurCodeToISO:='CUP';  //    Кубинское песо
-    196 : decodeCurCodeToISO:='CYP';  //    Кипрский фунт
-    203 : decodeCurCodeToISO:='CZK';  //    Чешская крона
-    208 : decodeCurCodeToISO:='DKK';  //    Датская крона
-    214 : decodeCurCodeToISO:='DOP';  //    Доминиканское песо
-    218 : decodeCurCodeToISO:='ECS';  //    Сукре
-    222 : decodeCurCodeToISO:='SVC';  //    Сальвадорский колон
-    230 : decodeCurCodeToISO:='ETB';  //    Эфиопский быр
-    232 : decodeCurCodeToISO:='ERN';  //    Накфа
-    233 : decodeCurCodeToISO:='EEK';  //    Крона
-    238 : decodeCurCodeToISO:='FKP';  //    Фунт Фолклендских
-    242 : decodeCurCodeToISO:='FJD';  //    Доллар Фиджи
-    246 : decodeCurCodeToISO:='FIM';  //    Марка
-    250 : decodeCurCodeToISO:='FRF';  //    Французский франк
-    262 : decodeCurCodeToISO:='DJF';  //    Франк Джибути
-    270 : decodeCurCodeToISO:='GMD';  //    Даласи
-    276 : decodeCurCodeToISO:='DEM';  //    Немецкая марка
-    288 : decodeCurCodeToISO:='GHC';  //    Седи
-    292 : decodeCurCodeToISO:='GIP';  //    Гибралтарский фунт
-    300 : decodeCurCodeToISO:='GRD';  //    Драхма
-    320 : decodeCurCodeToISO:='GTQ';  //    Кетсаль
-    324 : decodeCurCodeToISO:='GNF';  //    Гвинейский франк
-    328 : decodeCurCodeToISO:='GYD';  //    Гайанский доллар
-    332 : decodeCurCodeToISO:='HTG';  //    Гурд
-    340 : decodeCurCodeToISO:='HNL';  //    Лемпира
-    344 : decodeCurCodeToISO:='HKD';  //    Гонконгский доллар
-    348 : decodeCurCodeToISO:='HUF';  //    Форинт
-    352 : decodeCurCodeToISO:='ISK';  //    Исландская крона
-    356 : decodeCurCodeToISO:='INR';  //    Индийская рупия
-    360 : decodeCurCodeToISO:='IDR';  //    Рупия
-    364 : decodeCurCodeToISO:='IRR';  //    Иранский риал
-    368 : decodeCurCodeToISO:='IQD';  //    Иракский динар
-    372 : decodeCurCodeToISO:='IEP';  //    Ирландский фунт
-    376 : decodeCurCodeToISO:='ILS';  //    Новый израильский
-    380 : decodeCurCodeToISO:='ITL';  //    Итальянская лира
-    388 : decodeCurCodeToISO:='JMD';  //    Ямайский доллар
-    392 : decodeCurCodeToISO:='JPY';  //    Йена
-    398 : decodeCurCodeToISO:='KZT';  //    Тенге
-    400 : decodeCurCodeToISO:='JOD';  //    Иорданский динар
-    404 : decodeCurCodeToISO:='KES';  //    Кенийский шиллинг
-    408 : decodeCurCodeToISO:='KPW';  //    Северо - корейская вона
-    410 : decodeCurCodeToISO:='KRW';  //    Вона
-    414 : decodeCurCodeToISO:='KWD';  //    Кувейтский динар
-    417 : decodeCurCodeToISO:='KGS';  //    Сом
-    418 : decodeCurCodeToISO:='LAK';  //    Кип
-    422 : decodeCurCodeToISO:='LBP';  //    Ливанский фунт
-    426 : decodeCurCodeToISO:='LSL';  //    Лоти
-    428 : decodeCurCodeToISO:='LVL';  //    Латвийский лат
-    430 : decodeCurCodeToISO:='LRD';  //    Либерийский доллар
-    434 : decodeCurCodeToISO:='LYD';  //    Ливийский динар
-    440 : decodeCurCodeToISO:='LTL';  //    Литовский лит
-    442 : decodeCurCodeToISO:='LUF';  //    Люксембургский франк
-    446 : decodeCurCodeToISO:='MOP';  //    Патака
-    450 : decodeCurCodeToISO:='MGF';  //    Малагасийский франк
-    454 : decodeCurCodeToISO:='MWK';  //    Квача
-    458 : decodeCurCodeToISO:='MYR';  //    Малайзийский ринггит
-    462 : decodeCurCodeToISO:='MVR';  //    Руфия
-    470 : decodeCurCodeToISO:='MTL';  //    Мальтийская лира
-    478 : decodeCurCodeToISO:='MRO';  //    Угия
-    480 : decodeCurCodeToISO:='MUR';  //    Маврикийская рупия
-    484 : decodeCurCodeToISO:='MXN';  //    Мексиканское песо
-    496 : decodeCurCodeToISO:='MNT';  //    Тугрик
-    498 : decodeCurCodeToISO:='MDL';  //    Молдавский лей
-    504 : decodeCurCodeToISO:='MAD';  //    Марокканский дирхам
-    508 : decodeCurCodeToISO:='MZM';  //    Метикал
-    512 : decodeCurCodeToISO:='OMR';  //    Оманский риал
-    516 : decodeCurCodeToISO:='NAD';  //    Доллар Намибии
-    524 : decodeCurCodeToISO:='NPR';  //    Непальская рупия
-    528 : decodeCurCodeToISO:='NLG';  //    Нидерландский гульден
-    532 : decodeCurCodeToISO:='ANG';  //    Нидерландский
-    533 : decodeCurCodeToISO:='AWG';  //    Арубанский гульден
-    548 : decodeCurCodeToISO:='VUV';  //    Вату
-    554 : decodeCurCodeToISO:='NZD';  //    Новозеландский доллар
-    558 : decodeCurCodeToISO:='NIO';  //    Золотая кордоба
-    566 : decodeCurCodeToISO:='NGN';  //    Найра
-    578 : decodeCurCodeToISO:='NOK';  //    Норвежская крона
-    586 : decodeCurCodeToISO:='PKR';  //    Пакистанская рупия
-    590 : decodeCurCodeToISO:='PAB';  //    Бальбоа
-    598 : decodeCurCodeToISO:='PGK';  //    Кина
-    600 : decodeCurCodeToISO:='PYG';  //    Гуарани
-    604 : decodeCurCodeToISO:='PEN';  //    Новый соль
-    608 : decodeCurCodeToISO:='PHP';  //    Филиппинское песо
-    620 : decodeCurCodeToISO:='PTE';  //    Португальское эскудо
-    624 : decodeCurCodeToISO:='GWP';  //    Песо Гвинеи - Бисау
-    626 : decodeCurCodeToISO:='TPE';  //    Тиморское эскудо
-    634 : decodeCurCodeToISO:='QAR';  //    Катарский риал
-    642 : decodeCurCodeToISO:='ROL';  //    Лей
-    643 : decodeCurCodeToISO:='RUB';  //    Российский рубль
-    646 : decodeCurCodeToISO:='RWF';  //    Франк Руанды
-    654 : decodeCurCodeToISO:='SHP';  //    Фунт Острова Святой
-    678 : decodeCurCodeToISO:='STD';  //    Добра
-    682 : decodeCurCodeToISO:='SAR';  //    Саудовский риял
-    690 : decodeCurCodeToISO:='SCR';  //    Сейшельская рупия
-    694 : decodeCurCodeToISO:='SLL';  //    Леоне
-    702 : decodeCurCodeToISO:='SGD';  //    Сингапурский доллар
-    703 : decodeCurCodeToISO:='SKK';  //    Словацкая крона
-    704 : decodeCurCodeToISO:='VND';  //    Донг
-    705 : decodeCurCodeToISO:='SIT';  //    Толар
-    706 : decodeCurCodeToISO:='SOS';  //    Сомалийский шиллинг
-    710 : decodeCurCodeToISO:='ZAR';  //    Рэнд
-    716 : decodeCurCodeToISO:='ZWD';  //    Доллар Зимбабве
-    724 : decodeCurCodeToISO:='ESP';  //    Испанская песета
-    736 : decodeCurCodeToISO:='SDD';  //    Суданский динар
-    740 : decodeCurCodeToISO:='SRG';  //    Суринамский гульден
-    748 : decodeCurCodeToISO:='SZL';  //    Лилангени
-    752 : decodeCurCodeToISO:='SEK';  //    Шведская крона
-    756 : decodeCurCodeToISO:='CHF';  //    Швейцарский франк
-    760 : decodeCurCodeToISO:='SYP';  //    Сирийский фунт
-    764 : decodeCurCodeToISO:='THB';  //    Бат
-    776 : decodeCurCodeToISO:='TOP';  //    Паанга
-    780 : decodeCurCodeToISO:='TTD';  //    Доллар Тринидада и
-    784 : decodeCurCodeToISO:='AED';  //    Дирхам (ОАЭ)
-    788 : decodeCurCodeToISO:='TND';  //    Тунисский динар
-    792 : decodeCurCodeToISO:='TRL';  //    Турецкая лира
-    795 : decodeCurCodeToISO:='TMM';  //    Манат
-    800 : decodeCurCodeToISO:='UGX';  //    Угандийский шиллинг
-    807 : decodeCurCodeToISO:='MKD';  //    Динар
-    810 : decodeCurCodeToISO:='RUR';  //    Российский рубль
-    818 : decodeCurCodeToISO:='EGP';  //    Египетский фунт
-    826 : decodeCurCodeToISO:='GBP';  //    Фунт стерлингов
-    834 : decodeCurCodeToISO:='TZS';  //    Танзанийский шиллинг
-    840 : decodeCurCodeToISO:='USD';  //    Доллар США
-    858 : decodeCurCodeToISO:='UYU';  //    Уругвайское песо
-    860 : decodeCurCodeToISO:='UZS';  //    Узбекский сум
-    862 : decodeCurCodeToISO:='VEB';  //    Боливар
-    882 : decodeCurCodeToISO:='WST';  //    Тала
-    886 : decodeCurCodeToISO:='YER';  //    Йеменский риал
-    891 : decodeCurCodeToISO:='YUM';  //    Новый динар
-    894 : decodeCurCodeToISO:='ZMK';  //    Квача (замбийская)
-    901 : decodeCurCodeToISO:='TWD';  //    Новый тайваньский
-    950 : decodeCurCodeToISO:='XAF';  //    Франк КФА ВЕАС
-    951 : decodeCurCodeToISO:='XCD';  //    Восточно - карибский
-    952 : decodeCurCodeToISO:='XOF';  //    Франк КФА ВСЕАО
-    953 : decodeCurCodeToISO:='XPF';  //    Франк КФП
-    960 : decodeCurCodeToISO:='XDR';  //    СДР (специальные права
-    972 : decodeCurCodeToISO:='TJS';  //    Сомони
-    973 : decodeCurCodeToISO:='AOA';  //    Кванза
-    974 : decodeCurCodeToISO:='BYR';  //    Белорусский рубль
-    975 : decodeCurCodeToISO:='BGN';  //    Болгарский лев
-    976 : decodeCurCodeToISO:='CDF';  //    Конголезский франк
-    977 : decodeCurCodeToISO:='ВАМ';  //    Конвертируемая марка
-    978 : decodeCurCodeToISO:='EUR';  //    Евро
-    980 : decodeCurCodeToISO:='UAH';  //    Гривна
-    981 : decodeCurCodeToISO:='GEL';  //    Лари
-    985 : decodeCurCodeToISO:='PLN';  //    Злотый
-    986 : decodeCurCodeToISO:='BRL';  //    Бразильский реал
+
+  case InCurrCode of
+    0   : decodeCurCodeToISO := 'RUR';
+    4   : decodeCurCodeToISO := 'AFA';  //    Афгани
+    8   : decodeCurCodeToISO := 'ALL';  //    Лек
+    12  : decodeCurCodeToISO := 'DZD';  //    Алжирский динар
+    20  : decodeCurCodeToISO := 'ADP';  //    Андорская песета
+    31  : decodeCurCodeToISO := 'AZM';  //    Азербайджанский манат
+    32  : decodeCurCodeToISO := 'ARS';  //    Аргентинское песо
+    36  : decodeCurCodeToISO := 'AUD';  //    Австралийский доллар
+    40  : decodeCurCodeToISO := 'ATS';  //    Шиллинг
+    44  : decodeCurCodeToISO := 'BSD';  //    Багамский доллар
+    48  : decodeCurCodeToISO := 'BHD';  //    Бахрейнский динар
+    50  : decodeCurCodeToISO := 'BDT';  //    Така
+    51  : decodeCurCodeToISO := 'AMD';  //    Армянский драм
+    52  : decodeCurCodeToISO := 'BBD';  //    Барбадосский доллар
+    56  : decodeCurCodeToISO := 'BEF';  //    Бельгийский франк
+    60  : decodeCurCodeToISO := 'BMD';  //    Бермудский доллар
+    64  : decodeCurCodeToISO := 'BTN';  //    Нгултрум
+    68  : decodeCurCodeToISO := 'BOB';  //    Боливиано
+    72  : decodeCurCodeToISO := 'BWP';  //    Пула
+    84  : decodeCurCodeToISO := 'BZD';  //    Белизский доллар
+    90  : decodeCurCodeToISO := 'SBD';  //    Доллар Соломоновых
+    96  : decodeCurCodeToISO := 'BND';  //    Брунейский доллар
+    100 : decodeCurCodeToISO := 'BGL';  //    Лев
+    104 : decodeCurCodeToISO := 'MMK';  //    Кьят
+    108 : decodeCurCodeToISO := 'BIF';  //    Бурундийский франк
+    116 : decodeCurCodeToISO := 'KHR';  //    Риель
+    124 : decodeCurCodeToISO := 'CAD';  //    Канадский доллар
+    132 : decodeCurCodeToISO := 'CVE';  //    Эскудо Кабо - Верде
+    136 : decodeCurCodeToISO := 'KYD';  //    Доллар Каймановых
+    144 : decodeCurCodeToISO := 'LKR';  //    Шри - Ланкийская рупия
+    152 : decodeCurCodeToISO := 'CLP';  //    Чилийское песо
+    156 : decodeCurCodeToISO := 'CNY';  //    Юань Ренминби
+    170 : decodeCurCodeToISO := 'COP';  //    Колумбийское песо
+    174 : decodeCurCodeToISO := 'KMF';  //    Франк Коморских
+    188 : decodeCurCodeToISO := 'CRC';  //    Костариканский колон
+    191 : decodeCurCodeToISO := 'HRK';  //    Куна
+    192 : decodeCurCodeToISO := 'CUP';  //    Кубинское песо
+    196 : decodeCurCodeToISO := 'CYP';  //    Кипрский фунт
+    203 : decodeCurCodeToISO := 'CZK';  //    Чешская крона
+    208 : decodeCurCodeToISO := 'DKK';  //    Датская крона
+    214 : decodeCurCodeToISO := 'DOP';  //    Доминиканское песо
+    218 : decodeCurCodeToISO := 'ECS';  //    Сукре
+    222 : decodeCurCodeToISO := 'SVC';  //    Сальвадорский колон
+    230 : decodeCurCodeToISO := 'ETB';  //    Эфиопский быр
+    232 : decodeCurCodeToISO := 'ERN';  //    Накфа
+    233 : decodeCurCodeToISO := 'EEK';  //    Крона
+    238 : decodeCurCodeToISO := 'FKP';  //    Фунт Фолклендских
+    242 : decodeCurCodeToISO := 'FJD';  //    Доллар Фиджи
+    246 : decodeCurCodeToISO := 'FIM';  //    Марка
+    250 : decodeCurCodeToISO := 'FRF';  //    Французский франк
+    262 : decodeCurCodeToISO := 'DJF';  //    Франк Джибути
+    270 : decodeCurCodeToISO := 'GMD';  //    Даласи
+    276 : decodeCurCodeToISO := 'DEM';  //    Немецкая марка
+    288 : decodeCurCodeToISO := 'GHC';  //    Седи
+    292 : decodeCurCodeToISO := 'GIP';  //    Гибралтарский фунт
+    300 : decodeCurCodeToISO := 'GRD';  //    Драхма
+    320 : decodeCurCodeToISO := 'GTQ';  //    Кетсаль
+    324 : decodeCurCodeToISO := 'GNF';  //    Гвинейский франк
+    328 : decodeCurCodeToISO := 'GYD';  //    Гайанский доллар
+    332 : decodeCurCodeToISO := 'HTG';  //    Гурд
+    340 : decodeCurCodeToISO := 'HNL';  //    Лемпира
+    344 : decodeCurCodeToISO := 'HKD';  //    Гонконгский доллар
+    348 : decodeCurCodeToISO := 'HUF';  //    Форинт
+    352 : decodeCurCodeToISO := 'ISK';  //    Исландская крона
+    356 : decodeCurCodeToISO := 'INR';  //    Индийская рупия
+    360 : decodeCurCodeToISO := 'IDR';  //    Рупия
+    364 : decodeCurCodeToISO := 'IRR';  //    Иранский риал
+    368 : decodeCurCodeToISO := 'IQD';  //    Иракский динар
+    372 : decodeCurCodeToISO := 'IEP';  //    Ирландский фунт
+    376 : decodeCurCodeToISO := 'ILS';  //    Новый израильский
+    380 : decodeCurCodeToISO := 'ITL';  //    Итальянская лира
+    388 : decodeCurCodeToISO := 'JMD';  //    Ямайский доллар
+    392 : decodeCurCodeToISO := 'JPY';  //    Йена
+    398 : decodeCurCodeToISO := 'KZT';  //    Тенге
+    400 : decodeCurCodeToISO := 'JOD';  //    Иорданский динар
+    404 : decodeCurCodeToISO := 'KES';  //    Кенийский шиллинг
+    408 : decodeCurCodeToISO := 'KPW';  //    Северо - корейская вона
+    410 : decodeCurCodeToISO := 'KRW';  //    Вона
+    414 : decodeCurCodeToISO := 'KWD';  //    Кувейтский динар
+    417 : decodeCurCodeToISO := 'KGS';  //    Сом
+    418 : decodeCurCodeToISO := 'LAK';  //    Кип
+    422 : decodeCurCodeToISO := 'LBP';  //    Ливанский фунт
+    426 : decodeCurCodeToISO := 'LSL';  //    Лоти
+    428 : decodeCurCodeToISO := 'LVL';  //    Латвийский лат
+    430 : decodeCurCodeToISO := 'LRD';  //    Либерийский доллар
+    434 : decodeCurCodeToISO := 'LYD';  //    Ливийский динар
+    440 : decodeCurCodeToISO := 'LTL';  //    Литовский лит
+    442 : decodeCurCodeToISO := 'LUF';  //    Люксембургский франк
+    446 : decodeCurCodeToISO := 'MOP';  //    Патака
+    450 : decodeCurCodeToISO := 'MGF';  //    Малагасийский франк
+    454 : decodeCurCodeToISO := 'MWK';  //    Квача
+    458 : decodeCurCodeToISO := 'MYR';  //    Малайзийский ринггит
+    462 : decodeCurCodeToISO := 'MVR';  //    Руфия
+    470 : decodeCurCodeToISO := 'MTL';  //    Мальтийская лира
+    478 : decodeCurCodeToISO := 'MRO';  //    Угия
+    480 : decodeCurCodeToISO := 'MUR';  //    Маврикийская рупия
+    484 : decodeCurCodeToISO := 'MXN';  //    Мексиканское песо
+    496 : decodeCurCodeToISO := 'MNT';  //    Тугрик
+    498 : decodeCurCodeToISO := 'MDL';  //    Молдавский лей
+    504 : decodeCurCodeToISO := 'MAD';  //    Марокканский дирхам
+    508 : decodeCurCodeToISO := 'MZM';  //    Метикал
+    512 : decodeCurCodeToISO := 'OMR';  //    Оманский риал
+    516 : decodeCurCodeToISO := 'NAD';  //    Доллар Намибии
+    524 : decodeCurCodeToISO := 'NPR';  //    Непальская рупия
+    528 : decodeCurCodeToISO := 'NLG';  //    Нидерландский гульден
+    532 : decodeCurCodeToISO := 'ANG';  //    Нидерландский
+    533 : decodeCurCodeToISO := 'AWG';  //    Арубанский гульден
+    548 : decodeCurCodeToISO := 'VUV';  //    Вату
+    554 : decodeCurCodeToISO := 'NZD';  //    Новозеландский доллар
+    558 : decodeCurCodeToISO := 'NIO';  //    Золотая кордоба
+    566 : decodeCurCodeToISO := 'NGN';  //    Найра
+    578 : decodeCurCodeToISO := 'NOK';  //    Норвежская крона
+    586 : decodeCurCodeToISO := 'PKR';  //    Пакистанская рупия
+    590 : decodeCurCodeToISO := 'PAB';  //    Бальбоа
+    598 : decodeCurCodeToISO := 'PGK';  //    Кина
+    600 : decodeCurCodeToISO := 'PYG';  //    Гуарани
+    604 : decodeCurCodeToISO := 'PEN';  //    Новый соль
+    608 : decodeCurCodeToISO := 'PHP';  //    Филиппинское песо
+    620 : decodeCurCodeToISO := 'PTE';  //    Португальское эскудо
+    624 : decodeCurCodeToISO := 'GWP';  //    Песо Гвинеи - Бисау
+    626 : decodeCurCodeToISO := 'TPE';  //    Тиморское эскудо
+    634 : decodeCurCodeToISO := 'QAR';  //    Катарский риал
+    642 : decodeCurCodeToISO := 'ROL';  //    Лей
+    643 : decodeCurCodeToISO := 'RUB';  //    Российский рубль
+    646 : decodeCurCodeToISO := 'RWF';  //    Франк Руанды
+    654 : decodeCurCodeToISO := 'SHP';  //    Фунт Острова Святой
+    678 : decodeCurCodeToISO := 'STD';  //    Добра
+    682 : decodeCurCodeToISO := 'SAR';  //    Саудовский риял
+    690 : decodeCurCodeToISO := 'SCR';  //    Сейшельская рупия
+    694 : decodeCurCodeToISO := 'SLL';  //    Леоне
+    702 : decodeCurCodeToISO := 'SGD';  //    Сингапурский доллар
+    703 : decodeCurCodeToISO := 'SKK';  //    Словацкая крона
+    704 : decodeCurCodeToISO := 'VND';  //    Донг
+    705 : decodeCurCodeToISO := 'SIT';  //    Толар
+    706 : decodeCurCodeToISO := 'SOS';  //    Сомалийский шиллинг
+    710 : decodeCurCodeToISO := 'ZAR';  //    Рэнд
+    716 : decodeCurCodeToISO := 'ZWD';  //    Доллар Зимбабве
+    724 : decodeCurCodeToISO := 'ESP';  //    Испанская песета
+    736 : decodeCurCodeToISO := 'SDD';  //    Суданский динар
+    740 : decodeCurCodeToISO := 'SRG';  //    Суринамский гульден
+    748 : decodeCurCodeToISO := 'SZL';  //    Лилангени
+    752 : decodeCurCodeToISO := 'SEK';  //    Шведская крона
+    756 : decodeCurCodeToISO := 'CHF';  //    Швейцарский франк
+    760 : decodeCurCodeToISO := 'SYP';  //    Сирийский фунт
+    764 : decodeCurCodeToISO := 'THB';  //    Бат
+    776 : decodeCurCodeToISO := 'TOP';  //    Паанга
+    780 : decodeCurCodeToISO := 'TTD';  //    Доллар Тринидада и
+    784 : decodeCurCodeToISO := 'AED';  //    Дирхам (ОАЭ)
+    788 : decodeCurCodeToISO := 'TND';  //    Тунисский динар
+    792 : decodeCurCodeToISO := 'TRL';  //    Турецкая лира
+    795 : decodeCurCodeToISO := 'TMM';  //    Манат
+    800 : decodeCurCodeToISO := 'UGX';  //    Угандийский шиллинг
+    807 : decodeCurCodeToISO := 'MKD';  //    Динар
+    810 : decodeCurCodeToISO := 'RUR';  //    Российский рубль
+    818 : decodeCurCodeToISO := 'EGP';  //    Египетский фунт
+    826 : decodeCurCodeToISO := 'GBP';  //    Фунт стерлингов
+    834 : decodeCurCodeToISO := 'TZS';  //    Танзанийский шиллинг
+    840 : decodeCurCodeToISO := 'USD';  //    Доллар США
+    858 : decodeCurCodeToISO := 'UYU';  //    Уругвайское песо
+    860 : decodeCurCodeToISO := 'UZS';  //    Узбекский сум
+    862 : decodeCurCodeToISO := 'VEB';  //    Боливар
+    882 : decodeCurCodeToISO := 'WST';  //    Тала
+    886 : decodeCurCodeToISO := 'YER';  //    Йеменский риал
+    891 : decodeCurCodeToISO := 'YUM';  //    Новый динар
+    894 : decodeCurCodeToISO := 'ZMK';  //    Квача (замбийская)
+    901 : decodeCurCodeToISO := 'TWD';  //    Новый тайваньский
+    950 : decodeCurCodeToISO := 'XAF';  //    Франк КФА ВЕАС
+    951 : decodeCurCodeToISO := 'XCD';  //    Восточно - карибский
+    952 : decodeCurCodeToISO := 'XOF';  //    Франк КФА ВСЕАО
+    953 : decodeCurCodeToISO := 'XPF';  //    Франк КФП
+    960 : decodeCurCodeToISO := 'XDR';  //    СДР (специальные права
+    972 : decodeCurCodeToISO := 'TJS';  //    Сомони
+    973 : decodeCurCodeToISO := 'AOA';  //    Кванза
+    974 : decodeCurCodeToISO := 'BYR';  //    Белорусский рубль
+    975 : decodeCurCodeToISO := 'BGN';  //    Болгарский лев
+    976 : decodeCurCodeToISO := 'CDF';  //    Конголезский франк
+    977 : decodeCurCodeToISO := 'ВАМ';  //    Конвертируемая марка
+    978 : decodeCurCodeToISO := 'EUR';  //    Евро
+    980 : decodeCurCodeToISO := 'UAH';  //    Гривна
+    981 : decodeCurCodeToISO := 'GEL';  //    Лари
+    985 : decodeCurCodeToISO := 'PLN';  //    Злотый
+    986 : decodeCurCodeToISO := 'BRL';  //    Бразильский реал
+  end;
+
+end;
+
+
+{ Преобразование строки "01-05" в дату 31.01.2005 }
+
+function CardExpDate_To_Date(InCardExpDate: ShortString): TDate;
+var
+  Year, Month, Day, Hour, Min, Sec, MSec: Word;
+begin
+
+  DecodeDate(StrToDate('01.' + Copy(InCardExpDate, 1, 2) + '.20'
+    + Copy(InCardExpDate, 4, 2)), Year, Month, Day);
+
+  if Month = 12 then
+    Result := StrToDate('01.' + IntToStr(1) + '.'
+      + IntToStr(StrToInt('20' + Copy(InCardExpDate, 4, 2)) + 1) ) - 1
+    else Result := StrToDate('01.' + IntToStr(Month + 1) + '.20'
+      + Copy(InCardExpDate, 4, 2)) - 1;
+
+end;
+
+
+{ Преобразование номера карты по первым 9-ти цифрам в тип карты (филиал) }
+
+function DecodeTypeCard(InCardNumber: ShortString): ShortString;
+var
+  DecodeTypeCardVar: ShortString;
+begin
+
+  DecodeTypeCardVar := 'type not define';
+  if (Copy(InCardNumber, 1, 9) = '487417315') then DecodeTypeCardVar := 'VISA Electron';
+  if (Copy(InCardNumber, 1, 9) ='487415515') then DecodeTypeCardVar := 'VISA Classic';
+  IF (Copy(InCardNumber, 1, 9) ='487416315') then DecodeTypeCardVar := 'VISA Gold';
+  IF (Copy(InCardNumber, 1, 9) ='676454115') then DecodeTypeCardVar := 'Maestro';
+  IF (Copy(InCardNumber, 1, 9) ='548999015') then DecodeTypeCardVar := 'MasterCard';
+  IF (Copy(InCardNumber, 1, 9) ='549000215') then DecodeTypeCardVar := 'MasterCard Gold';
+
+  IF (Copy(InCardNumber, 1, 6) ='602208') then DecodeTypeCardVar := 'Union Card';
+
+  IF (Copy(InCardNumber, 1, 9) ='487417415') then DecodeTypeCardVar := 'VISA Electron Пенсионная';
+  IF (Copy(InCardNumber, 1, 9) ='487415415') then DecodeTypeCardVar := 'VISA Classic Пенсионная';
+  IF (Copy(InCardNumber, 1, 9) ='487416415') then DecodeTypeCardVar := 'VISA Gold Пенсионная';
+
+  Result := DecodeTypeCardVar;
+
+end;
+
+
+{ Преобразование номера карты по первым 6-ти цифрам в тип карты (Газпромбанк) }
+
+function DecodeTypeCardGPB(InCardNumber: ShortString): ShortString;
+var
+  DecodeTypeCardVar:ShortString;
+begin
+
+  DecodeTypeCardVar := 'type not define';
+
+  if (Copy(InCardNumber, 1, 6) = '487417') then DecodeTypeCardVar := 'VISA Electron';
+  if (Copy(InCardNumber, 1, 6) = '487415') then DecodeTypeCardVar := 'VISA Classic';
+  if (Copy(InCardNumber, 1, 6) = '487416') then DecodeTypeCardVar := 'VISA Gold';
+  if (Copy(InCardNumber, 1, 6) = '676454') then DecodeTypeCardVar := 'Maestro';
+  if (Copy(InCardNumber, 1, 6) = '548999') then DecodeTypeCardVar := 'MasterCard';
+  if (Copy(InCardNumber, 1, 6) = '549000') then DecodeTypeCardVar := 'MasterCard Gold';
+
+  Result := DecodeTypeCardVar;
+
+end;
+
+
+ { Преобразование PChar в String }
+
+function PCharToStr(P:Pchar): string;
+begin
+  Result := P;
+end;
+
+
+{ Функция преобразует дату 01.01.2002 в строку '01/01/2002' }
+
+function StrDateFormat1(InValue: TDate): ShortString;
+begin
+
+  if Length(DateToStr(InValue)) = 8  then
+    Result := Copy(DateToStr(InValue), 1, 2) + '/'
+      + Copy(DateToStr(InValue), 4, 2) + '/' + Copy(DateToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 1, 2) + '/'
+      + Copy(DateToStr(InValue), 4, 2) + '/' + Copy(DateToStr(InValue), 7, 4);
+
+end;
+
+
+{ Функция StrDateFormat2() преобразует дату 01.01.2002 в строку '01-01-2002' }
+
+function StrDateFormat2(InValue: TDate): ShortString;
+begin
+
+  if Length(DateToStr(InValue)) = 8 then
+    Result := Copy(DateToStr(InValue), 1, 2) + '-'
+      + Copy(DateToStr(InValue), 4, 2) + '-' + Copy(DateToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 1, 2) + '-'
+      + Copy(DateToStr(InValue), 4, 2) + '-' + Copy(DateToStr(InValue), 7, 4);
+
+end;
+
+
+{ Сумма прописью }
+
+function SummaPropis(InSum: Double): WideString;
+
+  function NumbersToStrings(Digit1: Longint; Digit2: Integer): string;
+  const
+    NumbersInWords: array [1..9] of string [6] = ('один', 'два', 'три', 'четыре',
+      'пять', 'шесть', 'семь', 'восемь', 'девять');
+    NumbersInWords2: array [1..9] of string [6] = ('одна', 'две', 'три', 'четыре',
+      'пять', 'шесть', 'семь', 'восемь', 'девять');
+    NumbersInWords3: array [1..9] of string [12] = ('одиннадцать', 'двенадцать',
+      'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать',
+        'восемнадцать', 'девятнадцать');
+    NumbersInWords4: array [1..9] of string [11] = ('десять', 'двадцать',
+      'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят',
+        'девяносто');
+    NumbersInWords5: array [1..9] of string [9] = ('сто', 'двести', 'триста',
+      'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот');
+  var
+    StringVar: string;
+    I: Longint;
+  begin
+
+    StringVar := '';
+
+    I := Digit1 div 100;
+
+    if I <> 0 then
+      StringVar := NumbersInWords5[I] + ' ';
+
+    Digit1 := Digit1 mod 100;
+
+    I := Digit1 div 10;
+
+    if (Digit1 > 10) and (Digit1 < 20) then
+      StringVar := StringVar + NumbersInWords3[Digit1-10] + ' '
+    else
+      begin
+        if I <> 0 then
+          StringVar := StringVar + NumbersInWords4[I] + ' ';
+          Digit1 := Digit1 mod 10;
+          if Digit1 <> 0 then
+            if Digit2 = 0 then
+              StringVar := StringVar + NumbersInWords2[Digit1] + ' '
+            else StringVar := StringVar + NumbersInWords[Digit1] + ' ';
       end;
-end;
 
-// 34. Преобразование строки "01-05" в дату 31.01.2005
-Function cardExpDate_To_Date(In_cardExpDate:ShortString):TDate;
-var Year, Month, Day, Hour, Min, Sec, MSec: Word;
-begin
-  DecodeDate(StrToDate('01.'+COPY(In_cardExpDate,1,2)+'.20'+COPY(In_cardExpDate,4,2)), Year, Month, Day);
-  IF Month=12
-    THEN cardExpDate_To_Date:=StrToDate('01.'+IntToStr(1)+'.'+ IntToStr(StrToInt('20'+COPY(In_cardExpDate,4,2))+1) )-1
-    ELSE cardExpDate_To_Date:=StrToDate('01.'+IntToStr(Month+1)+'.20'+COPY(In_cardExpDate,4,2))-1;
-end;
+    NumbersToStrings := StringVar;
 
-// 35. Преобразование номера карты по первым 9-ти цифрам в тип карты (филиал)
-Function decodeTypeCard(In_CardNumber:ShortString):ShortString;
-var decodeTypeCard_tmp:ShortString;
-begin
-  decodeTypeCard_tmp:='type not define';
-  IF (COPY(In_CardNumber, 1, 9)='487417315') THEN decodeTypeCard_tmp:='VISA Electron';
-  IF (COPY(In_CardNumber, 1, 9)='487415515') THEN decodeTypeCard_tmp:='VISA Classic';
-  IF (COPY(In_CardNumber, 1, 9)='487416315') THEN decodeTypeCard_tmp:='VISA Gold';
-  IF (COPY(In_CardNumber, 1, 9)='676454115') THEN decodeTypeCard_tmp:='Maestro';
-  IF (COPY(In_CardNumber, 1, 9)='548999015') THEN decodeTypeCard_tmp:='MasterCard';
-  IF (COPY(In_CardNumber, 1, 9)='549000215') THEN decodeTypeCard_tmp:='MasterCard Gold';
-
-  // Union Card
-  IF (COPY(In_CardNumber, 1, 6)='602208') THEN decodeTypeCard_tmp:='Union Card';
-  // Пенсионная карта
-  IF (COPY(In_CardNumber, 1, 9)='487417415') THEN decodeTypeCard_tmp:='VISA Electron Пенсионная';
-  IF (COPY(In_CardNumber, 1, 9)='487415415') THEN decodeTypeCard_tmp:='VISA Classic Пенсионная';
-  IF (COPY(In_CardNumber, 1, 9)='487416415') THEN decodeTypeCard_tmp:='VISA Gold Пенсионная';
-
-  decodeTypeCard:=decodeTypeCard_tmp;
-end;
-
-// 35.+ Преобразование номера карты по первым 6-ти цифрам в тип карты (Газпромбанк)
-Function decodeTypeCardGPB(In_CardNumber:ShortString):ShortString;
-var decodeTypeCard_tmp:ShortString;
-begin
-  decodeTypeCard_tmp:='type not define';
-  IF (COPY(In_CardNumber, 1, 6)='487417') THEN decodeTypeCard_tmp:='VISA Electron';
-  IF (COPY(In_CardNumber, 1, 6)='487415') THEN decodeTypeCard_tmp:='VISA Classic';
-  IF (COPY(In_CardNumber, 1, 6)='487416') THEN decodeTypeCard_tmp:='VISA Gold';
-  IF (COPY(In_CardNumber, 1, 6)='676454') THEN decodeTypeCard_tmp:='Maestro';
-  IF (COPY(In_CardNumber, 1, 6)='548999') THEN decodeTypeCard_tmp:='MasterCard';
-  IF (COPY(In_CardNumber, 1, 6)='549000') THEN decodeTypeCard_tmp:='MasterCard Gold';
-
-  decodeTypeCardGPB:=decodeTypeCard_tmp;
-end;
-
-
-// 36. Преобразование PChar в Str
-Function PCharToStr(P:Pchar) :String;
-begin
-  Result:=P;
-end;
-
-// 37. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
-Function StrDateFormat1(in_value : TDate) : shortString;
-begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat1:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat1:=COPY(DateToStr(in_value),1,2)+'/'+COPY(DateToStr(in_value),4,2)+'/'+COPY(DateToStr(in_value),7,4);
-end;
-
-// 38. Функция преобразует дату 01.01.2002 в строку '01-01-2002'
-Function StrDateFormat2(in_value : TDate) : shortString;
-begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat2:=COPY(DateToStr(in_value),1,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat2:=COPY(DateToStr(in_value),1,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),7,4);
-end;
-
-// 39. Модуль с функциями Суммы Прописью(RUB) * Функция........... SummaPropis(X) * Программист....... Uncle Slava * Дата создания..... 16.11.98 * Принимает......... X - цифровое представление числа * Возвращает........ Строковое представление числа *  Аргументы:  Используются глобальные аргументы SummaScheta, Summa, SummaCop и Ostatok Назначение: Перевод числа (SummaScheta) в строковую константу Возвращает: SummaPropis - Сумму прописью  }
-//Function SummaPropis(SummaScheta: Variant): ShortString;
-//  var {Глобальные переменные} {SummaScheta:Variant;} Ostatok, Summa, OstatokCop: Variant; R, R1 : Variant; Gruppa, Dlina : Variant; Propis, PropisCop, S: String; i : Integer;
-  {Единицы}   //  Function Edinici(R: Variant; Rod: String): String; begin case R of 1: if Rod = 'Мужской' then Edinici := 'один' else Edinici := 'одна'; 2: if Rod = 'Мужской' then Edinici := 'два' else Edinici := 'две'; 3: Edinici := 'три'; 4: Edinici := 'четыре'; 5: Edinici := 'пять'; 6: Edinici := 'шесть'; 7: Edinici := 'семь'; 8: Edinici := 'восемь'; 9: Edinici := 'девять'; 10: Edinici := 'десять'; 11: Edinici := 'одиннадцать'; 12: Edinici := 'двенадцать'; 13: Edinici := 'тринадцать'; 14: Edinici := 'четырнадцать'; 15: Edinici := 'пятнадцать'; 16: Edinici := 'шестнадцать'; 17: Edinici := 'семнадцать'; 18: Edinici := 'восемнадцать'; 19: Edinici := 'девятнадцать'; end; end;
-  {Десятки}   //  Function Desatki(R: Variant): String; begin case R of 2: Desatki := 'двадцать'; 3: Desatki := 'тридцать'; 4: Desatki := 'сорок'; 5: Desatki := 'пятьдесят'; 6: Desatki := 'шестьдесят'; 7: Desatki := 'семьдесят'; 8: Desatki := 'восемьдесят'; 9: Desatki := 'девяносто'; end; end;
-  {Сотни}     //  Function Sotni(R: Variant): String; begin case R of 1: Sotni := 'сто'; 2: Sotni := 'двести'; 3: Sotni := 'триста'; 4: Sotni := 'четыреста'; 5: Sotni := 'пятьсот'; 6: Sotni := 'шестьсот'; 7: Sotni := 'семьсот'; 8: Sotni := 'восемьсот'; 9: Sotni := 'девятьсот'; end; end;
-  {Тысячи}    //  Function Tusachi(R: Variant): String; begin If R = 1 Then Tusachi := 'тысяча' else if (R > 1) And (R < 5) then Tusachi := 'тысячи' else Tusachi := 'тысяч'; end;
-  {Миллионы}  //  Function Millioni(R: Variant): String; begin If R = 1 Then Millioni := 'миллион' else if (R > 1) And (R < 5) then Millioni := 'миллиона' else Millioni := 'миллионов'; end;
-  {Миллиарды} // Function Milliardi(R: Variant): String; begin If R = 1 Then Milliardi := 'миллиард' else if (R > 1) And (R < 5) then Milliardi := 'миллиарда' else Milliardi := 'миллиардов'; end;
-  {Копейки}   // Function Copeiki(R: Variant): String; begin If R = 1 Then Copeiki := '' else if (R > 1) And (R < 5) then Copeiki := '' else Copeiki := '' end;
-  {Рубли}     // Function Rubli(R: Variant): String; begin If R = 1 Then Rubli := '' else if (R > 1) And (R < 5) then Rubli := '' else Rubli := '' end;
-  { * Использую математические функции : * Abs(x)   - модуль числа.  Int(x)   - отделяет целую часть вещественного числа. * Frac(x)  - отделяет дробную часть вещественного числа. * Round(x) - округляет до целого числа. }
-//begin
-//  if Round(StrToFloat(SummaScheta))=0 then begin SummaPropis := 'Ноль'; Exit; end; Propis:=''; PropisCop:=''; S:=''; SummaScheta := Abs(SummaScheta); Ostatok := Int(SummaScheta); OstatokCop := Frac(SummaScheta); OstatokCop := Int(OstatokCop*100); Gruppa := Ostatok / 1000000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); Propis  := Propis + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской') + ' ' + Milliardi(R); Ostatok := Ostatok - R * 1000000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000000; Propis  := Propis + ' ' + Milliardi(R); end; end;
-//  Gruppa := Ostatok / 1000000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской') + ' ' + Millioni(R); Ostatok := Ostatok - R * 1000000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000000; Propis  := Propis + ' ' + Millioni(R); end; end; Gruppa := Ostatok / 1000; if Gruppa >= 1 then begin R := Int(Gruppa / 100); if Ostatok = 1000 then R1 := Int(Gruppa / 10) else R1 := Int(Gruppa * 10);
-//  if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100 * 1000; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10 * 1000; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Женский') + ' ' + Tusachi(R); Ostatok := Ostatok - R * 1000; end else begin R := Int(Gruppa); Ostatok := Ostatok - R * 1000; Propis  := Propis + ' ' + Tusachi(R); end; end; Gruppa := Ostatok;
-//  if Gruppa <> 0 then begin R := Int(Gruppa / 100); if Gruppa >= 100 then Propis  := Propis + ' ' + Sotni(R); Ostatok := Ostatok - R * 100; Gruppa  := Gruppa - R * 100; if Gruppa > 19 then begin R := Int(Gruppa / 10); Propis  := Propis + ' ' + Desatki(R); Ostatok := Ostatok - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 0 then begin R := Int(Gruppa); Propis  := Propis + ' ' + Edinici(R, 'Мужской'); Ostatok := Ostatok - R; end else begin R := Int(Gruppa); Ostatok := Ostatok - R; end; end else If False then begin Gruppa := OstatokCop; if Gruppa > 19 then begin R := Int(Gruppa / 10); PropisCop := PropisCop + ' ' + Desatki(R); OstatokCop := OstatokCop - R * 10; Gruppa  := Gruppa - R * 10; end; if Int(Gruppa) > 2 then begin R := Int(Gruppa); PropisCop := PropisCop + ' ' + Edinici(R, 'Мужской') + ' ' + Copeiki(R); OstatokCop := OstatokCop - R; end else begin R := Int(Gruppa); OstatokCop := OstatokCop - R; PropisCop  := PropisCop + ' ' + Copeiki(R); end; end;
-//  Dlina := Length(Propis); if VarIsNull(Dlina) then Exit; Propis:= Trim(Propis); S:=AnsiUpPerCase(COPY(Propis,1,1))+COPY(Propis,2,Length(Propis)-1); SummaPropis := S + PropisCop;
-//end;
-
-// 39. Сумма прописью (Модифицирован )
-Function SummaPropis(In_Sum:Double): WideString;
-
-  { Функция Conv999}
-  function Conv999(M: longint; fm: integer): string;
-    const c1to9m: array [1..9] of string [6]=('один','два','три','четыре','пять','шесть','семь','восемь','девять');
-        c1to9f: array [1..9] of string [6]=('одна','две','три','четыре','пять','шесть','семь','восемь','девять');
-        c11to19: array [1..9] of string [12]=('одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать');
-        c10to90: array [1..9] of string [11]=('десять','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто');
-        c100to900: array [1..9] of string [9] =('сто','двести','триста','четыреста','пятьсот','шестьсот','семьсот','восемьсот','девятьсот');
-  var s: string; i: longint;
-  begin
-    s := ''; i := M div 100; if i<>0 then s:=c100to900[i]+' '; M := M mod 100; i := M div 10;
-    if (M>10) and (M<20) then s:=s+c11to19[M-10]+' ' else begin if i<>0 then s:=s+c10to90[i]+' '; M := M mod 10; if M<>0 then if fm=0 then s:=s+c1to9f[M]+' ' else s:=s+c1to9m[M]+' '; end;
-    Conv999 := s;
   end;
-var i: longint; j: longint; r: real; t: string; //S:Double;
+
+var
+  I: Longint;
+  J: Longint;
+  R: Real;
+  StringVar: string;
 begin
-  { Преобразуем строку в тип Double }
-  //S:=In_Sum;
-  { Выполняем дальнейшие действия }
-  t := ''; j := Trunc(In_Sum/1000000000.0); r := j; r := In_Sum - r*1000000000.0; i := Trunc(r);
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллиард'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
-  j := i div 1000000;
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллион'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
-  i := i mod 1000000; j := i div 1000;
-  if j<>0 then begin t:=t+Conv999(j,0)+'тысяч'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'а '; 2..4: t:=t+'и '; 5..9: t:=t+' '; end;
-end;
-  i := i mod 1000; j := i; if j<>0 then t:=t+Conv999(j,1);
-  t := t {+'руб. '};  // не выводим руб.
-  i := Round(Frac(In_Sum)*100.0);
-  t := t {+IntToStr(i)+' коп.'}; // не выводим коп.
-  SummaPropis:=AnsiUpperCase(COPY(t,1,1))+COPY(t,2,(Length(t)-1));
+
+  StringVar := '';
+  J := Trunc(InSum / 1000000000.0);
+  R := J;
+  R := InSum - R * 1000000000.0;
+  I := Trunc(R);
+
+  if J<>0 then
+    begin
+
+      StringVar:= StringVar + NumbersToStrings(J, 1) + 'миллиард';
+
+      J := J mod 100;
+
+      if (J>10) and (J<20) then
+        StringVar := StringVar + 'ов '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + 'ов ';
+          1: StringVar := StringVar + ' ';
+          2..4: StringVar := StringVar + 'а ';
+          5..9: StringVar := StringVar + 'ов ';
+        end;
+    end;
+
+  J := I div 1000000;
+  if J <> 0 then
+    begin
+      StringVar := StringVar + NumbersToStrings(J, 1) + 'миллион';
+      J := J mod 100;
+      if (J > 10) and (J < 20) then
+        StringVar := StringVar + 'ов '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + 'ов ';
+          1: StringVar := StringVar + ' ';
+          2..4: StringVar := StringVar + 'а ';
+          5..9: StringVar := StringVar + 'ов ';
+        end;
+    end;
+
+  I := I mod 1000000;
+  J := I div 1000;
+
+  if J <> 0 then
+    begin
+
+      StringVar := StringVar + NumbersToStrings(J, 0) + 'тысяч';
+
+      J := J mod 100;
+
+      if (J>10) and (J<20) then
+        StringVar := StringVar + ' '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + ' ';
+          1: StringVar := StringVar + 'а ';
+          2..4: StringVar := StringVar + 'и ';
+          5..9: StringVar := StringVar + ' ';
+        end;
+
 end;
 
-// 39+. Сумма прописью (Модифицирован )
-Function SummaPropis2(In_Sum:Double): WideString;
-  { Функция Conv999}
-  function Conv999(M: longint; fm: integer): string;
-    const c1to9m: array [1..9] of string [6]=('один','два','три','четыре','пять','шесть','семь','восемь','девять');
-        c1to9f: array [1..9] of string [6]=('одна','две','три','четыре','пять','шесть','семь','восемь','девять');
-        c11to19: array [1..9] of string [12]=('одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать');
-        c10to90: array [1..9] of string [11]=('десять','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто');
-        c100to900: array [1..9] of string [9] =('сто','двести','триста','четыреста','пятьсот','шестьсот','семьсот','восемьсот','девятьсот');
-  var s: string; i: longint;
+  I := I mod 1000;
+
+  J := I;
+
+  if J <> 0 then
+    StringVar := StringVar + NumbersToStrings(J, 1);
+
+  I := Round(Frac(InSum) * 100.0);
+
+  Result := AnsiUpperCase(Copy(StringVar, 1, 1)) + Copy(StringVar, 2, (Length(StringVar) - 1));
+
+end;
+
+
+{ Функция SummaPropis2() - сумма прописью второй вариант реализации логики }
+
+function SummaPropis2(InSum: Double): WideString;
+
+  function NumbersToStrings(Digit1: Longint; Digit2: Integer): string;
+  const
+    NumbersInWords: array [1..9] of string [6] = ('один', 'два', 'три', 'четыре',
+      'пять', 'шесть', 'семь', 'восемь', 'девять');
+    NumbersInWords2: array [1..9] of string [6] = ('одна', 'две', 'три', 'четыре',
+      'пять', 'шесть', 'семь', 'восемь', 'девять');
+    NumbersInWords3: array [1..9] of string [12] = ('одиннадцать', 'двенадцать',
+      'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать',
+        'восемнадцать', 'девятнадцать');
+    NumbersInWords4: array [1..9] of string [11] = ('десять', 'двадцать', 'тридцать',
+      'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто');
+    NumbersInWords5: array [1..9] of string [9] = ('сто', 'двести', 'триста',
+      'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот');
+  var
+    StringVar: string;
+    I: Longint;
   begin
-    s := ''; i := M div 100; if i<>0 then s:=c100to900[i]+' '; M := M mod 100; i := M div 10;
-    if (M>10) and (M<20) then s:=s+c11to19[M-10]+' ' else begin if i<>0 then s:=s+c10to90[i]+' '; M := M mod 10; if M<>0 then if fm=0 then s:=s+c1to9f[M]+' ' else s:=s+c1to9m[M]+' '; end;
-    Conv999 := s;
+    StringVar := '';
+    I := Digit1 div 100;
+    if I <> 0 then
+      StringVar := NumbersInWords5[I] + ' ';
+    Digit1 := Digit1 mod 100;
+    I := Digit1 div 10;
+    if (Digit1>10) and (Digit1<20) then
+      StringVar := StringVar + NumbersInWords3[Digit1 - 10] + ' '
+    else
+      begin
+        if I <> 0 then
+          StringVar := StringVar + NumbersInWords4[I] + ' ';
+          Digit1 := Digit1 mod 10;
+          if Digit1 <> 0 then
+            if Digit2 = 0 then
+              StringVar := StringVar + NumbersInWords2[Digit1] + ' '
+            else
+              StringVar := StringVar + NumbersInWords[Digit1] + ' ';
+            end;
+    NumbersToStrings := StringVar;
   end;
-var i: longint; j: longint; r: real; t: string; //S:Double;
+var
+  I: Longint;
+  J: Longint;
+  R: Real;
+  StringVar: string;
 begin
-  { Преобразуем строку в тип Double }
-  //S:=In_Sum;
-  { Выполняем дальнейшие действия }
-  t := ''; j := Trunc(In_Sum/1000000000.0); r := j; r := In_Sum - r*1000000000.0; i := Trunc(r);
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллиард'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
-  j := i div 1000000;
-  if j<>0 then begin t:=t+Conv999(j,1)+'миллион'; j := j mod 100; if (j>10) and (j<20) then t:=t+'ов ' else case j mod 10 of 0: t:=t+'ов '; 1: t:=t+' '; 2..4: t:=t+'а '; 5..9: t:=t+'ов '; end; end;
-  i := i mod 1000000; j := i div 1000;
-  if j<>0 then begin t:=t+Conv999(j,0)+'тысяч'; j := j mod 100; if (j>10) and (j<20) then t:=t+' ' else case j mod 10 of 0: t:=t+' '; 1: t:=t+'а '; 2..4: t:=t+'и '; 5..9: t:=t+' '; end;
+
+  StringVar := '';
+  J := Trunc(InSum / 1000000000.0);
+  R := J;
+  R := InSum - R * 1000000000.0;
+  I := Trunc(R);
+
+  if J <> 0 then
+    begin
+      StringVar := StringVar + NumbersToStrings(J, 1) + 'миллиард';
+      J := J mod 100;
+      if (J > 10) and ( J < 20) then
+        StringVar := StringVar + 'ов '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + 'ов ';
+          1: StringVar := StringVar + ' ';
+          2..4: StringVar := StringVar + 'а ';
+          5..9: StringVar:= StringVar + 'ов ';
+        end;
+    end;
+
+  J := I div 1000000;
+
+  if J <> 0 then
+    begin
+      StringVar := StringVar + NumbersToStrings(J, 1) + 'миллион';
+      J := J mod 100;
+      if (J > 10) and (J < 20) then
+        StringVar := StringVar + 'ов '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + 'ов ';
+          1: StringVar := StringVar + ' ';
+          2..4: StringVar := StringVar + 'а ';
+          5..9: StringVar := StringVar + 'ов ';
+        end;
+    end;
+
+  I := I mod 1000000;
+  J := I div 1000;
+
+  if J <> 0 then
+    begin
+      StringVar := StringVar + NumbersToStrings(J, 0) + 'тысяч';
+      J := J mod 100;
+      if (J > 10) and (J < 20) then
+        StringVar := StringVar + ' '
+      else
+        case J mod 10 of
+          0: StringVar := StringVar + ' ';
+          1: StringVar := StringVar + 'а ';
+          2..4: StringVar := StringVar + 'и ';
+          5..9: StringVar := StringVar + ' ';
+        end;
 end;
-  i := i mod 1000; j := i; if j<>0 then t:=t+Conv999(j,1);
-  t := t +'руб. ';
-  i := Round(Frac(In_Sum)*100.0);
-  //t := t + IntToStr(i) +' коп.';
-  t := t + beforZero(i,2) +' коп.';
-  SummaPropis2:=AnsiUpperCase(COPY(t,1,1))+COPY(t,2,(Length(t)-1));
+  I := I mod 1000;
+  J := I;
+
+  if J <> 0 then
+    StringVar := StringVar + NumbersToStrings(J, 1);
+
+  StringVar := StringVar +'руб. ';
+  I := Round(Frac(InSum) * 100.0);
+  StringVar := StringVar + beforZero(I, 2) + ' коп.';
+
+  Result := AnsiUpperCase(Copy(StringVar, 1, 1)) + Copy(StringVar, 2, (Length(StringVar) - 1));
+
 end;
 
-// 40. Функция преобразует дату 01.02.2002 в строку '2002-02-01'
-Function StrDateFormat3(in_value : TDate) : shortString;
+
+{ Функция StrDateFormat3() преобразует дату 01.02.2002 в строку '2002-02-01' }
+
+function StrDateFormat3(InValue: TDate): ShortString;
 begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat3:=COPY(DateToStr(in_value),7,2)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),1,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat3:=COPY(DateToStr(in_value),7,4)+'-'+COPY(DateToStr(in_value),4,2)+'-'+COPY(DateToStr(in_value),1,2);
+
+  if Length(DateToStr(InValue)) = 8  then
+    Result := Copy(DateToStr(InValue), 7, 2) + '-'
+      + Copy(DateToStr(InValue), 4, 2) + '-'
+        + Copy(DateToStr(InValue), 1, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 7, 4) + '-'
+      + Copy(DateToStr(InValue), 4, 2) + '-' + Copy(DateToStr(InValue), 1, 2);
+
 end;
+
+// ---- Waiting Coding Style ---
 
 // 41. Функция передает Год из даты
 Function YearFromDate(In_Date:TDate):Word;
