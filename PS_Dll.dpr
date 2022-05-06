@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.7 05-05-2022                                  }
+{       ver. 1.8 06-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -1709,80 +1709,126 @@ begin
 
 end;
 
-// ---- Waiting Coding Style ---
 
-// 41. Функция передает Год из даты
-Function YearFromDate(In_Date:TDate):Word;
-var   YearVar, MonthVar, DayVar: Word;
+{ Функция передает Год из даты }
+
+function YearFromDate(InDate: TDate): Word;
+var
+  YearVar, MonthVar, DayVar: Word;
 begin
-  DecodeDate(In_Date, YearVar, MonthVar, DayVar);
-  YearFromDate:=YearVar;
+
+  DecodeDate(InDate, YearVar, MonthVar, DayVar);
+  Result := YearVar;
+
 end;
 
-// 42. Функция из исходной строки In_String получает Хэш-функцию MD5
-Function GenHashMD5(In_String:ShortString):ShortString;
+
+{ Функция из исходной строки InString получает Хэш-функцию MD5 }
+
+function GenHashMD5(InString: ShortString): ShortString;
 begin
-  GenHashMD5:=MD5DigestToStr(MD5String(In_String));
+  Result := MD5DigestToStr(MD5String(InString));
 end;
 
-// 43. Копирование файла
-function WindowsCopyFile(FromFile, ToDir : string) : boolean;
-var F : TShFileOpStruct;
+
+{ Копирование файла }
+
+function WindowsCopyFile(FromFile, ToDir: string): boolean;
+var
+  F : TShFileOpStruct;
 begin
-  F.Wnd := 0; F.wFunc := FO_COPY;
-  FromFile:=FromFile+#0; F.pFrom:=pchar(FromFile);
-  ToDir:=ToDir+#0; F.pTo:=pchar(ToDir);
+
+  F.Wnd := 0;
+  F.wFunc := FO_COPY;
+  FromFile := FromFile + #0;
+  F.pFrom := Pchar(FromFile);
+  ToDir := ToDir + #0;
+  F.pTo := Pchar(ToDir);
   F.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION;
-  result:=ShFileOperation(F) = 0;
+  Result:=ShFileOperation(F) = 0;
+
 end;
+
 
 { 44. Определение в системе переменной "Temp" как C:\Temp\ }
 { D7
 function GetTempPathSystem: ShortString;
-var Buffer: array[0..1023] of Char;
+var
+  Buffer: array[0..1023] of Char;
 begin
   SetString(Result, Buffer, GetTempPath(Sizeof(Buffer)-1,Buffer));
 end; }
 
+
 { 45. Определение текущего каталога как C:\WORK }
 { D7
 function GetCurrDir: ShortString;
-var Buffer: array[0..1023] of Char;
+var
+  Buffer: array[0..1023] of Char;
 begin
   SetString(Result, Buffer, GetCurrentDirectory(Sizeof(Buffer)-1, Buffer));
 end; }
 
-{ 46. Определение короткого имени файла "D:\WORK\read.txt" -> "read.txt" }
-function getShortFileName(In_FileName:ShortString):ShortString;
+
+{ Определение короткого имени файла "D:\WORK\read.txt" -> "read.txt" }
+
+function getShortFileName(InFileName: ShortString): ShortString;
 begin
-  Result:=ExtractFileName(In_FileName);
+  Result := ExtractFileName(InFileName);
 end;
 
-{ 47. Определение пути по имени файла "D:\WORK\read.txt" -> "D:\WORK\" }
-function getFilePath(In_FileName:ShortString):ShortString;
+
+{ Определение пути по имени файла "D:\WORK\read.txt" -> "D:\WORK\" }
+
+function getFilePath(InFileName: ShortString): ShortString;
 begin
-  Result:=ExtractFilePath(In_FileName);
+  Result := ExtractFilePath(InFileName);
 end;
 
-{ 48. Определение короткого имени файла без расширения "D:\WORK\read.txt" -> "read" }
-function getShortFileNameWithoutExt(In_FileName:ShortString):ShortString;
+
+{ Определение короткого имени файла без расширения "D:\WORK\read.txt" -> "read" }
+
+function getShortFileNameWithoutExt(InFileName:ShortString):ShortString;
 begin
-  Result:=COPY(ExtractFileName(In_FileName),1,POS('.',ExtractFileName(In_FileName))-1);
+  Result := Copy(ExtractFileName(InFileName), 1, Pos('.', ExtractFileName(InFileName)) - 1);
 end;
 
-{ 49. Функция преобразует дату 01.02.2002 в строку '01022002' ДДММГГГГ }
-Function StrDateFormat4(in_value : TDate) : shortString;
+
+{ Функция преобразует дату 01.02.2002 в строку '01022002' ДДММГГГГ }
+
+function StrDateFormat4(InValue: TDate): ShortString;
 begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat4:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat4:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,4);
+
+  if Length(DateToStr(InValue)) = 8  then
+    StrDateFormat4 := Copy(DateToStr(InValue), 1, 2)
+      + Copy(DateToStr(InValue), 4, 2) + Copy(DateToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    StrDateFormat4 := Copy(DateToStr(InValue), 1, 2)
+      + Copy(DateToStr(InValue), 4, 2) + Copy(DateToStr(InValue), 7, 4);
+
 end;
 
-{ 50. Функция преобразует дату 01.02.2002 в строку '010202' ДДММГГ }
-Function StrDateFormat5(in_value : TDate) : shortString;
+
+{ Функция преобразует дату 01.02.2002 в строку '010202' ДДММГГ }
+
+function StrDateFormat5(InValue: TDate): shortString;
 begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat5:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat5:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),9,2);
+
+  if Length(DateToStr(InValue)) = 8 then
+    Result:=Copy(DateToStr(InValue), 1, 2)
+      + Copy(DateToStr(InValue), 4, 2) + Copy(DateToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 1, 2) + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 9, 2);
+
 end;
+
+
+
+// ---- Waiting Coding Style ---
+
 
 { 51. Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГГГЧЧММСС }
 Function StrDateFormat6(in_value : TDateTime) : shortString;
