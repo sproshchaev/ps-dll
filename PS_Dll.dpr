@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.8 06-05-2022                                  }
+{       ver. 1.9 11-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -1826,373 +1826,410 @@ begin
 end;
 
 
+{ Функция StrDateFormat6 преобразует дату и время 23.02.2009 12:37:00
+  в строку ДДММГГГГЧЧММСС }
 
-// ---- Waiting Coding Style ---
-
-
-{ 51. Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГГГЧЧММСС }
-Function StrDateFormat6(in_value : TDateTime) : shortString;
+function StrDateFormat6(InValue: TDateTime): ShortString;
 begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat6:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2) +COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat6:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,4) +COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
+
+  Result := '';
+  if Length(DateToStr(InValue)) = 8 then
+    Result := Copy(DateToStr(InValue), 1, 2) + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 7, 2) + Copy(TimeToStr(InValue), 1, 2)
+      + Copy(TimeToStr(InValue), 4, 2) + Copy(TimeToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 1, 2) + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 7, 4) + Copy(TimeToStr(InValue), 1, 2)
+      + Copy(TimeToStr(InValue), 4, 2) + Copy(TimeToStr(InValue), 7, 2);
+
 end;
 
-{ 52. Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГЧЧММСС }
-Function StrDateFormat7(in_value : TDateTime) : shortString;
-var tmp_StrDateFormat7: shortString;
+
+{ Функция StrDateFormat7 преобразует дату и время 23.02.2009 12:37:00
+  в строку ДДММГГЧЧММСС }
+
+function StrDateFormat7(InValue: TDateTime): ShortString;
+var
+  StrDateFormat7Var: ShortString;
 begin
-  IF Length(DateToStr(in_value))=8 THEN tmp_StrDateFormat7:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),7,2);
-  IF Length(DateToStr(in_value))=10 THEN tmp_StrDateFormat7:=COPY(DateToStr(in_value),1,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),9,2);
-  { Время - если до 10:00:00 }
-  IF Length(TimeToStr(in_value))=7
-    THEN
+
+  if Length(DateToStr(InValue)) = 8 then
+    StrDateFormat7Var := Copy(DateToStr(InValue), 1, 2)
+      + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 7, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    StrDateFormat7Var := Copy(DateToStr(InValue), 1, 2)
+      + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 9, 2);
+
+  if Length(TimeToStr(InValue)) = 7 then
+    begin
+      StrDateFormat7Var := StrDateFormat7Var + '0';
+      StrDateFormat7Var := StrDateFormat7Var + Copy(TimeToStr(InValue), 1, 1)
+        + Copy(TimeToStr(InValue), 3, 2) + Copy(TimeToStr(InValue), 6, 2);
+    end
+  else
+    begin
+      StrDateFormat7Var := StrDateFormat7Var + Copy(TimeToStr(InValue), 1, 2)
+        + Copy(TimeToStr(InValue), 4, 2) + Copy(TimeToStr(InValue), 7, 2);
+    end;
+
+  Result := StrDateFormat7Var;
+
+end;
+
+
+{ Функция VariableBetweenChars находит в строке значение мужду двумя символами }
+
+function VariableBetweenChars(InString: ShortString; InChar: Char;
+  InCharNumberStart: Byte; InCharNumberEnd: Byte): ShortString;
+var
+  VariableBetweenCharsVar: ShortString;
+begin
+
+  VariableBetweenCharsVar := '';
+  VariableBetweenCharsVar := Copy(InString, FindChar(InString, InChar,
+    InCharNumberStart) + 1, FindChar(InString, InChar, InCharNumberEnd)
+    - FindChar(InString, InChar, InCharNumberStart) - 1);
+  Result := VariableBetweenCharsVar;
+
+end;
+
+
+{ Функция VariableBetweenCharsWideString находит в строке значение мужду двумя
+  символами - вариант обработки Широкой строки }
+
+function VariableBetweenCharsWideString(InString: WideString; InChar:Char;
+  InCharNumberStart: Byte; InCharNumberEnd: Byte): ShortString;
+begin
+
+  Result := Copy(InString, FindCharWideString(InString, InChar,
+    InCharNumberStart) + 1, FindCharWideString(InString, InChar, InCharNumberEnd)
+    - FindCharWideString(InString, InChar, InCharNumberStart) - 1);
+
+end;
+
+
+{ Функция VariableBetweenCharsWideString2 находит в строке значение мужду двумя
+символами - вариант обработки Широкой строки }
+
+function VariableBetweenCharsWideString2(InString: WideString; InChar: Char;
+  InCharNumberStart: Byte; InCharNumberEnd: Byte): WideString;
+begin
+
+  Result := Copy(InString, FindCharWideString(InString, InChar,
+    InCharNumberStart) + 1, FindCharWideString(InString, InChar, InCharNumberEnd)
+    - FindCharWideString(InString, InChar, InCharNumberStart) - 1);
+
+end;
+
+
+{ Функция VariableBetweenCharsWideString3 находит в строке значение мужду двумя
+символами - вариант обработки Широкой строки }
+
+function VariableBetweenCharsWideString3(InString: WideString; InChar: Char;
+  InCharNumberStart: Byte; InCharNumberEnd: Byte): WideString;
+begin
+
+  Result := Copy(InString, FindCharWideString2(InString, InChar,
+    InCharNumberStart) + 1, FindCharWideString2(InString, InChar, InCharNumberEnd)
+    - FindCharWideString2(InString, InChar, InCharNumberStart) - 1);
+
+end;
+
+
+{ Функция StrFormatDateTimeITDToDateTime преобразует строку в формате даты
+  и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDateTime }
+
+function StrFormatDateTimeITDToDateTime(InStrFormatDateTimeITD: ShortString): TDateTime;
+begin
+
+  Result := StrToDateTime(COPY(InStrFormatDateTimeITD, 1, 2)
+    + '.'+Copy(InStrFormatDateTimeITD, 4, 2) + '.20'
+    + Copy(InStrFormatDateTimeITD, 7, 2) + Copy(InStrFormatDateTimeITD, 9, 9));
+
+end;
+
+
+{ Функция StrFormatDateTimeITDToDate преобразует строку в формате даты и времени
+  Инфоточки ITD '04-04-07 15:22:11' в тип TDate }
+
+function StrFormatDateTimeITDToDate(InStrFormatDateTimeITD: ShortString): TDate;
+begin
+
+  Result := StrToDate(Copy(InStrFormatDateTimeITD, 1, 2)
+    + '.' + Copy(InStrFormatDateTimeITD, 4, 2) + '.20'
+    + Copy(InStrFormatDateTimeITD, 7, 2));
+
+end;
+
+
+{ Функция DateTimeToStrFormatITDDateTime преобразует тип TDateTime в строковый
+  формат даты и времени ITD }
+
+function DateTimeToStrFormatITDDateTime(InDateTime: TDateTime): ShortString;
+begin
+
+  Result := Copy(DateTimeToStr(InDateTime), 1, 2) + '-'
+    + Copy(DateTimeToStr(InDateTime), 4, 2) + '-'
+    + Copy(DateTimeToStr(InDateTime), 9, 11);
+
+end;
+
+
+{ Функция Sign_RSA_MD5_hex_WideStr для передаваемой строки InStringForSign
+  формирует ЭЦП RSA/MD5 с длиной ключа 1024 бит в кодировке hex.
+  В InfileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
+
+function Sign_RSA_MD5_hex_WideStr(InFileRSAPrivateKey: string;
+  InStringForSign: WideString ): WideString;
+var
+   Len: cardinal;
+   Mdctx: EVP_MD_CTX;
+   InBuf, OutBuf: array of char;
+   Key: pEVP_PKEY;
+   A: pEVP_PKEY;
+   KeyFile: pBIO;
+   nTamanho: Integer;
+   FileStream: TFileStream;
+   OSt: TStringStream;
+begin
+
+     if FileExists(InFileRSAPrivateKey) = false
+       then
+         begin
+           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Файл '+InFileRSAPrivateKey+' не найден!');
+         end;
+
+
+     A := nil;
+
+     OpenSSL_add_all_algorithms;
+     OpenSSL_add_all_ciphers;
+     OpenSSL_add_all_digests;
+     ERR_load_crypto_strings;
+
+     try
+        KeyFile := BIO_new(BIO_s_file());
+        BIO_read_filename(KeyFile, PChar(InFileRSAPrivateKey));
+        Key := PEM_read_bio_PrivateKey(KeyFile, A, nil, nil);
+        if Key = nil then
+        begin
+          raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Ошибка чтения PRIVATE KEY из файла '+InFileRSAPrivateKey+' !');
+        end;
+
+
+        OSt := TStringStream.Create('');
+
+        OSt.WriteString(InStringForSign);
+
+        nTamanho:=Length(InStringForSign);
+
+        if nTamanho < 1024 then
+        begin
+             nTamanho := 1024;
+        end;
+
+        SetLength(InBuf,nTamanho + 1);
+        SetLength(OutBuf,nTamanho + 1);
+
+        StrPCopy(pchar(InBuf), OSt.DataString);
+        OSt.Free;
+
+        EVP_SignInit(@Mdctx, EVP_md5());
+        EVP_SignUpdate(@Mdctx, pchar(InBuf), StrLen(pchar(InBuf)));
+        EVP_SignFinal(@Mdctx, pchar(OutBuf), Len, Key);
+
+        BIO_free(KeyFile);
+
+        BinToHex(pchar(OutBuf),pchar(InBuf),Len);
+        InBuf[2 * Len] := #0;
+
+        Result := LowerCase( StrPas(pchar(InBuf)) );
+
+     finally
+        EVP_cleanup;
+     end;
+end;
+
+
+{ Функция Sign_RSA_MD5_hex_File для файла InStringForSign формирует ЭЦП RSA/MD5
+  с длиной ключа 1024 бит в кодировке hex.
+  В InfileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
+
+function Sign_RSA_MD5_hex_File(InFileRSAPrivateKey: string; InFileNameForSign:WideString ): WideString;
+var
+   Len: cardinal;
+   Mdctx: EVP_MD_CTX;
+   InBuf, OutBuf: array of char;
+   Key: pEVP_PKEY;
+   A: pEVP_PKEY;
+   KeyFile: pBIO;
+   NTamanho: integer;
+   FileStream: TFileStream;
+   OSt: TStringStream;
+begin
+
+     if FileExists(InFileRSAPrivateKey) = false then
+       begin
+         raise Exception.Create('Sign_RSA_MD5_hex_File: Файл '+InFileRSAPrivateKey+' не найден!');
+       end;
+
+     if FileExists(InFileNameForSign) = false then
+       begin
+         raise Exception.Create('Sign_RSA_MD5_hex_File: Не найден файл '+InFileNameForSign+'!');
+       end;
+
+     A := nil;
+
+     OpenSSL_add_all_algorithms;
+     OpenSSL_add_all_ciphers;
+     OpenSSL_add_all_digests;
+     ERR_load_crypto_strings;
+
+     try
+        KeyFile := BIO_new(BIO_s_file());
+        BIO_read_filename(KeyFile, PChar(InFileRSAPrivateKey));
+        Key := PEM_read_bio_PrivateKey(KeyFile, A, nil, nil);
+        if Key = nil then
+        begin
+          raise Exception.Create('Sign_RSA_MD5_hex_File: Ошибка чтения PRIVATE KEY из файла '+InFileRSAPrivateKey+' !');
+        end;
+
+        FileStream := TFileStream.Create(InFileNameForSign, fmOpenRead);
+        NTamanho := FileStream.Size;
+
+        OSt := TStringStream.Create('');
+        OSt.CopyFrom(FileStream,NTamanho);
+
+        if NTamanho < 1024 then
+        begin
+          NTamanho := 1024;
+        end;
+
+        SetLength(InBuf,NTamanho + 1);
+        SetLength(OutBuf,NTamanho + 1);
+
+        StrPCopy(pchar(InBuf), OSt.DataString);
+        OSt.Free;
+
+        EVP_SignInit(@Mdctx, EVP_md5());
+        EVP_SignUpdate(@Mdctx, pchar(InBuf), StrLen(pchar(InBuf)));
+        EVP_SignFinal(@Mdctx, pchar(OutBuf), Len, Key);
+
+        BIO_free(KeyFile);
+
+        BinToHex(pchar(OutBuf),pchar(InBuf),Len);
+        InBuf[2 * Len] := #0;
+
+        Result := LowerCase( StrPas(pchar(InBuf)) );
+
+     finally
+        EVP_cleanup;
+     end;
+end;
+
+
+{ Функция mixingString производит перемешку между собой случайным образом
+  символов передаваемых в качестве параметра (перемешка mixing строки) }
+
+function MixingString(InString: ShortString): ShortString;
+var
+    MaxLengtInString: Word;
+    StringVar: ShortString;
+    MyHour, MyMin, MySec, MyMilli, MySecStamp: Word;
+    I, PosInStr: Word;
+begin
+
+  DecodeTime(Time, MyHour, MyMin, MySecStamp, MyMilli);
+
+  MaxLengtInString := Length(InString);
+
+  if (MaxLengtInString MOD 2) = 0 then
       begin
-        tmp_StrDateFormat7:=tmp_StrDateFormat7+'0';
-        tmp_StrDateFormat7:=tmp_StrDateFormat7+COPY(TimeToStr(in_value),1,1)+COPY(TimeToStr(in_value),3,2)+COPY(TimeToStr(in_value),6,2);
-      end
-    ELSE
-      begin
-        tmp_StrDateFormat7:=tmp_StrDateFormat7+COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
+        InString := InString + Copy(InString, 1, 1);
       end;
-  { Результат }
-  StrDateFormat7:=tmp_StrDateFormat7;
-end;
 
-{ 53. Функция находит в строке значение мужду двумя символами }
-Function VariableBetweenChars(In_String: shortString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):ShortString;
-var VariableBetweenChars_tmp:ShortString;
-begin
-  VariableBetweenChars_tmp:='';
-  VariableBetweenChars_tmp:=COPY(In_String, FindChar(In_String, In_Char, In_CharNumberStart)+1, FindChar(In_String, In_Char, In_CharNumberEnd)-FindChar(In_String, In_Char, In_CharNumberStart)-1);
-  VariableBetweenChars:=VariableBetweenChars_tmp;
-end;
-
-{ 54. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
-Function VariableBetweenCharsWideString(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):ShortString;
-var VariableBetweenChars_tmp:ShortString;
-begin
-  VariableBetweenChars_tmp:='';
-  VariableBetweenChars_tmp:=COPY(In_String, FindCharWideString(In_String, In_Char, In_CharNumberStart)+1, FindCharWideString(In_String, In_Char, In_CharNumberEnd)-FindCharWideString(In_String, In_Char, In_CharNumberStart)-1);
-  VariableBetweenCharsWideString:=VariableBetweenChars_tmp;
-end;
-
-{ 54+. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
-Function VariableBetweenCharsWideString2(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):WideString;
-var VariableBetweenChars_tmp:WideString;
-begin
-  VariableBetweenChars_tmp:='';
-  VariableBetweenChars_tmp:=COPY(In_String, FindCharWideString(In_String, In_Char, In_CharNumberStart)+1, FindCharWideString(In_String, In_Char, In_CharNumberEnd)-FindCharWideString(In_String, In_Char, In_CharNumberStart)-1);
-  VariableBetweenCharsWideString2:=VariableBetweenChars_tmp;
-end;
-
-{ 54++. Функция находит в строке значение мужду двумя символами - вариант обработки Широкой строки }
-Function VariableBetweenCharsWideString3(In_String: WideString; In_Char:Char; In_CharNumberStart:Byte; In_CharNumberEnd:Byte):WideString;
-var VariableBetweenChars_tmp:WideString;
-begin
-  VariableBetweenChars_tmp:='';
-  VariableBetweenChars_tmp:=COPY(In_String, FindCharWideString2(In_String, In_Char, In_CharNumberStart)+1, FindCharWideString2(In_String, In_Char, In_CharNumberEnd)-FindCharWideString2(In_String, In_Char, In_CharNumberStart)-1);
-  VariableBetweenCharsWideString3:=VariableBetweenChars_tmp;
-end;
-
-{ 55. Функция преобразует строку в формате даты и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDateTime }
-Function StrFormatDateTimeITDToDateTime(In_StrFormatDateTimeITD:ShortString):TDateTime;
-begin
-  StrFormatDateTimeITDToDateTime:=StrToDateTime(COPY(In_StrFormatDateTimeITD,1,2)+'.'+COPY(In_StrFormatDateTimeITD,4,2)+'.20'+COPY(In_StrFormatDateTimeITD,7,2)+COPY(In_StrFormatDateTimeITD,9,9));
-end;
-
-{ 56. Функция преобразует строку в формате даты и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDate }
-Function StrFormatDateTimeITDToDate(In_StrFormatDateTimeITD:ShortString):TDate;
-begin
-  StrFormatDateTimeITDToDate:=StrToDate(COPY(In_StrFormatDateTimeITD,1,2)+'.'+COPY(In_StrFormatDateTimeITD,4,2)+'.20'+COPY(In_StrFormatDateTimeITD,7,2));
-end;
-
-{ 57. Функция преобразует тип TDateTime в строковый формат даты и времени ITD }
-Function DateTimeToStrFormatITDDateTime(In_DateTime:TDateTime):ShortString;
-begin
-  DateTimeToStrFormatITDDateTime:=COPY(DateTimeToStr(In_DateTime),1,2)+'-'+COPY(DateTimeToStr(In_DateTime),4,2)+'-'+COPY(DateTimeToStr(In_DateTime),9,11);
-end;
-
-{ 58. Функция для передаваемой строки In_StringForSign формирует ЭЦП RSA/MD5 с длиной ключа 1024 бит в кодировке hex. В In_fileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
-function Sign_RSA_MD5_hex_WideStr(In_fileRSAPrivateKey:String; In_StringForSign:WideString ): WideString;
-var
-   Len: cardinal;
-   mdctx: EVP_MD_CTX;
-   inbuf, outbuf: array of char;
-   key: pEVP_PKEY;
-   a : pEVP_PKEY;
-   keyfile: pBIO;
-   nTamanho : integer;
-   FileStream: TFileStream;
-   oST : TStringStream;
-begin
-
-     { Проверяем наличие файла, содержащего RSA PRIVATE KEY  }
-     if FileExists(In_fileRSAPrivateKey) = false
-       then
-         begin
-           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Файл '+In_fileRSAPrivateKey+' не найден!');
-
-           { Пример содержимого файла "RSA PRIVATE KEY"
-
-           -----BEGIN RSA PRIVATE KEY-----
-           MIICXQIBAAKBgQCargbCJN+e7X80hawa+7hv4QjiEv6SisYsaVJ5HYqCCMYVYlsd
-           mnbF4AK7VJTEpJrdKs64DPAbbAPWKFHeH6U2CEBurrveoejznksC6NI57SAoEev2
-           ORGyhmwhrk5ztDJWJmaKv5Ne+YKRnVeMCgxZZe5LoxCmcQnmcUmIE/D7VwIDAQAB
-           AoGADiY7MglDd3tMNpa/vpwmK/3O3TdVmDwfkrJzu+aK5Ag/bndX1GZr1P//3/kF
-           vtM7411mGYn9cNS5qR55FrOYXiuLdNr2n550oCNTFvR7dwty3vewDHX74ybmlouU
-           K1swtLaYYqd2GbyH1od9Pkqe1XOF4ayO9tO+r1EQhkNiyOECQQDKubFVTGJGMQAL
-           oOSQBYIj2vQT6xT1B0ZHr1mFpkpYEZXEuPBt8xRGF42yyy4Zx4lNrw1Cv9jKEhzx
-           Cbe4f4pHAkEAw1QT446MU1amf1p3hwc9fZsEUAilOZtDWGmfHWVK6JKvanh4dmc7
-           r3cDF0RsStW9wp1kyhrEvWhODzkjarp+cQJBAKpTgEoRhlRBIS+j+8WBy0kC0qXV
-           kuMYPJVIH6gqAjaid7o0RFWssTD+4yAAk/g27Qam+DZH6AZHV6exKXpLNksCQQCg
-           Zpj2k4bUoSGVD3t8XQu36+a8unzEM6Y4InRRtW6wUlTOwCNcSCYRT1AweTXctm1g
-           NdQgy56oU9FWWvukl4VhAkBuBRx5Xm6ZK13AG2uvTjA1Gjn5miuyufcuSj6DGeK7
-           XQuxyS71pJ2nrRs3vAFjzytULpdfrxJa3gpdH+ZJdtQO
-           -----END RSA PRIVATE KEY-----
-           }
-
-         end;
-
-     { Передается на вход строка, поэтому не проверяем наличие файла
-     if FileExists(In_StringForSign) = false then
-     begin
-          raise Exception.Create('Arquivo para ser assinado nao foi encontrado.');
-     end;}
-
-     a := nil;
-
-     OpenSSL_add_all_algorithms;   //
-     OpenSSL_add_all_ciphers;      // InitOpenSSL
-     OpenSSL_add_all_digests;      //
-     ERR_load_crypto_strings;      //
-
-     try
-        keyfile := BIO_new(BIO_s_file());
-        BIO_read_filename(keyfile, PChar(In_fileRSAPrivateKey));
-        key := PEM_read_bio_PrivateKey(keyfile, a, nil, nil);
-        if key = nil then
-        begin
-             raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Ошибка чтения PRIVATE KEY из файла '+In_fileRSAPrivateKey+' !');
-        end;
-
-        //FileStream := TFileStream.Create(In_StringForSign, fmOpenRead);
-        //nTamanho := FileStream.Size;
-
-        oST := TStringStream.Create('');
-
-        //oST.CopyFrom(FileStream,nTamanho);
-
-        { Запись в oST данных из FileStream }
-        oST.WriteString(In_StringForSign);
-
-        { Размер строки }
-        nTamanho:=Length(In_StringForSign);
-
-        if nTamanho < 1024 then
-        begin
-             nTamanho := 1024;
-        end;
-
-        SetLength(inbuf,nTamanho + 1);
-        SetLength(outbuf,nTamanho + 1);
-
-        StrPCopy(pchar(inbuf), oST.DataString);
-        oST.Free;
-
-        //FileStream.Free;
-
-        EVP_SignInit(@mdctx, EVP_md5());
-        EVP_SignUpdate(@mdctx, pchar(inbuf), StrLen(pchar(inbuf)));
-        EVP_SignFinal(@mdctx, pchar(outbuf), Len, key);
-
-        BIO_free(keyfile);
-
-        BinToHex(pchar(outbuf),pchar(inbuf),Len);
-        inbuf[2*Len]:=#0;
-
-        { Результат выводим в символах нижнего регистра - LowerCase }
-        Result := LowerCase( StrPas(pchar(inbuf)) );
-
-     finally
-            EVP_cleanup;                  // FreeOpenSSL
-     end;
-end;
-
-{ 59. Функция для файла In_StringForSign формирует ЭЦП RSA/MD5 с длиной ключа 1024 бит в кодировке hex. В In_fileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
-function Sign_RSA_MD5_hex_File(In_fileRSAPrivateKey:String; In_FileNameForSign:WideString ): WideString;
-var
-   Len: cardinal;
-   mdctx: EVP_MD_CTX;
-   inbuf, outbuf: array of char;
-   key: pEVP_PKEY;
-   a : pEVP_PKEY;
-   keyfile: pBIO;
-   nTamanho : integer;
-   FileStream: TFileStream;
-   oST : TStringStream;
-begin
-
-     { Проверяем наличие файла, содержащего RSA PRIVATE KEY  }
-     if FileExists(In_fileRSAPrivateKey) = false
-       then
-         begin
-           raise Exception.Create('Sign_RSA_MD5_hex_File: Файл '+In_fileRSAPrivateKey+' не найден!');
-
-           { Пример содержимого файла "RSA PRIVATE KEY"
-
-           -----BEGIN RSA PRIVATE KEY-----
-           MIICXQIBAAKBgQCargbCJN+e7X80hawa+7hv4QjiEv6SisYsaVJ5HYqCCMYVYlsd
-           mnbF4AK7VJTEpJrdKs64DPAbbAPWKFHeH6U2CEBurrveoejznksC6NI57SAoEev2
-           ORGyhmwhrk5ztDJWJmaKv5Ne+YKRnVeMCgxZZe5LoxCmcQnmcUmIE/D7VwIDAQAB
-           AoGADiY7MglDd3tMNpa/vpwmK/3O3TdVmDwfkrJzu+aK5Ag/bndX1GZr1P//3/kF
-           vtM7411mGYn9cNS5qR55FrOYXiuLdNr2n550oCNTFvR7dwty3vewDHX74ybmlouU
-           K1swtLaYYqd2GbyH1od9Pkqe1XOF4ayO9tO+r1EQhkNiyOECQQDKubFVTGJGMQAL
-           oOSQBYIj2vQT6xT1B0ZHr1mFpkpYEZXEuPBt8xRGF42yyy4Zx4lNrw1Cv9jKEhzx
-           Cbe4f4pHAkEAw1QT446MU1amf1p3hwc9fZsEUAilOZtDWGmfHWVK6JKvanh4dmc7
-           r3cDF0RsStW9wp1kyhrEvWhODzkjarp+cQJBAKpTgEoRhlRBIS+j+8WBy0kC0qXV
-           kuMYPJVIH6gqAjaid7o0RFWssTD+4yAAk/g27Qam+DZH6AZHV6exKXpLNksCQQCg
-           Zpj2k4bUoSGVD3t8XQu36+a8unzEM6Y4InRRtW6wUlTOwCNcSCYRT1AweTXctm1g
-           NdQgy56oU9FWWvukl4VhAkBuBRx5Xm6ZK13AG2uvTjA1Gjn5miuyufcuSj6DGeK7
-           XQuxyS71pJ2nrRs3vAFjzytULpdfrxJa3gpdH+ZJdtQO
-           -----END RSA PRIVATE KEY-----
-           }
-
-         end;
-
-     { Проверяем наличие файла }
-     if FileExists(In_FileNameForSign) = false then
-     begin
-          raise Exception.Create('Sign_RSA_MD5_hex_File: Не найден файл '+In_FileNameForSign+'!');
-     end;
-
-     a := nil;
-
-     OpenSSL_add_all_algorithms;   //
-     OpenSSL_add_all_ciphers;      // InitOpenSSL
-     OpenSSL_add_all_digests;      //
-     ERR_load_crypto_strings;      //
-
-     try
-        keyfile := BIO_new(BIO_s_file());
-        BIO_read_filename(keyfile, PChar(In_fileRSAPrivateKey));
-        key := PEM_read_bio_PrivateKey(keyfile, a, nil, nil);
-        if key = nil then
-        begin
-             raise Exception.Create('Sign_RSA_MD5_hex_File: Ошибка чтения PRIVATE KEY из файла '+In_fileRSAPrivateKey+' !');
-        end;
-
-        FileStream := TFileStream.Create(In_FileNameForSign, fmOpenRead);
-        nTamanho := FileStream.Size;
-
-        oST := TStringStream.Create('');
-        oST.CopyFrom(FileStream,nTamanho);
-
-        if nTamanho < 1024 then
-        begin
-             nTamanho := 1024;
-        end;
-
-        SetLength(inbuf,nTamanho + 1);
-        SetLength(outbuf,nTamanho + 1);
-
-        StrPCopy(pchar(inbuf), oST.DataString);
-        oST.Free;
-
-        //FileStream.Free;
-
-        EVP_SignInit(@mdctx, EVP_md5());
-        EVP_SignUpdate(@mdctx, pchar(inbuf), StrLen(pchar(inbuf)));
-        EVP_SignFinal(@mdctx, pchar(outbuf), Len, key);
-
-        BIO_free(keyfile);
-
-        BinToHex(pchar(outbuf),pchar(inbuf),Len);
-        inbuf[2*Len]:=#0;
-
-        { Результат выводим в символах нижнего регистра - LowerCase }
-        Result := LowerCase( StrPas(pchar(inbuf)) );
-
-     finally
-            EVP_cleanup;                  // FreeOpenSSL
-     end;
-end;
-
-{ 60. Функция производит перемешку между собой случайным образом символов передаваемых в качестве параметра (перемешка mixing строки) }
-Function mixingString(In_String:ShortString):ShortString;
-var maxLengtIn_String:Word;
-    s_tmp :ShortString;
-    myHour, myMin, mySec, myMilli, mySecStamp : Word;
-    i, posInS : Word;
-begin
-
-  { Временной срез }
-  DecodeTime(Time, myHour, myMin, mySecStamp, myMilli);
-
-  { Определяем длину в исходной строке }
-  maxLengtIn_String:=Length(In_String);
-
-  { Алгоритм работает для строки с нечетным количеством символов }
-  IF (maxLengtIn_String MOD 2)=0
-    THEN
-      begin
-        { Если длина четна, то добавляем 1 символ }
-        In_String:=In_String+COPY(In_String,1,1);
-      end; // If
-
-  { Цикл }
-  FOR i:=1 TO (mySecStamp+7) DO
+  for I := 1 to (MySecStamp + 7) do
     begin
 
-      { Выполняем перемешку при каждом четном цикле }
-      IF (i MOD 2)=0
-        THEN
-          begin
-            In_String:=COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)+COPY(In_String,1,(Length(In_String) DIV 2)-1);
-          end // If
-        ELSE
-          begin
-            { Выполняем перемешку при каждом нечетном цикле }
-            In_String:=COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1), (Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2), Length(COPY(In_String,1,(Length(In_String) DIV 2)-1))-(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)+1)+COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1),1,(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)-1)
-                    + COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1);
-          end;
-
-      { Временной срез }
-      DecodeTime(Time, myHour, myMin, mySec, myMilli);
-
-      { Выполняем перемешку в зависимости от четности Миллисекунд }
-      IF (myMilli MOD 2)=0
-        THEN In_String:=COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)+COPY(In_String,1,(Length(In_String) DIV 2)-1);
-
-      { Выполняем перемешку в зависимости от четности Секунд }
-      IF (mySec mod 2)=0
-        THEN In_String:=COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1), (Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2), Length(COPY(In_String,1,(Length(In_String) DIV 2)-1))-(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)+1)+COPY(COPY(In_String,1,(Length(In_String) DIV 2)-1),1,(Length(COPY(In_String,1,(Length(In_String) DIV 2)-1)) DIV 2)-1)
-                    + COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1);
-
-      { Выполняем перемешку в зависимости от четности Минут }
-      IF (myMin mod 2)=0
-        THEN In_String:=COPY(In_String,1,(Length(In_String) DIV 2)-1)+COPY(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1), (Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2), Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1))-(Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2)+1)+COPY(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1),1,(Length(COPY(In_String, (Length(In_String) DIV 2), Length(In_String)-(Length(In_String) DIV 2)+1)) DIV 2)-1);
-
-      { Делаем перестановку между 1-ым и 2-ым символом и так до конца посмледовательности }
-      s_tmp:=''; posInS:=1;
-      WHILE (posInS<Length(In_String)) DO
+      if (I MOD 2) = 0 then
         begin
-          //Application.ProcessMessages;
-          { Новые миллисекунды }
-          DecodeTime(Time, myHour, myMin, mySec, myMilli);
-          IF (Random(myMilli) MOD 2)=0 THEN s_tmp:=s_tmp+In_String[posInS]+In_String[posInS+1] ELSE s_tmp:=s_tmp+In_String[posInS+1]+In_String[posInS];
-          posInS:=posInS+2;
+          InString := Copy(InString, (Length(InString) DIV 2),
+            Length(InString) - (Length(InString) DIV 2) + 1)
+            + Copy(InString, 1, (Length(InString) DIV 2) - 1);
+        end
+      else
+        begin
+          InString := Copy(Copy(InString, 1, (Length(InString) DIV 2) - 1),
+            (Length(Copy(InString, 1, (Length(InString) DIV 2) - 1)) DIV 2),
+            Length(COPY(InString, 1, (Length(InString) DIV 2) - 1))
+            - (Length(COPY(InString, 1, (Length(InString) DIV 2) - 1)) DIV 2) + 1)
+            + Copy(Copy(InString, 1, (Length(InString) DIV 2) - 1), 1,
+            (Length(Copy(InString, 1, (Length(InString) DIV 2) - 1)) DIV 2) - 1)
+            + Copy(InString, (Length(InString) DIV 2), Length(InString)
+            - (Length(InString) DIV 2) + 1);
         end;
-      IF posInS>=Length(In_String) THEN s_tmp:=s_tmp+In_String[posInS];
-      { Результат }
-      In_String:=s_tmp;
-      //Application.ProcessMessages;
-    end; // For
 
-  { Приводим длину к исходной }
-  IF maxLengtIn_String<>Length(In_String) THEN In_String:=COPY(In_String,2,Length(In_String)-1);
+      DecodeTime(Time, MyHour, MyMin, MySec, MyMilli);
 
-  Result:=In_String;
+      if (MyMilli MOD 2) = 0 then
+        InString := Copy(InString, (Length(InString) DIV 2),
+          Length(InString) - (Length(InString) DIV 2) + 1)
+          + Copy(InString, 1, (Length(InString) DIV 2) - 1);
+
+      if (MySec mod 2) = 0 then
+        InString := Copy(Copy(InString, 1, (Length(InString) DIV 2) - 1),
+          (Length(Copy(InString, 1, (Length(InString) DIV 2) - 1)) DIV 2),
+          Length(Copy(InString, 1, (Length(InString) DIV 2) - 1))
+          - (Length(Copy(InString, 1, (Length(InString) DIV 2)-1)) DIV 2) + 1)
+          + Copy(Copy(InString, 1, (Length(InString) DIV 2) - 1), 1,
+          (Length(Copy(InString, 1, (Length(InString) DIV 2) - 1)) DIV 2) - 1)
+          + Copy(InString, (Length(InString) DIV 2), Length(InString)
+          - (Length(InString) DIV 2) + 1);
+
+      if (MyMin mod 2) = 0 then
+        InString := Copy(InString, 1, (Length(InString) DIV 2) - 1)
+          + Copy(Copy(InString, (Length(InString) DIV 2), Length(InString)
+          - (Length(InString) DIV 2) + 1), (Length(Copy(InString,
+          (Length(InString) DIV 2), Length(InString) - (Length(InString) DIV 2) + 1)) DIV 2),
+          Length(Copy(InString, (Length(InString) DIV 2), Length(InString)
+          - (Length(InString) DIV 2) + 1)) - (Length(Copy(InString,
+          (Length(InString) DIV 2), Length(InString)
+          - (Length(InString) DIV 2) + 1)) DIV 2) + 1) + Copy(Copy(InString,
+          (Length(InString) DIV 2), Length(InString) - (Length(InString) DIV 2) + 1),
+          1, (Length(Copy(InString, (Length(InString) DIV 2), Length(InString)
+          - (Length(InString) DIV 2) + 1)) DIV 2) - 1);
+
+      StringVar := '';
+      PosInStr := 1;
+
+      while (PosInStr < Length(InString)) do
+        begin
+          DecodeTime(Time, MyHour, MyMin, MySec, MyMilli);
+          if (Random(MyMilli) MOD 2) = 0 then
+            StringVar := StringVar + InString[PosInStr] + InString[PosInStr + 1]
+          else
+            StringVar := StringVar + InString[PosInStr + 1] + InString[PosInStr];
+          PosInStr := PosInStr + 2;
+        end;
+
+      if PosInStr >= Length(InString) then
+        StringVar := StringVar + InString[PosInStr];
+      InString := StringVar;
+    end;
+
+  if MaxLengtInString <> Length(InString) then
+    InString := Copy(InString, 2, Length(InString) - 1);
+
+  Result:=InString;
+
 end;
+
+
+// ---- Waiting Coding Style ---
 
 { 61. Функция выполняет StrToFloat с проверкой в In_String разделителя, соответствующего системно-установленному }
 Function StrToFloat2(In_String:ShortString):Extended;
