@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.9 11-05-2022                                  }
+{       ver. 1.10 12-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -2229,271 +2229,322 @@ begin
 end;
 
 
-// ---- Waiting Coding Style ---
+{ Функция StrToFloat2 вызывает StrToFloat с проверкой в InString разделителя,
+  соответствующего установленному в системых настройках ОС }
 
-{ 61. Функция выполняет StrToFloat с проверкой в In_String разделителя, соответствующего системно-установленному }
-Function StrToFloat2(In_String:ShortString):Extended;
-var pcLCA: array [0..20] of Char;
+function StrToFloat2(InString: ShortString): Extended;
+var
+  PcLCA: array [0..20] of Char;
 begin
 
-  { Определяем системную переменную LOCALE_SDECIMAL }
-  GetLocaleInfo(LOCALE_SYSTEM_DEFAULT, LOCALE_SDECIMAL, pcLCA, 19);
+  GetLocaleInfo(LOCALE_SYSTEM_DEFAULT, LOCALE_SDECIMAL, PcLCA, 19);
 
-  { Если в In_String разделитель "." а в системе "," }
-  IF (POS('.', In_String)<>0)AND(POS(',', In_String)=0)AND(pcLCA[0]=',')
-    THEN  In_String:=StringReplace(In_String, '.', pcLCA[0], [rfReplaceAll, rfIgnoreCase]);
+  if (Pos('.', InString) <> 0 ) and (Pos(',', InString) = 0) and (PcLCA[0] = ',') then
+    InString := StringReplace(InString, '.', PcLCA[0], [rfReplaceAll, rfIgnoreCase]);
 
-  { Если в In_String разделитель "," а в системе "." }
-  IF (POS(',', In_String)<>0)AND(POS('.', In_String)=0)AND(pcLCA[0]='.')
-    THEN  In_String:=StringReplace(In_String, ',', pcLCA[0], [rfReplaceAll, rfIgnoreCase]);
+  if (Pos(',', InString) <> 0) and (Pos('.', InString) = 0) and (PcLCA[0] = '.') then
+    InString := StringReplace(InString, ',', PcLCA[0], [rfReplaceAll, rfIgnoreCase]);
 
-  Result:=StrToFloat(In_String);
+  Result:=StrToFloat(InString);
 
 end;
 
-{ 62. Функция получает сумму в строковом виде и преобразует разделитель к точке, запятой и копейки
+
+{ Функция SumFormat получает сумму в строковом виде и преобразует разделитель
+  к точке, запятой и копейки
     123 -> 123.00
     123 -> 123,00
 
-    SumFormat('123', '.', 2)
-               }
-Function SumFormat(In_SumStr:ShortString; In_Separator:ShortString; In_Decimal:Word):ShortString;
-var tmp_Sum:ShortString;
-    i:Word;
-    minus:Boolean;
+    SumFormat('123', '.', 2) }
+
+function SumFormat(InSumStr: ShortString; InSeparator: ShortString;
+  InDecimal: Word): ShortString;
+var
+  SumStrVar: ShortString;
+  I: Word;
+  Minus: Boolean;
 begin
 
-  In_SumStr:=Trim(In_SumStr);
+  InSumStr := Trim(InSumStr);
 
-  { Определяем знак }
-  IF COPY(In_SumStr,1,1)='-'
-    THEN
-      begin
-        minus:=True;
-        In_SumStr:=COPY(In_SumStr, 2, Length(In_SumStr)-1);
-      end
-    ELSE minus:=False;
+  if Copy(InSumStr, 1, 1) = '-' then
+    begin
+      Minus := True;
+      InSumStr := Copy(InSumStr, 2, Length(InSumStr) - 1);
+    end
+  else Minus := False;
 
-  { Определяем - есть ли разделитель. Он может быть: "." "," "=" }
-  tmp_Sum:='';
+  SumStrVar := '';
 
-  FOR i:=1 TO Length(In_SumStr) DO
+  for I := 1 to Length(InSumStr) do
     begin
 
-      IF ((In_SumStr[i]<>' ')AND((In_SumStr[i]='0')OR(In_SumStr[i]='1')OR(In_SumStr[i]='2')OR(In_SumStr[i]='3')OR(In_SumStr[i]='4')OR(In_SumStr[i]='5')OR(In_SumStr[i]='6')OR(In_SumStr[i]='7')OR(In_SumStr[i]='8')OR(In_SumStr[i]='9')))
-        THEN tmp_Sum:=tmp_Sum+In_SumStr[i];
+      if ((InSumStr[I] <> ' ') and ((InSumStr[I] = '0') or (InSumStr[I] = '1')
+        or (InSumStr[I] = '2') or (InSumStr[I] = '3') or (InSumStr[I] = '4')
+        or (InSumStr[I] = '5') or (InSumStr[I] = '6') or (InSumStr[I] = '7')
+        or (InSumStr[I] = '8') or (InSumStr[I] = '9'))) then
+          SumStrVar := SumStrVar + InSumStr[I];
 
-      // Замена разделителя дробной части
-      IF (In_SumStr[i]='-')or(In_SumStr[i]='.')or(In_SumStr[i]=',')or(In_SumStr[i]='=') THEN tmp_Sum:=tmp_Sum+In_Separator;
+      if (InSumStr[I] = '-') or (InSumStr[I] = '.') or (InSumStr[I] = ',')
+        or (InSumStr[I] = '=') then
+          SumStrVar := SumStrVar + InSeparator;
 
-    end; // For
+    end;
 
-  { Разделитель }
-  IF (POS(In_Separator, tmp_Sum)=0)AND(In_Decimal<>0)
-    THEN tmp_Sum:=tmp_Sum+In_Separator;
+  if (Pos(InSeparator, SumStrVar) = 0) and (InDecimal <> 0) then
+    SumStrVar := SumStrVar + InSeparator;
 
-  { Если In_Decimal=0, то удаляем справа за разделителем все символы 0 }
-  IF (In_Decimal=0)
-    THEN
-      begin
-        IF (POS('1',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('2',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('3',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('4',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('5',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('6',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('7',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('8',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)AND(POS('9',COPY(tmp_Sum, POS(In_Separator, tmp_Sum)+1, Length(tmp_Sum)-POS(In_Separator, tmp_Sum)))=0)
-          THEN tmp_Sum:=COPY(tmp_Sum, 1, POS(In_Separator, tmp_Sum)-1 );
-      end; // If
+  if (InDecimal = 0) then
+    begin
+      if (Pos('1', Copy(SumStrVar, POS(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('2', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('3', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('4', Copy(SumStrVar, POS(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('5', Copy(SumStrVar, POS(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('6', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and(Pos('7', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (Pos('8', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0)
+        and (POS('9', Copy(SumStrVar, Pos(InSeparator, SumStrVar) + 1,
+        Length(SumStrVar) - Pos(InSeparator, SumStrVar))) = 0) then
+          SumStrVar := Copy(SumStrVar, 1, POS(InSeparator, SumStrVar) - 1);
+    end;
 
-  { Если есть разделитель, то считаем число знаков после него и если это число меньше чем In_Decimal - добавляем нулями }
-  IF (POS(In_Separator, tmp_Sum)<>0)AND( ( Length(tmp_Sum) - POS(In_Separator, tmp_Sum) ) <In_Decimal)
-    THEN
-      begin
-        FOR i:=1 TO ( In_Decimal - ( Length(tmp_Sum) - POS(In_Separator, tmp_Sum) ) ) DO
-          begin
-            tmp_Sum:=tmp_Sum+'0';
-          end;
-      end; // If
+  if (Pos(InSeparator, SumStrVar) <> 0) and (( Length(SumStrVar) - Pos(InSeparator, SumStrVar)) < InDecimal) then
+    begin
+      for I := 1 to (InDecimal - (Length(SumStrVar) - POS(InSeparator, SumStrVar))) do
+        begin
+          SumStrVar := SumStrVar + '0';
+        end;
+    end;
 
-  { Подставляем знак }
-  IF minus=True THEN Result:='-'+tmp_Sum ELSE Result:=tmp_Sum;
+  if Minus = True then
+    Result := '-' + SumStrVar
+  else Result := SumStrVar;
 
 end;
 
 
+{ Функция DateTimeToStrFormatSirenaDateTime преобразует тип TDateTime
+  в строковый формат даты и времени
+  для сервера "Сирены" 2009-06-09T01:01:01.123456 }
 
-
-{ Функция преобразует тип TDateTime в строковый формат даты и времени для сервера "Сирены" 2009-06-09T01:01:01.123456 }
-Function DateTimeToStrFormatSirenaDateTime(In_DateTime:TDateTime):ShortString;
-var  myHour, myMin, mySec, myMilli : Word;
+function DateTimeToStrFormatSirenaDateTime(InDateTime: TDateTime): ShortString;
+var
+  MyHour, MyMin, MySec, myMilli: Word;
 begin
-  { Временной срез }
-  DecodeTime( In_DateTime, myHour, myMin, mySec, myMilli );
-  DateTimeToStrFormatSirenaDateTime:=COPY(DateTimeToStr(In_DateTime),7,4)+'-'+COPY(DateTimeToStr(In_DateTime),4,2)+'-'+COPY(DateTimeToStr(In_DateTime),1,2)
-                                       +'T'
-                                         { Время }
-                                         +beforZero(myHour,2)+':'+beforZero(myMin,2)+':'+beforZero(mySec,2)
-                                         {+COPY(DateTimeToStr(In_DateTime), POS(' ', DateTimeToStr(In_DateTime))+1, Length(DateTimeToStr(In_DateTime))-POS(' ', DateTimeToStr(In_DateTime)))}
-                                           { миллисекунды через точку }
-                                           +'.'+beforZero(myMilli,6);
+
+  DecodeTime(InDateTime, MyHour, MyMin, MySec, myMilli);
+
+  Result := Copy(DateTimeToStr(InDateTime), 7, 4) + '-'
+    + Copy(DateTimeToStr(InDateTime), 4, 2)
+    + '-' + Copy(DateTimeToStr(InDateTime), 1, 2) +'T'
+    + beforZero(MyHour, 2) + ':' + beforZero(MyMin, 2)
+    + ':' + beforZero(MySec, 2) + '.' + beforZero(myMilli, 6);
+
 end;
 
-{ Функция преобразует дату 01.02.2002 в строку '020201' ГГММДД }
-Function StrDateFormat8(in_value : TDate) : shortString;
+
+{ Функция StrDateFormat8 преобразует дату 01.02.2002 в строку '020201' ГГММДД }
+
+function StrDateFormat8(InValue: TDate): ShortString;
 begin
-  IF Length(DateToStr(in_value))=8  THEN StrDateFormat8:=COPY(DateToStr(in_value),7,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),1,2);
-  IF Length(DateToStr(in_value))=10 THEN StrDateFormat8:=COPY(DateToStr(in_value),9,2)+COPY(DateToStr(in_value),4,2)+COPY(DateToStr(in_value),1,2);
+
+  if Length(DateToStr(InValue)) = 8 then
+    Result := Copy(DateToStr(InValue), 7, 2) + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 1, 2);
+
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Copy(DateToStr(InValue), 9, 2) + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 1, 2);
+
 end;
 
-{ Функция преобразует дату и время 23.02.2009 12:37:00 в строку ДДММГГЧЧММССMs }
-Function StrDateFormat9(In_DateTime : TDateTime) : shortString;
-var tmp_StrDateFormat9: shortString;
-    myHour, myMin, mySec, myMilli : Word;
+
+{ Функция StrDateFormat9 преобразует дату и время 23.02.2009 12:37:00
+  в строку ДДММГГЧЧММССMs }
+
+function StrDateFormat9(InDateTime: TDateTime): ShortString;
+var
+  StrDateFormat9Var: shortString;
+  MyHour, MyMin, MySec, myMilli: Word;
 begin
 
-  { Временной срез }
-  DecodeTime( In_DateTime, myHour, myMin, mySec, myMilli );
+  DecodeTime(InDateTime, MyHour, MyMin, MySec, myMilli);
 
-  IF Length(DateToStr(In_DateTime))=8 THEN tmp_StrDateFormat9:=COPY(DateToStr(In_DateTime),1,2)+COPY(DateToStr(In_DateTime),4,2)+COPY(DateToStr(In_DateTime),7,2);
-  IF Length(DateToStr(In_DateTime))=10 THEN tmp_StrDateFormat9:=COPY(DateToStr(In_DateTime),1,2)+COPY(DateToStr(In_DateTime),4,2)+COPY(DateToStr(In_DateTime),9,2);
-  { Время - если до 10:00:00 }
-  IF Length(TimeToStr(In_DateTime))=7
-    THEN
-      begin
-        tmp_StrDateFormat9:=tmp_StrDateFormat9+'0';
-        tmp_StrDateFormat9:=tmp_StrDateFormat9+COPY(TimeToStr(In_DateTime),1,1)+COPY(TimeToStr(In_DateTime),3,2)+COPY(TimeToStr(In_DateTime),6,2);
-      end
-    ELSE
-      begin
-        tmp_StrDateFormat9:=tmp_StrDateFormat9+COPY(TimeToStr(In_DateTime),1,2)+COPY(TimeToStr(In_DateTime),4,2)+COPY(TimeToStr(In_DateTime),7,2);
-      end;
-  { Результат }
-  StrDateFormat9:=tmp_StrDateFormat9+IntToStr(myMilli);
+  if Length(DateToStr(InDateTime)) = 8 then
+    StrDateFormat9Var := Copy(DateToStr(InDateTime), 1, 2)
+    + Copy(DateToStr(InDateTime), 4, 2) + Copy(DateToStr(InDateTime), 7, 2);
+
+  if Length(DateToStr(InDateTime)) = 10 then
+    StrDateFormat9Var := Copy(DateToStr(InDateTime), 1, 2)
+    + Copy(DateToStr(InDateTime), 4, 2) + Copy(DateToStr(InDateTime), 9, 2);
+
+  if Length(TimeToStr(InDateTime)) = 7 then
+    begin
+      StrDateFormat9Var := StrDateFormat9Var + '0';
+      StrDateFormat9Var := StrDateFormat9Var + Copy(TimeToStr(InDateTime), 1, 1)
+        + Copy(TimeToStr(InDateTime), 3, 2) + Copy(TimeToStr(InDateTime), 6, 2);
+    end
+  else
+    begin
+      StrDateFormat9Var := StrDateFormat9Var + Copy(TimeToStr(InDateTime), 1, 2)
+        + Copy(TimeToStr(InDateTime), 4, 2) + Copy(TimeToStr(InDateTime), 7, 2);
+    end;
+
+  Result := StrDateFormat9Var + IntToStr(myMilli);
+
 end;
 
-{  Функция преобразует дату и время 23.02.2009 12:37:00 в строку ГГГГММДДЧЧММСС }
-Function StrDateFormat10(in_value : TDateTime) : shortString;
+
+{  Функция StrDateFormat10 преобразует дату и время 23.02.2009 12:37:00
+  в строку ГГГГММДДЧЧММСС }
+
+function StrDateFormat10(InValue: TDateTime): ShortString;
 begin
+
   Result:='';
 
-  IF Length(DateToStr(in_value))=8
-    THEN Result:=Result+COPY(DateToStr(in_value),7,2)
-                          +COPY(DateToStr(in_value),4,2)
-                          +COPY(DateToStr(in_value),1,2);
+  if Length(DateToStr(InValue)) = 8 then
+    Result := Result + Copy(DateToStr(InValue), 7, 2)
+      + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 1, 2);
 
-  IF Length(DateToStr(in_value))=10
-    THEN Result:=Result+COPY(DateToStr(in_value),7,4)
-                          +COPY(DateToStr(in_value),4,2)
-                          +COPY(DateToStr(in_value),1,2);
+  if Length(DateToStr(InValue)) = 10 then
+    Result := Result + Copy(DateToStr(InValue), 7, 4)
+      + Copy(DateToStr(InValue), 4, 2)
+      + Copy(DateToStr(InValue), 1, 2);
 
-  IF Length(TimeToStr(in_value))=7
-    THEN Result:=Result+'0'+COPY(TimeToStr(in_value),1,1)+COPY(TimeToStr(in_value),3,2)+COPY(TimeToStr(in_value),6,2);
+  if Length(TimeToStr(InValue)) = 7 then
+    Result := Result + '0' + Copy(TimeToStr(InValue), 1, 1)
+      + Copy(TimeToStr(InValue), 3, 2) + Copy(TimeToStr(InValue), 6, 2);
 
-  IF Length(TimeToStr(in_value))=8
-    THEN Result:=Result+COPY(TimeToStr(in_value),1,2)+COPY(TimeToStr(in_value),4,2)+COPY(TimeToStr(in_value),7,2);
+  if Length(TimeToStr(InValue)) = 8 then
+    Result := Result + Copy(TimeToStr(InValue), 1, 2)
+      + Copy(TimeToStr(InValue), 4, 2) + Copy(TimeToStr(InValue), 7, 2);
 
 end;
 
 
-{ Генерация UserName }
-Function RandomUserName(PWLen: Word): ShortString;
+{ Функция RandomUserName генерирует UserName }
+
+function RandomUserName(PWLen: Word): ShortString;
 var
   StrTableUserName: ShortString;
-  N, K, X, Y: integer;// проверяем максимальную длину пароля
+  N, K, X, Y: Integer;
   Flags: TReplaceFlags;
 begin
 
-  { таблица символов, используемых в пароле }
   StrTableUserName:='1234567890';
 
-  { Создаем уникальность таблицы символов, используя - mixingString }
-  StrTableUserName:=DateTimeToStrFormat(Now)+StrTableUserName+DateTimeToStrFormat(Now);
-  StrTableUserName:=mixingString(StrTableUserName);
+  StrTableUserName := DateTimeToStrFormat(Now) + StrTableUserName
+    + DateTimeToStrFormat(Now);
 
-  { Удаляем из этой уникальности: Нуль }
-  Flags:= [rfReplaceAll, rfIgnoreCase];
-  StrTableUserName:=StringReplace(StrTableUserName, '0', '', Flags);
+  StrTableUserName := mixingString(StrTableUserName);
 
-  if (PWlen > Length(StrTableUserName))
-    then K := Length(StrTableUserName)-1
-      else K := PWLen;
-  SetLength(result, K); // устанавливаем длину конечной строки
-  Y := Length(StrTableUserName); // Длина Таблицы для внутреннего цикла
-  N := 0; // начальное значение цикла
+  Flags := [rfReplaceAll, rfIgnoreCase];
+  StrTableUserName := StringReplace(StrTableUserName, '0', '', Flags);
+
+  if (PWlen > Length(StrTableUserName)) then
+    K := Length(StrTableUserName) - 1
+  else K := PWLen;
+
+  SetLength(result, K);
+  Y := Length(StrTableUserName);
+  N := 0;
 
   while N < K do
-    begin// цикл для создания K символов
-      X := Random(Y) + 1; // берём следующий случайный символ
-      // проверяем присутствие этого символа в конечной строке
-      if (pos(StrTableUserName[X], result) = 0)
-        then
-          begin
-            inc(N); // символ не найден
-            Result[N]:=StrTableUserName[X]; // теперь его сохраняем
-          end; // If
-    end; // While
+    begin
+      X := Random(Y) + 1;
+
+      if (pos(StrTableUserName[X], result) = 0) then
+        begin
+          inc(N);
+          Result[N] := StrTableUserName[X];
+        end;
+    end;
 end;
 
-{ Генерация UserPassword }
+
+{ Функция RandomUserPassword генерирует UserPassword }
+
 Function RandomUserPassword(PWLen: Word): ShortString;
 var
-  N, K, X, Y: integer;// проверяем максимальную длину пароля
-  StrTableUserPassword:ShortString;
+  N, K, X, Y: integer;
+  StrTableUserPassword: ShortString;
   Flags: TReplaceFlags;
 begin
 
-  { таблица символов, используемых в пароле }
-  // StrTableUserPassword:='1lwEkj532hefy89r4U38LEL384FV37847rfWFWKLlvhEERnsdfkiesu38KL543789JH332U84hfgHFgfdDY7Jhh8u4jc878weDfq534sxnewg4653sHyt28dh37dh36dh3kglgnbvhrf743jdjh437edhgafdh46sgd63g63GDJASG36d4GD5Wj5gf32HGXD';
-  StrTableUserPassword:='qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456789';
+  StrTableUserPassword := 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456789';
 
-  { Создаем уникальность таблицы символов, используя - mixingString }
-  StrTableUserPassword:=DateTimeToStrFormat(Now)+StrTableUserPassword+DateTimeToStrFormat(Now);
-  StrTableUserPassword:=mixingString(StrTableUserPassword);
+  StrTableUserPassword := DateTimeToStrFormat(Now)
+    + StrTableUserPassword+DateTimeToStrFormat(Now);
 
-  { Удаляем из этой уникальности: Нуль }
-  Flags:= [rfReplaceAll, rfIgnoreCase];
-  StrTableUserPassword:=StringReplace(StrTableUserPassword, '0', '', Flags);
+  StrTableUserPassword := mixingString(StrTableUserPassword);
 
-  { Удаляем из этой уникальности: "o" и "O" }
-  StrTableUserPassword:=StringReplace(StrTableUserPassword, 'o', '', Flags);
-  StrTableUserPassword:=StringReplace(StrTableUserPassword, 'O', '', Flags);
+  Flags := [rfReplaceAll, rfIgnoreCase];
+  StrTableUserPassword := StringReplace(StrTableUserPassword, '0', '', Flags);
 
-  if (PWlen > Length(StrTableUserPassword))
-    then K := Length(StrTableUserPassword)-1
-      else K := PWLen;
-  SetLength(result, K); // устанавливаем длину конечной строки
-  Y := Length(StrTableUserPassword); // Длина Таблицы для внутреннего цикла
-  N := 0; // начальное значение цикла
+  StrTableUserPassword := StringReplace(StrTableUserPassword, 'o', '', Flags);
+  StrTableUserPassword := StringReplace(StrTableUserPassword, 'O', '', Flags);
+
+  if (PWlen > Length(StrTableUserPassword)) then
+    K := Length(StrTableUserPassword) - 1
+  else K := PWLen;
+
+  SetLength(result, K);
+  Y := Length(StrTableUserPassword);
+  N := 0;
 
   while N < K do
-    begin// цикл для создания K символов
-      X := Random(Y) + 1; // берём следующий случайный символ
-      // проверяем присутствие этого символа в конечной строке
-      if (pos(StrTableUserPassword[X], result) = 0)
-        then
-          begin
-            inc(N); // символ не найден
-            Result[N]:=StrTableUserPassword[X]; // теперь его сохраняем
-          end; // If
-    end; // While
+    begin
+      X := Random(Y) + 1;
+      if (pos(StrTableUserPassword[X], result) = 0) then
+        begin
+          inc(N);
+          Result[N] := StrTableUserPassword[X];
+        end;
+    end;
+
 end;
 
-// Функция преобразует американский расчет дня недели в российский
-Function RussianDayOfWeek(In_DayOfWeek:Byte):Byte;
+
+{ Функция RussianDayOfWeek преобразует американский расчет дня недели в российский }
+
+function RussianDayOfWeek(InDayOfWeek: Byte): Byte;
 begin
-  IF in_DayOfWeek = 1
-    THEN
-      RussianDayOfWeek:=7
-    ELSE
-      RussianDayOfWeek:=in_DayOfWeek-1
+  if InDayOfWeek = 1 then
+    Result := 7
+  else
+    Result := InDayOfWeek - 1;
 end;
 
-// Функция преобразует американский расчет дня недели в российский из даты
-Function RussianDayOfWeekFromDate(In_Date:TDate):Byte;
-var DayOfWeekVar:Byte;
+
+{ Функция RussianDayOfWeekFromDate преобразует американский расчет дня недели
+  в российский из даты }
+
+function RussianDayOfWeekFromDate(InDate: TDate): Byte;
+var
+  DayOfWeekVar: Byte;
 begin
 
-  DayOfWeekVar:=DayOfWeek( In_Date );
+  DayOfWeekVar := DayOfWeek(InDate);
 
-  IF DayOfWeekVar = 1
-    THEN Result:=7
-      ELSE Result:=DayOfWeekVar-1
+  if DayOfWeekVar = 1 then
+    Result := 7
+  else Result := DayOfWeekVar - 1;
+
 end;
+
+
+// ---- Waiting Coding Style ---
 
 { Количество выходных дней (субб., вскр.) между 2-мя датами }
 Function daysOffBetweenDates(In_DateBegin:TDate; In_DateEnd:TDate):Word;
