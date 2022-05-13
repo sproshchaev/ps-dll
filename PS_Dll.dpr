@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.10 12-05-2022                                  }
+{       ver. 1.11 13-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -2544,74 +2544,132 @@ begin
 end;
 
 
-// ---- Waiting Coding Style ---
 
-{ Количество выходных дней (субб., вскр.) между 2-мя датами }
-Function daysOffBetweenDates(In_DateBegin:TDate; In_DateEnd:TDate):Word;
-var currDate:TDate;
+{ Функция DaysOffBetweenDates возвращает количество выходных дней (субб., вскр.)
+  между 2-мя датами, переданными в качестве аргументов }
+
+function DaysOffBetweenDates(InDateBegin: TDate; InDateEnd: TDate): Word;
+var
+  currDate: TDate;
 begin
-  Result:=0;
-  currDate:=In_DateBegin;
-  WHILE currDate<=In_DateEnd DO
+
+  Result := 0;
+  currDate := InDateBegin;
+  while currDate <= InDateEnd do
     begin
-      {IF (RussianDayOfWeekFromDate(currDate)=6)OR(RussianDayOfWeekFromDate(currDate)=7)}
-      IF ( (RussianDayOfWeekFromDate(currDate)=6)OR(RussianDayOfWeekFromDate(currDate)=7) ) AND (currDate<>In_DateBegin)
-        THEN Result:=Result+1;
-      currDate:=currDate+1;
+      if ((RussianDayOfWeekFromDate(currDate) = 6)
+        or (RussianDayOfWeekFromDate(currDate) = 7))
+        and (currDate <> InDateBegin) then
+          Result := Result + 1;
+      currDate := currDate + 1;
     end;
+
 end;
 
-{ Получение параметра (ShortString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
-Function paramFromString(In_StringAnswer:WideString; In_Param:ShortString):ShortString;
+
+{ Функция paramFromString возвращает параметр (ShortString) из структурированной
+  строки вида "параметр_номер_1=100.00; параметр_номер_2=200.00; "
+  - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+
+function paramFromString(InStringAnswer: WideString; InParam: ShortString): ShortString;
 begin
-  { Версия не адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
-  IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-  IF POS(In_Param, In_StringAnswer)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)))-1) ELSE Result:='';
+
+  if Pos('=', InParam) = 0 then
+    InParam := InParam + '=';
+
+  if Pos(InParam, InStringAnswer) <> 0 then
+    Result := Copy(Copy(InStringAnswer, Pos(InParam, InStringAnswer) + Length(InParam),
+      (Length(InStringAnswer) - Pos(InParam, InStringAnswer) + Length(InParam) + 1)),
+      1, Pos(';', Copy(InStringAnswer, Pos(InParam, InStringAnswer) + Length(InParam),
+      (Length(InStringAnswer) - Pos(InParam, InStringAnswer) + Length(InParam)+1))) - 1)
+  else Result:='';
+
 end;
 
-{ Получение параметра (WideString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
-Function paramFromString2(In_StringAnswer:WideString; In_Param:ShortString):WideString;
+
+{ Функция ParamFromString2 возвращает параметр (тип WideString) из структурированной
+  строки вида "параметр_номер_1=100.00; параметр_номер_2=200.00; "
+  - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+
+function ParamFromString2(InStringAnswer: WideString; InParam: ShortString): WideString;
 begin
-  { Версия не адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
-  IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-  IF POS(In_Param, In_StringAnswer)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param, In_StringAnswer)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param, In_StringAnswer)+Length(In_Param)+1)))-1) ELSE Result:='';
+
+  if Pos('=', InParam) = 0 then
+    InParam := InParam + '=';
+
+  if Pos(InParam, InStringAnswer) <> 0 then
+    Result := Copy(Copy(InStringAnswer, Pos(InParam, InStringAnswer)
+      + Length(InParam), (Length(InStringAnswer) - Pos(InParam, InStringAnswer)
+      + Length(InParam) + 1)), 1, Pos(';', Copy(InStringAnswer,
+      POS(InParam, InStringAnswer) + Length(InParam), (Length(InStringAnswer)
+      - Pos(InParam, InStringAnswer) + Length(InParam) + 1))) -1)
+   else Result := '';
+
 end;
 
-{ Получение параметра (WideString) из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; "
-   - Адаптирована к параметр_номер_1 и параметр_номер_11.
-   - Адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
-Function paramFromString3(In_StringAnswer:WideString; In_Param:ShortString):WideString;
-var In_StringAnswer_tmp:WideString;
-    In_Param_tmp:ShortString;
+
+{ Функция ParamFromString3 возвращает параметр (тип WideString) из структурированной
+  строки вида "параметр_номер_1=100.00; параметр_номер_2=200.00; "
+   - адаптирована к параметр_номер_1 и параметр_номер_11.
+   - адаптирована к регистру: "параметр_номер_1" и "пАраметр_номер_1" }
+
+function ParamFromString3(InStringAnswer: WideString; InParam: ShortString): WideString;
+var
+  StringAnswerVar: WideString;
+  ParamVar: ShortString;
 begin
-  In_Param_tmp:=AnsiLowerCase(In_Param);
-  In_StringAnswer_tmp:=AnsiLowerCase(In_StringAnswer);
 
-  IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-  IF POS('=', In_Param_tmp)=0 THEN In_Param_tmp:=In_Param_tmp+'=';
+  ParamVar := AnsiLowerCase(InParam);
+  StringAnswerVar := AnsiLowerCase(InStringAnswer);
 
-  IF POS(In_Param_tmp, In_StringAnswer_tmp)<>0 THEN Result:=COPY(COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param)+1)), 1, POS(';', COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param), (Length(In_StringAnswer)- POS(In_Param_tmp, In_StringAnswer_tmp)+Length(In_Param)+1)))-1) ELSE Result:='';
+  if Pos('=', InParam) = 0 then
+    InParam := InParam + '=';
+
+  if Pos('=', ParamVar) = 0 then
+    ParamVar := ParamVar + '=';
+
+  if Pos(ParamVar, StringAnswerVar) <> 0 then
+    Result := Copy(Copy(InStringAnswer, Pos(ParamVar, StringAnswerVar) + Length(InParam),
+      (Length(InStringAnswer)
+      - Pos(ParamVar, StringAnswerVar) + Length(InParam) + 1)), 1,
+      Pos(';', Copy(InStringAnswer, Pos(ParamVar, StringAnswerVar) + Length(InParam),
+      (Length(InStringAnswer) - Pos(ParamVar, StringAnswerVar) + Length(InParam) + 1))) - 1)
+  else Result := '';
+
 end;
 
-{ Сохранение значение параметра в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
-Function setParamFromString(In_StringAnswer:WideString; In_Param:ShortString; In_Value:ShortString):ShortString;
-var beforeSubstring, afterSubstring:ShortString; //str1:ShortString;
+
+{ Функция SetParamFromString сохраняет значение параметра в структурированной
+  строке вида "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
+
+function SetParamFromString(InStringAnswer: WideString; InParam: ShortString;
+  InValue: ShortString): ShortString;
+var
+  BeforeSubstring, AfterSubstring: ShortString;
 begin
-  IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-  { Если параметр есть в строке }
-  IF POS(In_Param, In_StringAnswer)<>0
-    THEN
-      begin
-        beforeSubstring:=COPY(In_StringAnswer, 1, POS(In_Param, In_StringAnswer)-1 );
-        afterSubstring:=COPY(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer), Length(In_StringAnswer)-POS(In_Param, In_StringAnswer)+1 ), POS(';',COPY(In_StringAnswer, POS(In_Param, In_StringAnswer), Length(In_StringAnswer)-POS(In_Param, In_StringAnswer)+1 ))+1, Length(COPY(In_StringAnswer, POS(In_Param, In_StringAnswer), Length(In_StringAnswer)-POS(In_Param, In_StringAnswer)+1 ))-POS(';',COPY(In_StringAnswer, POS(In_Param, In_StringAnswer), Length(In_StringAnswer)-POS(In_Param, In_StringAnswer)+1 ))) ;
-        Result:=beforeSubstring+In_Param+In_Value+';'+afterSubstring;
-      end
-    ELSE
-      begin
-        { Если параметра нет в строке, то дописываем его в конец }
-        Result:=In_StringAnswer+' '+In_Param+In_Value+';';
-      end;
+
+  if Pos('=', InParam) = 0 then
+    InParam := InParam + '=';
+
+  if Pos(InParam, InStringAnswer) <> 0 then
+    begin
+      BeforeSubstring := Copy(InStringAnswer, 1, Pos(InParam, InStringAnswer) - 1);
+      AfterSubstring := Copy(Copy(InStringAnswer, Pos(InParam, InStringAnswer),
+        Length(InStringAnswer) - Pos(InParam, InStringAnswer) + 1),
+        Pos(';', Copy(InStringAnswer, Pos(InParam, InStringAnswer),
+        Length(InStringAnswer) - Pos(InParam, InStringAnswer) + 1)) + 1,
+        Length(Copy(InStringAnswer, Pos(InParam, InStringAnswer), Length(InStringAnswer)
+        - Pos(InParam, InStringAnswer) + 1))
+        - Pos(';', Copy(InStringAnswer, Pos(InParam, InStringAnswer),
+        Length(InStringAnswer) - Pos(InParam, InStringAnswer) + 1)));
+      Result:=BeforeSubstring+InParam+InValue+';'+AfterSubstring;
+    end
+  else Result := InStringAnswer +' ' + InParam + InValue + ';';
+
 end;
+
+
+// ---- Waiting Coding Style ---
 
 { Сохранение значение параметра (WideString) в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " Версия, адаптированная к регистру! }
 Function setParamFromString2(In_StringAnswer:WideString; In_Param:ShortString; In_Value:ShortString):WideString;
