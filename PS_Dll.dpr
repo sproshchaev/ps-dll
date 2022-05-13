@@ -22,11 +22,11 @@ function RoundCurrency(Value: Double; Accuracy: Byte): Double;
 begin
 
   case Accuracy of
-    0: RoundCurrency := Round(Value);
-    1: RoundCurrency := Round((Value + 0.0001) * 10) / 10;
-    2: RoundCurrency := Round((Value + 0.00001) * 100) / 100;
+    0: Result := Round(Value);
+    1: Result := Round((Value + 0.0001) * 10) / 10;
+    2: Result := Round((Value + 0.00001) * 100) / 100;
   else
-    RoundCurrency := Value;
+    Result := Value;
   end;
 
 end;
@@ -64,7 +64,7 @@ begin
 
     end;
 
-  DosToWin := LocalString;
+  Result := LocalString;
 
 end;
 
@@ -95,8 +95,8 @@ begin
 end;
 
 
-{ Преобразование разделителя целой и дробной части (, -> .), представленного
-  в строковом виде }
+{ Функция ChangeSeparator преобразует разделитель целой и дробной части (, -> .),
+  представленного в строковом виде }
 
 function ChangeSeparator(InStringFloat: ShortString): ShortString;
 var
@@ -112,12 +112,12 @@ begin
           Length(InStringFloat) - Pos(',' , InStringFloat));
 
         if (Length(LocalString) - Pos('.', LocalString)) = 1 then
-          LocalString:=LocalString+'0';
+          LocalString := LocalString + '0';
 
-        ChangeSeparator := LocalString;
+        Result := LocalString;
 
       end
-  else ChangeSeparator := InStringFloat + '.00';
+  else Result := InStringFloat + '.00';
 
 end;
 
