@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.11 13-05-2022                                  }
+{       ver. 1.12 16-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -91,7 +91,8 @@ begin
       end;
     end;
 
-  WinToDos := LocalString;
+  Result := LocalString;
+
 end;
 
 
@@ -122,8 +123,8 @@ begin
 end;
 
 
-{ Преобразование разделителя целой и дробной части (. -> ,), представленного
-  в строковом виде }
+{ Функция ChangeSeparator2 осуществляет преобразование разделителя целой
+  и дробной части (. -> ,), представленного в строковом виде }
 
 function ChangeSeparator2(InStringFloat: ShortString): ShortString;
 var
@@ -139,41 +140,41 @@ begin
         if (Length(LocalString) - Pos('.', LocalString)) = 1 then
           LocalString := LocalString + '0';
 
-        ChangeSeparator2 := LocalString;
+        Result := LocalString;
 
       end
-  else ChangeSeparator2 := InStringFloat + ',00';
+  else Result := InStringFloat + ',00';
 
 end;
 
 
-{ Фиксированная строка, выравнивание влево }
+{ Функция LeftFixString возвращает фиксированную строку с выравниванием влево }
 
 function LeftFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
 
   if Length(Trim(InString)) >= InFixPosition then
-    LeftFixString := Copy(Trim(InString), 1, InFixPosition)
-  else LeftFixString := Trim(InString) + StringOfChar(' ', InFixPosition
+    Result := Copy(Trim(InString), 1, InFixPosition)
+  else Result := Trim(InString) + StringOfChar(' ', InFixPosition
     - Length(Trim(InString)));
 
 end;
 
 
-{ Фиксированная строка, выравнивание вправо }
+{ Функция RightFixString возвращает фиксированную строку с выравниванием вправо }
 
 function RightFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
 
   if Length(Trim(InString)) >= InFixPosition then
-    RightFixString := Copy(Trim(InString), 1, InFixPosition)
-  else RightFixString:=StringOfChar(' ', InFixPosition - Length(Trim(InString)))
+    Result := Copy(Trim(InString), 1, InFixPosition)
+  else Result := StringOfChar(' ', InFixPosition - Length(Trim(InString)))
     + Trim(InString);
 
 end;
 
 
-{ Фиксированная строка, выравнивание по центру }
+{ Функция CentrFixString возвращает фиксированную строку с выравниванием по центру }
 
 function CentrFixString(InString: ShortString; InFixPosition: Byte): ShortString;
 begin
@@ -184,16 +185,16 @@ begin
     CentrFixString := Copy(Trim(InString), 1, InFixPosition)
   else
     begin
-      CentrFixString:=StringOfChar(' ', Trunc((InFixPosition
+      Result := StringOfChar(' ', Trunc((InFixPosition
         - Length(Trim(InString))) / 2)) + Trim(InString)
         + StringOfChar(' ', InFixPosition
-        - Trunc((InFixPosition - Length(Trim(InString)))/2));
+        - Trunc((InFixPosition - Length(Trim(InString))) / 2));
     end;
 
 end;
 
 
-{ Преобразование суммы из prn-файла }
+{ Функция PrnSum осуществляет преобразование суммы с строковом виде из prn-файла }
 
 function PrnSum(InString: ShortString): ShortString;
 var
@@ -214,12 +215,12 @@ begin
         TrSum:=TrSum + ',';
     end;
 
-  prnSum:=TrSum;
+  Result := TrSum;
 
 end;
 
 
-{ Преобразование строки '25 000,25' в число 25000,25 }
+{ Функция TrSum осуществляет преобразование строки '25 000,25' в число 25000,25 }
 
 function TrSum(InString: ShortString): Double;
 var
@@ -236,9 +237,12 @@ begin
       or (InString[I] = '7') or (InString[I] = '8') or (InString[I] = '9'))) then
         TrSumStr := TrSumStr + InString[I];
 
-  TrSum := StrToFloat(TrSumStr);
+  Result := StrToFloat(TrSumStr);
 
 end;
+
+
+// --- Waiting for delphi-doc ---
 
 
 { Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int }
@@ -2669,196 +2673,220 @@ begin
 end;
 
 
+{ Функция setParamFromString2 сохраняет значение параметра (WideString)
+  в строке вида "параметр_номер_1=100.00; параметр_номер_2=200.00;"
+  Версия, адаптированная к регистру! }
+
+function SetParamFromString2(InStringAnswer: WideString; InParam: ShortString;
+  InValue: ShortString): WideString;
+var
+  BeforeSubstring, AfterSubstring: WideString;
+  InStringAnswerVar: WideString;
+  InParamVar: ShortString;
+begin
+
+  InParamVar := AnsiLowerCase(InParam);
+  InStringAnswerVar := AnsiLowerCase(InStringAnswer);
+
+  if Pos('=', InParam) = 0
+    then InParam := InParam + '=';
+
+  if Pos(InParamVar, InStringAnswerVar) <> 0 then
+    begin
+        BeforeSubstring := Copy(InStringAnswer, 1, Pos(InParamVar, InStringAnswerVar) - 1);
+        AfterSubstring := Copy(Copy(InStringAnswer, Pos(InParamVar,
+          InStringAnswerVar), Length(InStringAnswer) - Pos(InParamVar,
+          InStringAnswerVar) +1), Pos(';', Copy(InStringAnswer, Pos(InParamVar,
+          InStringAnswerVar), Length(InStringAnswer) - Pos(InParamVar,
+          InStringAnswerVar) + 1)) + 1, Length(Copy(InStringAnswer,
+          Pos(InParamVar, InStringAnswerVar), Length(InStringAnswer)
+          - Pos(InParamVar, InStringAnswerVar) + 1))
+          - Pos(';', Copy(InStringAnswer, Pos(InParamVar, InStringAnswerVar),
+          Length(InStringAnswer) - Pos(InParamVar, InStringAnswerVar) + 1))) ;
+        Result := BeforeSubstring + InParam + InValue + ';' + AfterSubstring;
+    end
+  else
+    begin
+      Result := InStringAnswer + ' ' + InParam+InValue + ';';
+    end;
+
+end;
+
+
+{ Функция CountParamFromString возвращает число параметров в строке
+  вида "параметр_номер_1=100.00; параметр_номер_2=200.00;" }
+
+function CountParamFromString(InStringAnswer: WideString): Word;
+var
+  СountChar: Word;
+  FindChar: Boolean;
+  SubStrForFind: WideString;
+begin
+  СountChar := 0;
+  FindChar := True;
+  SubStrForFind := InStringAnswer;
+
+  while FindChar = True do
+    begin
+      if Pos('=', SubStrForFind) = 0 then
+        begin
+          FindChar := False;
+        end
+      else
+        begin
+          СountChar := СountChar + 1;
+          SubStrForFind := Copy(SubStrForFind, Pos('=', SubStrForFind) + 1,
+            Length(SubStrForFind) - Pos('=', SubStrForFind));
+        end;
+    end;
+  Result := СountChar;
+
+end;
+
+
+{ Функция ParamNameFromString возвращает наименование параметра по его
+  порядковому номеру из строки вида
+  "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = параметр_номер_2 }
+
+function ParamNameFromString(InStringAnswer: WideString; InParamNumber: Word): ShortString;
+var
+  СountChar: Word;
+  FindChar: Boolean;
+  SubStrForFind: WideString;
+  PosRavno, PosCurrent: Word;
+begin
+
+  СountChar := 0;
+  FindChar := True;
+  SubStrForFind := InStringAnswer;
+  PosRavno := 0;
+
+  while (FindChar = True) and (СountChar < InParamNumber) do
+    begin
+      if Pos('=', SubStrForFind) = 0 then
+        begin
+          FindChar := False;
+          PosRavno := 0;
+        end
+      else
+        begin
+          СountChar := СountChar + 1;
+          PosRavno := PosRavno + Pos('=', SubStrForFind);
+          SubStrForFind := Copy(SubStrForFind, Pos('=', SubStrForFind) + 1,
+            Length(SubStrForFind) - Pos('=', SubStrForFind));
+        end;
+    end;
+
+  if PosRavno<>0 then
+    begin
+      SubStrForFind := Copy(InStringAnswer, 1, PosRavno - 1);
+      PosCurrent := PosRavno - 1;
+      Result := '';
+      while (PosCurrent >= 1) and (Copy(SubStrForFind, PosCurrent, 1) <> ' ')
+        and(Copy(SubStrForFind, PosCurrent, 1) <> ';') do
+        begin
+          Result := Result + Copy(SubStrForFind, PosCurrent, 1);
+          PosCurrent := PosCurrent - 1;
+        end;
+
+        PosCurrent := Length(Result);
+        SubStrForFind := Result;
+        Result := '';
+        while (PosCurrent >= 1) do
+          begin
+            Result := Result + Copy(SubStrForFind, PosCurrent, 1);
+            PosCurrent := PosCurrent - 1;
+          end;
+    end
+  else Result := '';
+
+end;
+
+
+{ Функция ParamValueFromString возвращает значение параметра по его порядковому
+  номеру: "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
+
+function ParamValueFromString(InStringAnswer: WideString; InParamNumber: Word):WideString;
+var
+  СountChar: Word;
+  FindChar: Boolean;
+  SubStrForFind: WideString;
+  PosRavno, PosCurrent: Word;
+begin
+
+  СountChar := 0;
+  FindChar := True;
+  SubStrForFind := InStringAnswer;
+  PosRavno := 0;
+
+  while (FindChar = True) and (СountChar < InParamNumber) do
+    begin
+      if Pos('=', SubStrForFind) = 0 then
+        begin
+          FindChar := False;
+          PosRavno := 0;
+        end
+      else
+        begin
+          СountChar := СountChar + 1;
+          PosRavno := PosRavno + Pos('=', SubStrForFind);
+          SubStrForFind := Copy(SubStrForFind, Pos('=', SubStrForFind) + 1,
+            Length(SubStrForFind) - Pos('=', SubStrForFind));
+        end;
+    end;
+
+  if PosRavno <> 0 then
+    begin
+        SubStrForFind := Copy(InStringAnswer, PosRavno + 1,
+          Length(InStringAnswer) - PosRavno);
+        PosCurrent:=1;
+        Result:='';
+        while (PosCurrent <= Length(SubStrForFind))
+          and (Copy(SubStrForFind, PosCurrent, 1) <> ';') do
+          begin
+            Result := Result + Copy(SubStrForFind, PosCurrent, 1);
+            PosCurrent := PosCurrent + 1;
+          end;
+    end
+  else
+    begin
+      Result := '';
+    end;
+
+end;
+
+
+{ Функция GetParamFromDoublePayment из строки, содержащей двойной параметр вида
+  "1234-9044951501" возвращает первый "1234" (при InParamNumber=1)
+  или второй параметр "9044951501" (при InParamNumber=2) }
+
+function GetParamFromDoublePayment(InDoubleAutData: ShortString;
+  InParamNumber: Byte): ShortString;
+var
+  AutData, AutData1, AutData2: ShortString;
+begin
+
+  AutData := StringReplace(InDoubleAutData, ' ', '', [rfReplaceAll]);
+
+  if (Pos('-', AutData) <> 0) then
+    begin
+      AutData2 := Copy(AutData, Pos('-', AutData) + 1, Length(AutData) - Pos('-', AutData));
+      AutData1 := Copy(AutData, 1, POS('-', AutData) - 1);
+    end
+  else
+    begin
+      AutData2 := '';
+      AutData1 := AutData;
+    end;
+
+  if InParamNumber = 1 then
+    Result := AutData1
+  else Result := AutData2;
+
+end;
+
+
 // ---- Waiting Coding Style ---
-
-{ Сохранение значение параметра (WideString) в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " Версия, адаптированная к регистру! }
-Function setParamFromString2(In_StringAnswer:WideString; In_Param:ShortString; In_Value:ShortString):WideString;
-var beforeSubstring, afterSubstring:WideString;
-    In_StringAnswer_tmp:WideString;
-    In_Param_tmp:ShortString;
-begin
-
-  { Версия, адаптированная к регистру! }
-  In_Param_tmp:=AnsiLowerCase(In_Param);
-  In_StringAnswer_tmp:=AnsiLowerCase(In_StringAnswer);
-
-  IF POS('=', In_Param)=0 THEN In_Param:=In_Param+'=';
-
-  { Если параметр есть в строке }
-  IF POS(In_Param_tmp, In_StringAnswer_tmp)<>0
-    THEN
-      begin
-        beforeSubstring:=COPY(In_StringAnswer, 1, POS(In_Param_tmp, In_StringAnswer_tmp)-1 );
-        afterSubstring:=COPY(COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp), Length(In_StringAnswer)-POS(In_Param_tmp, In_StringAnswer_tmp)+1 ), POS(';',COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp), Length(In_StringAnswer)-POS(In_Param_tmp, In_StringAnswer_tmp)+1 ))+1, Length(COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp), Length(In_StringAnswer)-POS(In_Param_tmp, In_StringAnswer_tmp)+1 ))-POS(';',COPY(In_StringAnswer, POS(In_Param_tmp, In_StringAnswer_tmp), Length(In_StringAnswer)-POS(In_Param_tmp, In_StringAnswer_tmp)+1 ))) ;
-        Result:=beforeSubstring+In_Param+In_Value+';'+afterSubstring;
-      end
-    ELSE
-      begin
-        { Если параметра нет в строке, то дописываем его в конец }
-        Result:=In_StringAnswer+' '+In_Param+In_Value+';';
-      end;
-end;
-
-{ Получение количества параметров в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
-Function countParamFromString(In_StringAnswer:WideString):Word;
-var countChar:Word;
-    findChar:Boolean;
-    subStrForFind:WideString;
-begin
-  { Число параметров равно числу знаков = }
-  countChar:=0;
-  findChar:=True;
-  subStrForFind:=In_StringAnswer;
-  { Поиск в подстроке }
-  WHILE findChar=True DO
-    begin
-      IF POS('=', subStrForFind)=0
-        THEN
-          begin
-            findChar:=False
-          end
-        ELSE
-          begin
-            countChar:=countChar+1;
-            subStrForFind:=COPY(subStrForFind, POS('=', subStrForFind)+1, Length(subStrForFind)-POS('=', subStrForFind) );
-          end;
-    end; // While
-  Result:=countChar;
-end;
-
-{ Получение наименование параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = параметр_номер_2 }
-Function paramNameFromString(In_StringAnswer:WideString; In_ParamNumber:Word):ShortString;
-var countChar:Word;
-    findChar:Boolean;
-    subStrForFind:WideString;
-    posRAVNO, posCurrent:Word;
-begin
-  { Определим в posRAVNO позицию знака "=" для искомого параметра }
-  countChar:=0;
-  findChar:=True;
-  subStrForFind:=In_StringAnswer;
-  posRAVNO:=0;
-  { Поиск в подстроке }
-  WHILE (findChar=True)AND(countChar<In_ParamNumber) DO
-    begin
-      IF POS('=', subStrForFind)=0
-        THEN
-          begin
-            findChar:=False;
-            posRAVNO:=0;
-          end
-        ELSE
-          begin
-            countChar:=countChar+1;
-            posRAVNO:=posRAVNO+POS('=', subStrForFind);
-            subStrForFind:=COPY(subStrForFind, POS('=', subStrForFind)+1, Length(subStrForFind)-POS('=', subStrForFind) );
-          end;
-    end; // While
-
-  { Определим в подстроке "начало-posRAVNO" }
-  IF posRAVNO<>0
-    THEN
-      begin
-        subStrForFind:=COPY(In_StringAnswer, 1, posRAVNO-1);
-        posCurrent:=posRAVNO-1;
-        Result:='';
-        WHILE (posCurrent>=1)AND(COPY(subStrForFind, posCurrent, 1)<>' ')AND(COPY(subStrForFind, posCurrent, 1)<>';') DO
-          begin
-            Result:=Result+COPY(subStrForFind, posCurrent, 1);
-            posCurrent:=posCurrent-1;
-          end; // While
-        { Получили имя параметра в зеркальном отображении: 2_ртемарап ("параметр_2"). Выполняем обратное преобразование }
-        posCurrent:=Length(Result);
-        subStrForFind:=Result;
-        Result:='';
-        WHILE (posCurrent>=1) DO
-          begin
-            Result:=Result+COPY(subStrForFind, posCurrent, 1);
-            posCurrent:=posCurrent-1;
-          end; // While
-      end
-    ELSE
-      begin
-        Result:='';
-      end;
-end;
-
-{ Получение значение параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
-Function paramValueFromString(In_StringAnswer:WideString; In_ParamNumber:Word):WideString;
-var countChar:Word;
-    findChar:Boolean;
-    subStrForFind:WideString;
-    posRAVNO, posCurrent:Word;
-begin
-  { Определим в posRAVNO позицию знака "=" для искомого параметра }
-  countChar:=0;
-  findChar:=True;
-  subStrForFind:=In_StringAnswer;
-  posRAVNO:=0;
-  { Поиск в подстроке }
-  WHILE (findChar=True)AND(countChar<In_ParamNumber) DO
-    begin
-      IF POS('=', subStrForFind)=0
-        THEN
-          begin
-            findChar:=False;
-            posRAVNO:=0;
-          end
-        ELSE
-          begin
-            countChar:=countChar+1;
-            posRAVNO:=posRAVNO+POS('=', subStrForFind);
-            subStrForFind:=COPY(subStrForFind, POS('=', subStrForFind)+1, Length(subStrForFind)-POS('=', subStrForFind) );
-          end;
-    end; // While
-  { Определим в подстроке "(posRAVNO+1)-конец" }
-  IF posRAVNO<>0
-    THEN
-      begin
-        subStrForFind:=COPY(In_StringAnswer, posRAVNO+1, Length(In_StringAnswer)-posRAVNO );
-        posCurrent:=1;
-        Result:='';
-        WHILE (posCurrent<=Length(subStrForFind))AND(COPY(subStrForFind, posCurrent, 1)<>';') DO
-          begin
-            Result:=Result+COPY(subStrForFind, posCurrent, 1);
-            posCurrent:=posCurrent+1;
-          end; // While
-      end
-    ELSE
-      begin
-        Result:='';
-      end;
-end;
-
-{ Функция из двойного параметра 1234-9044951501 выделяет первый 1234 (при In_ParamNumber=1) или второй 9044951501 (при In_ParamNumber=2) параметр }
-Function getParamFromDoublePayment(In_DoubleAutData:ShortString; In_ParamNumber:Byte):ShortString;
-var  autData, autData1, autData2:ShortString;
-begin
-
-  { В autData удаляем пробелы }
-  autData:=StringReplace(In_DoubleAutData, ' ', '', [rfReplaceAll]);
-
-  { Разбиваем autData на autData1 и autData2 }
-  IF (POS('-',autData)<>0)
-    THEN
-      begin
-        { Номер телефона }
-        autData2:=COPY(autData, POS('-',autData)+1, Length(autData)-POS('-',autData) );
-        { Данные для авторизации в Элси ДДММГГNNNNN }
-        autData1:=COPY(autData, 1, POS('-',autData)-1 );
-      end
-    ELSE
-      begin
-        { Номер телефона }
-        autData2:='';
-        { Данные для авторизации в Элси ДДММГГNNNNN }
-        autData1:=autData;
-      end; // If
-
-  { Результат }
-  IF In_ParamNumber=1 THEN Result:=autData1 ELSE Result:=autData2;
-
-end;
 
 { Перед передачей разультата для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) спецсимволы " ; = # необходимо замаскировать функцией ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - производит маскирование. In_Mask_DeMask=DeMask - производит де-маскирование }
 Function ps_paymGate_maskSymbol(In_String:WideString; In_Mask_DeMask:ShortString ):WideString;
