@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.12 16-05-2022                                  }
+{       ver. 1.13 17-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -242,10 +242,7 @@ begin
 end;
 
 
-// --- Waiting for delphi-doc ---
-
-
-{ Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int }
+{ Функция BnkDay преобразует дату в формате "ДД.ММ.ГГГГ" в банковский день типа Int }
 
 function BnkDay(InValue: ShortString): Word;
 var
@@ -264,23 +261,23 @@ begin
       CountDate := CountDate + 1;
     end;
 
-  BnkDay := CountDate;
+  Result := CountDate;
 
 end;
 
 
-{ Функция преобразует дату 01.01.2002 в строку '01/01/2002' }
+{ Функция DiaStrDate преобразует дату 01.01.2002 в строку '01/01/2002' }
 
 function DiaStrDate(InValue: TDate): ShortString;
 begin
 
-  DiaStrDate := Copy(DateToStr(InValue), 1, 2) + '/'
-    + Copy(DateToStr(InValue), 4, 2) +'/' + Copy(DateToStr(InValue), 7, 4);
+  Result := Copy(DateToStr(InValue), 1, 2) + '/'
+    + Copy(DateToStr(InValue), 4, 2) + '/' + Copy(DateToStr(InValue), 7, 4);
 
 end;
 
 
-{ Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.' }
+{ Функция PropisStrDate преобразует дату 01.01.2002 в строку '"01" января 2002 г.' }
 
 function PropisStrDate(InValue: TDate): ShortString;
 var
@@ -305,12 +302,13 @@ begin
      end;
 
   PropisStrDateTmp := PropisStrDateTmp + COPY(DateToStr(InValue), 7, 4) + ' г.';
-  PropisStrDate := PropisStrDateTmp;
+  Result := PropisStrDateTmp;
 
 end;
 
 
-{ Функция определяет в передаваемой строке, позицию номера сепаратора ^ }
+{ Функция FindSeparator определяет в передаваемой строке,
+  позицию номера сепаратора '^' }
 
 function FindSeparator(InString: ShortString; NumberOfSeparator: Byte): Byte;
 var
@@ -336,17 +334,19 @@ begin
 end;
 
 
-{ Функция определяет в передаваемой строке, позицию номера передаваемого символа }
+{ Функция FindChar определяет в передаваемой строке, позицию номера передаваемого
+  символа }
 
-function FindChar(InString: ShortString; InChar: Char; NumberOfSeparator: Byte): Byte;
+function FindChar(InString: ShortString; InChar: Char;
+  NumberOfSeparator: Byte): Byte;
 var
   I, CounterSeparatorVar: Byte;
 begin
 
-  FindChar:=0;
-  CounterSeparatorVar:=0;
+  FindChar := 0;
+  CounterSeparatorVar := 0;
 
-  for I:=1 to Length(InString) do
+  for I := 1 to Length(InString) do
     begin
 
       if Copy(InString, I, 1) = InChar then
@@ -360,6 +360,9 @@ begin
     end;
 
 end;
+
+
+// --- Waiting for delphi-doc ---
 
 
 { Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа }
@@ -2871,7 +2874,7 @@ begin
   if (Pos('-', AutData) <> 0) then
     begin
       AutData2 := Copy(AutData, Pos('-', AutData) + 1, Length(AutData) - Pos('-', AutData));
-      AutData1 := Copy(AutData, 1, POS('-', AutData) - 1);
+      AutData1 := Copy(AutData, 1, Pos('-', AutData) - 1);
     end
   else
     begin
@@ -2886,214 +2889,183 @@ begin
 end;
 
 
-// ---- Waiting Coding Style ---
+{ Функция Ps_paymGate_maskSymbol перед передачей результата
+  для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) маскирует
+  и демаскирует спецсимволы " ; = #
+  при InMaskDeMask = Mask - производится маскирование,
+      InMaskDeMask = DeMask - производится де-маскирование }
 
-{ Перед передачей разультата для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) спецсимволы " ; = # необходимо замаскировать функцией ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - производит маскирование. In_Mask_DeMask=DeMask - производит де-маскирование }
-Function ps_paymGate_maskSymbol(In_String:WideString; In_Mask_DeMask:ShortString ):WideString;
+function Ps_paymGate_maskSymbol(InString: WideString; InMaskDeMask :ShortString)
+  : WideString;
 begin
-  { Если задано маскирование }
-  IF In_Mask_DeMask='Mask'
-    THEN
-      begin
-        { " -> &quot }
-        In_String:=StringReplace(In_String, '"', '&quot', [rfReplaceAll] );
-        { ; -> &quo4 }
-        In_String:=StringReplace(In_String, ';', '&quo4', [rfReplaceAll] );
-        { = -> &quou }
-        In_String:=StringReplace(In_String, '=', 'quou', [rfReplaceAll] );
-        { # -> &quo3 }
-        In_String:=StringReplace(In_String, '#', '&quo3', [rfReplaceAll] );
-      end; // If
 
-  { Если задано Де-маскирование }
-  IF In_Mask_DeMask='DeMask'
-    THEN
-      begin
-        { &quot -> "  }
-        In_String:=StringReplace(In_String, '&quot', '"', [rfReplaceAll] );
-        { &quo4 -> ;  }
-        In_String:=StringReplace(In_String, '&quo4', ';', [rfReplaceAll] );
-        { &quou -> =  }
-        In_String:=StringReplace(In_String, 'quou', '=', [rfReplaceAll] );
-        { &quo3 -> # }
-        In_String:=StringReplace(In_String, '&quo3', '#', [rfReplaceAll] );
-      end; // If
-  { Результат }
-  Result:=In_String;
-end;
-
-{ Функция определяет локальный Ip адрес }
-Function GetLocalIP: ShortString;
-const WSVer = $101; var wsaData: TWSAData; P: PHostEnt; Buf: array [0..127] of Char;
-begin
-  Result:= '';
-  if WSAStartup(WSVer, wsaData) = 0 then begin
-    if GetHostName(@Buf, 128) = 0 then begin
-      P := GetHostByName(@Buf);
-      if P <> nil then Result := iNet_ntoa(PInAddr(p^.h_addr_list^)^);
-    end;
-    WSACleanup;
-  end;
-end;
-
-{ Маскирование середины строки }
-Function maskString(In_StringForMask:ShortString):ShortString;
-var startPosMask, endPosMask, i:Word;
-begin
-  Result:='';
-  { Позиция начала маскирования }
-  startPosMask:= ((Length(In_StringForMask) Div 2) Div 2)+2;
-  { Позиция окончания маскирования }
-  endPosMask:= (Length(In_StringForMask) Div 2) + ((Length(In_StringForMask) Div 2) Div 2);
-  FOR i:=1 TO Length(In_StringForMask) DO
+  if InMaskDeMask = 'Mask' then
     begin
-      { Находимся в диапазоне маскирования? }
-      IF (i>=startPosMask)AND(i<=endPosMask)
-        THEN
-          begin
-            { Маскируем }
-            Result:=Result+'X';
-          end
-        ELSE
-          begin
-            Result:=Result+In_StringForMask[i];
-          end; // If
-    end; // For
+      InString := StringReplace(InString, '"', '&quot', [rfReplaceAll]);
+      InString := StringReplace(InString, ';', '&quo4', [rfReplaceAll]);
+      InString := StringReplace(InString, '=', 'quou', [rfReplaceAll]);
+      InString := StringReplace(InString, '#', '&quo3', [rfReplaceAll]);
+    end;
+
+  if InMaskDeMask = 'DeMask' then
+    begin
+      InString := StringReplace(InString, '&quot', '"', [rfReplaceAll]);
+      InString := StringReplace(InString, '&quo4', ';', [rfReplaceAll]);
+      InString := StringReplace(InString, 'quou', '=', [rfReplaceAll]);
+      InString := StringReplace(InString, '&quo3', '#', [rfReplaceAll]);
+    end;
+
+  Result := InString;
+
 end;
 
-    { *** Конец раздела описания процедур и функций DLL *** }
+
+{ Функция GetLocalIP возвращает локальный Ip-адрес }
+
+function GetLocalIP: ShortString;
+  const
+    WSVer = $101;
+  var
+    wsaData: TWSAData;
+    P: PHostEnt;
+    Buf: array [0..127] of Char;
+begin
+
+  Result:= '';
+
+  if WSAStartup(WSVer, wsaData) = 0 then
+    begin
+      if GetHostName(@Buf, 128) = 0 then
+      begin
+        P := GetHostByName(@Buf);
+        if P <> nil then
+          Result := iNet_ntoa(PInAddr(p^.h_addr_list^)^);
+      end;
+      WSACleanup;
+    end;
+
+end;
+
+
+{ Функция MaskString маскирует середину строки, переданную ей в качестве
+  аргумента }
+
+function MaskString(InStringForMask: ShortString): ShortString;
+var
+  StartPosMask, EndPosMask, I: Word;
+begin
+
+  Result := '';
+  StartPosMask := ((Length(InStringForMask) Div 2) Div 2) + 2;
+  EndPosMask := (Length(InStringForMask) Div 2) + ((Length(InStringForMask) Div 2) Div 2);
+
+  for I := 1 to Length(InStringForMask) do
+    begin
+      if (I >= StartPosMask) and (I <= EndPosMask) then
+          begin
+            Result := Result + 'X';
+          end
+      else
+        begin
+          Result := Result + InStringForMask[I];
+        end;
+    end;
+
+end;
 
     exports
 
-{ *** Начало перечня экспортируемых из Dll процедур и функций *** }
-
-// 1. Функция RoundCurrency округляет передаваемое ей значение до указанного количества знаков после запятой
 RoundCurrency Name 'RoundCurrency',
 
-// 2. Функция DosToWin преобразует Dos кодировку входящей строки в символы кодировки Windows
 DosToWin Name 'DosToWin',
 
-// 3. Функция WinToDos преобразует Windows кодировку входящей строки в символы кодировки Dos
 WinToDos Name 'WinToDos',
 
-// 4. Преобразование разделителя целой и дробной части (, -> .), представленного в строковом виде
 ChangeSeparator Name 'ChangeSeparator',
 
-// 5. Преобразование разделителя целой и дробной части (. -> ,), представленного в строковом виде
 ChangeSeparator2 Name 'ChangeSeparator2',
 
-// 6. Фиксированная строка выравнивание влево
 LeftFixString Name 'LeftFixString',
 
-// 7. Фиксированная строка выравнивание вправо
 RightFixString Name 'RightFixString',
 
-// 8. Фиксированная строка выравнивание по центру
 CentrFixString Name 'CentrFixString',
 
-// 9. Преобразование суммы из prn-файла
-prnSum Name 'prnSum',
+PrnSum Name 'PrnSum',
 
-// 10. Преобразование строки '25 000,25' в число 25000,25
 TrSum Name 'TrSum',
 
-// 11. Преобразование текстовой даты "ДД.ММ.ГГГГ" в банковский день типа Int
-bnkDay Name 'bnkDay',
+BnkDay Name 'BnkDay',
 
-// 12. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
 DiaStrDate Name 'DiaStrDate',
 
-// 13. Функция преобразует дату 01.01.2002 в строку '"01" января 2002 г.'
 PropisStrDate Name 'PropisStrDate',
 
-// 14. Функция определяет в передаваемой строке, позицию номера сепаратора ^
 FindSeparator Name 'FindSeparator',
 
-// 15. Функция определяет в передаваемой строке, позицию номера передаваемого символа
 FindChar Name 'FindChar',
 
-// 15+. Функция определяет в передаваемой строке, позицию номера передаваемого символа
 FindCharWideString Name 'FindCharWideString',
 
 FindCharWideString2 Name 'FindCharWideString2',
 
-// 16. Функция определяет в передаваемой строке, позицию пробела
 FindSpace Name 'FindSpace',
 
-{ Подсчет числа вхождений символа In_Char в строку In_String }
-countCharInString Name 'countCharInString',
+CountCharInString Name 'CountCharInString',
 
-// 17. Функция преобразует Win строку 'Abcd' -> 'ABCD'
 Upper Name 'Upper',
 
-// 18. Функция преобразует Win строку 'abcd' -> 'Abcd'
 Proper Name 'Proper',
 
-// 19. Функция преобразует Win строку 'ABCD' -> 'abcd'
 Lower Name 'Lower',
 
-// 20. Функция преобразует строку '1000,00' -> '1 000,00'
 Divide1000 Name 'Divide1000',
 
-// 21. Функция возвращает параметр с заданным именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-paramFromIniFile Name 'paramFromIniFile',
+ParamFromIniFile Name 'ParamFromIniFile',
 
-paramFromIniFileWithOutMessDlg Name 'paramFromIniFileWithOutMessDlg',
+ParamFromIniFileWithOutMessDlg Name 'ParamFromIniFileWithOutMessDlg',
 
-paramFromIniFileWithOutMessDlg2 Name 'paramFromIniFileWithOutMessDlg2',
+ParamFromIniFileWithOutMessDlg2 Name 'ParamFromIniFileWithOutMessDlg2',
 
-paramFromIniFileWithFullPath Name 'paramFromIniFileWithFullPath',
+ParamFromIniFileWithFullPath Name 'ParamFromIniFileWithFullPath',
 
-paramFromIniFileWithFullPathWithOutMessDlg Name 'paramFromIniFileWithFullPathWithOutMessDlg',
+ParamFromIniFileWithFullPathWithOutMessDlg Name 'ParamFromIniFileWithFullPathWithOutMessDlg',
 
-// 22. Функция ищет ini файл и параметр в нем; Если все нормально - возвращается значение параметра, если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND'
-paramFoundFromIniFile Name 'paramFoundFromIniFile',
+ParamFoundFromIniFile Name 'ParamFoundFromIniFile',
 
-// 23. Функция добавляет перед числом нули 1 до нужного количества знаков-> '0001'
-beforZero Name 'beforZero',
+BeforZero Name 'BeforZero',
 
-// 24. Автонумерация документа из 12-х знаков с ведением электронного жунала
 ID12docFromJournal Name 'ID12docFromJournal',
 
-// 25. Преобразование Строки '01-01-05 01:01:01'
-dateTimeToSec Name 'dateTimeToSec',
+DateTimeToSec Name 'DateTimeToSec',
 
-// 26. Преобразование String в PChar
 StrToPchar Name 'StrToPchar',
 
-// 27. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
 ToLogFileWithName Name 'ToLogFileWithName',
 
-// 27+. Процедура выводит в лог файл с именем InFileName строку InString с переводом каретки если InLn='Ln'
 ToLogFileWideStringWithName Name 'ToLogFileWideStringWithName',
 
-// 27++.
 ToLogFileWithFullName Name 'ToLogFileWithFullName',
 
 ToLogFileWideStringWithFullName Name 'ToLogFileWideStringWithFullName',
 
-// 28. Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации с www.beonline.ru
 TranslitBeeLine Name 'TranslitBeeLine',
 
-// 29. Функция преобразует дату 01.01.2002 в строку '01/01/2002'
-formatMSSqlDate Name 'formatMSSqlDate',
+FormatMSSqlDate Name 'FormatMSSqlDate',
 
-// 30. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime ( корректировку часового пояса +0300 пока не учитываем )
 StrFormatTimeStampToDateTime Name 'StrFormatTimeStampToDateTime',
 
-// 31. Функция преобразует строку в формате даты и времени TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'  ( корректировку часового пояса +0300 пока не учитываем )
 StrTimeStampToStrDateTime Name 'StrTimeStampToStrDateTime',
 
-// 32. Функция DateTimeToStrFormat преобразует дату и время  01.01.2007 1:02:00 в строку '0101200710200'
 DateTimeToStrFormat Name 'DateTimeToStrFormat',
 
-decodeCurCodeToISO  Name 'decodeCurCodeToISO',
+DecodeCurCodeToISO  Name 'DecodeCurCodeToISO',
 
-cardExpDate_To_Date Name 'cardExpDate_To_Date',
+CardExpDate_To_Date Name 'CardExpDate_To_Date',
 
-decodeTypeCard Name 'decodeTypeCard',
+DecodeTypeCard Name 'DecodeTypeCard',
 
-decodeTypeCardGPB Name 'decodeTypeCardGPB',
+DecodeTypeCardGPB Name 'DecodeTypeCardGPB',
 
 PCharToStr Name 'PCharToStr',
 
@@ -3121,11 +3093,11 @@ WindowsCopyFile Name 'WindowsCopyFile',
 
 { D7 GetCurrDir Name 'GetCurrDir', }
 
-getShortFileName Name 'getShortFileName',
+GetShortFileName Name 'GetShortFileName',
 
-getFilePath Name 'getFilePath',
+GetFilePath Name 'GetFilePath',
 
-getShortFileNameWithoutExt Name 'getShortFileNameWithoutExt',
+GetShortFileNameWithoutExt Name 'GetShortFileNameWithoutExt',
 
 StrDateFormat4 Name 'StrDateFormat4',
 
@@ -3153,7 +3125,7 @@ Sign_RSA_MD5_hex_WideStr Name 'Sign_RSA_MD5_hex_WideStr',
 
 Sign_RSA_MD5_hex_File Name 'Sign_RSA_MD5_hex_File',
 
-mixingString Name 'mixingString',
+MixingString Name 'MixingString',
 
 StrToFloat2 Name 'StrToFloat2',
 
@@ -3175,52 +3147,32 @@ RussianDayOfWeek Name 'RussianDayOfWeek',
 
 RussianDayOfWeekFromDate Name 'RussianDayOfWeekFromDate',
 
-daysOffBetweenDates Name 'daysOffBetweenDates',
+DaysOffBetweenDates Name 'DaysOffBetweenDates',
 
-{ Результат ShortString: Получение параметра из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
-paramFromString Name 'paramFromString',
+ParamFromString Name 'ParamFromString',
 
-{ Получение количества параметров в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
-countParamFromString Name 'countParamFromString',
+CountParamFromString Name 'CountParamFromString',
 
-{ Получение наименование параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = параметр_номер_2 }
-paramNameFromString Name 'paramNameFromString',
+ParamNameFromString Name 'ParamNameFromString',
 
-{ Получение значение параметра по его порядковому номеру. Для "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
-paramValueFromString Name 'paramValueFromString',
+ParamValueFromString Name 'ParamValueFromString',
 
-{ Результат WideString: Получение параметра из строки "параметр_номер_1=100.00; параметр_номер_2=200.00; " - Адаптирована к параметр_номер_1 и параметр_номер_11 }
-paramFromString2 Name 'paramFromString2',
+ParamFromString2 Name 'ParamFromString2',
 
-{ Результат WideString, адаптирована к регистру! }
-paramFromString3 Name 'paramFromString3',
+ParamFromString3 Name 'ParamFromString3',
 
-{ Сохранение значение параметра в строке "параметр_номер_1=100.00; параметр_номер_2=200.00; " }
-setParamFromString Name 'setParamFromString',
+SetParamFromString Name 'SetParamFromString',
 
-{ Широкая строка! Адаптирована к регистру }
-setParamFromString2 Name 'setParamFromString2',
+SetParamFromString2 Name 'SetParamFromString2',
 
-getParamFromDoublePayment Name 'getParamFromDoublePayment',
+GetParamFromDoublePayment Name 'GetParamFromDoublePayment',
 
-{ Перед передачей разультата для PS_PaymGate (PS_PaymGateServer, PS_PaymGate Exchange) спецсимволы " ; = # необходимо замаскировать функцией ps_paymGate_maskSymbol. In_Mask_DeMask=Mask - производит маскирование. In_Mask_DeMask=DeMask - производит де-маскирование }
-ps_paymGate_maskSymbol Name 'ps_paymGate_maskSymbol',
+Ps_paymGate_maskSymbol Name 'Ps_paymGate_maskSymbol',
 
-{ Функция определяет локальный Ip адрес }
 GetLocalIP Name 'GetLocalIP',
 
-{ Маскирование середины строки }
-maskString Name 'maskString'
-
-;
-
-{ *** Конец перечня экспортируемых из Dll процедур и функций *** }
+MaskString Name 'MaskString';
 
 begin
-{ *** Начало блока инициализации Dll *** }
-{ Код, помещенный в блоке инициализации автоматически выполняется при загрузке Dll }
 
-
-
-{ *** Конец блока инициализации библиотеки *** }
 end.
