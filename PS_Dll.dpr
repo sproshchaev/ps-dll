@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.13 17-05-2022                                  }
+{       ver. 1.14 18-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -302,6 +302,7 @@ begin
      end;
 
   PropisStrDateTmp := PropisStrDateTmp + COPY(DateToStr(InValue), 7, 4) + ' г.';
+
   Result := PropisStrDateTmp;
 
 end;
@@ -362,12 +363,11 @@ begin
 end;
 
 
-// --- Waiting for delphi-doc ---
+{ Функция FindCharWideString определяет в передаваемой строке, позицию номера
+  символа }
 
-
-{ Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа }
-
-function FindCharWideString(InString: String; InChar: Char; NumberOfSeparator: Word): Word;
+function FindCharWideString(InString: String; InChar: Char;
+  NumberOfSeparator: Word): Word;
 var
   I, CounterSeparatorVar: Word;
 begin
@@ -375,7 +375,7 @@ begin
   FindCharWideString := 0;
   CounterSeparatorVar := 0;
 
-  for I:=1 to Length(InString) do
+  for I := 1 to Length(InString) do
     begin
       if InString[I] = InChar then
         CounterSeparatorVar := CounterSeparatorVar + 1;
@@ -390,16 +390,18 @@ begin
 end;
 
 
-{ Функция определяет в передаваемой широкой строке, позицию номера передаваемого символа }
+{ Функция FindCharWideString2 определяет в передаваемой строке, позицию номера
+  символа }
 
-function FindCharWideString2(InString: WideString; InChar: Char; NumberOfSeparator: Word): Longword;
+function FindCharWideString2(InString: WideString; InChar: Char;
+  NumberOfSeparator: Word): Longword;
 var
   I: Longword;
   CounterSeparatorVar: Word;
 begin
 
-  FindCharWideString2:=0;
-  CounterSeparatorVar:=0;
+  FindCharWideString2 := 0;
+  CounterSeparatorVar := 0;
 
   for I := 1 to Length(InString) do
     begin
@@ -416,7 +418,7 @@ begin
 end;
 
 
-{ Функция определяет в передаваемой строке, позицию пробела }
+{ Функция FindSpace определяет в передаваемой строке позицию пробела }
 
 function FindSpace(InString: ShortString; NumberOfSpace: Byte): Byte;
 var
@@ -443,7 +445,8 @@ begin
 end;
 
 
-{ Подсчет числа вхождений символа InChar в строку InString }
+{ Функция countCharInString осушествляет подсчет числа вхождений символа
+  InChar в передаваемую строку InString }
 
 function countCharInString(InString: WideString; InChar: ShortString): Word;
 var InStringTmp: WideString;
@@ -465,7 +468,8 @@ begin
 end;
 
 
-{ Функция преобразует Win строку 'Abcd' -> 'ABCD' }
+{ Функция Upper преобразует строку в кодировке Win в заглавные символы,
+  пример Upper('Abcd') результат 'ABCD' }
 
 function Upper(InString: ShortString): ShortString;
 var
@@ -491,12 +495,13 @@ begin
 end;
 
 
-{ Функция преобразует Win строку 'abcd' -> 'Abcd' }
+{ Функция Proper преобразует строку в кодировке Win в первую заглавную букву,
+  остальные - строчные пример для Proper('abcd') результат 'Abcd' }
 
 function Proper(InString: ShortString): ShortString;
 var
   I: 1..1000;
-  LocalStr: String;
+  LocalStr: string;
 begin
 
   for I := 1 to Length(InString) do
@@ -520,16 +525,19 @@ begin
     end;
 
   Result := LocalStr;
+
 end;
 
 
-{ Функция преобразует Win строку 'ABCD' -> 'abcd' }
+{ Функция Lower преобразует строку в кодировке Win в строку из строчных букв,
+  пример для Lower('ABCD') результат 'abcd' }
 
 function Lower(InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalStr: string;
 begin
+
   for I:=1 to Length(InString) do
     begin
       case Ord(InString[I]) of
@@ -540,28 +548,33 @@ begin
         LocalStr := LocalStr + InString[I];
       end;
     end;
+
   Result := LocalStr;
+
 end;
 
 
-{ Функция преобразует строку '1000,00' -> '1 000,00' }
+{ Функция Divide1000 преобразует строку с числами, добавляя пробел-разделитель
+  в тысячах. Пример для Divide1000('1000,00') рузультат '1 000,00' }
 
 function Divide1000(InString: ShortString): ShortString;
 var
   I, Count: -1..100;
   AfterPoint: boolean;
-  TmpString: ShortString;
+  StringVar: ShortString;
 begin
-  TmpString:='';
-  if (Pos('.', InString) <> 0) or (Pos(',', InString)<>0) then
+
+  StringVar := '';
+
+  if (Pos('.', InString) <> 0) or (Pos(',', InString) <> 0) then
     begin
       AfterPoint := False;
       Count := -1;
     end
   else
     begin
-      AfterPoint:=True;
-      Count:=0;
+      AfterPoint := True;
+      Count := 0;
     end;
 
   for I := 0 to Length(InString) - 1 do
@@ -575,22 +588,24 @@ begin
 
       if (AfterPoint = True) and ((Count = 3) or (Count = 6) or (Count = 9)
         or (Count = 12)) then
-          TmpString := ' ' + Copy(InString, Length(InString) -I, 1) + TmpString
-      else TmpString := Copy(InString, Length(InString) -I, 1) + TmpString;
+          StringVar := ' ' + Copy(InString, Length(InString) -I, 1) + StringVar
+      else StringVar := Copy(InString, Length(InString) -I, 1) + StringVar;
 
     end;
 
-  Result := Trim(TmpString);
+  Result := Trim(StringVar);
+
 end;
 
 
-{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
-  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND' }
+{ Функция ParamFromIniFile возвращает параметр с заданным именем из ini-файла;
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
-function paramFromIniFile(InIniFile: ShortString; InParam: ShortString): ShortString;
+function ParamFromIniFile(InIniFile: ShortString; InParam: ShortString): ShortString;
 var
   IniFileVar: Textfile;
-  ParamFromIniFileVar: string[255];
+  ParamFromIniFileVar: string;
   StrokaVar: ANSIString;
 begin
 
@@ -604,10 +619,10 @@ begin
           begin
             Readln(IniFileVar, StrokaVar);
 
-            if (COPY(StrokaVar, 1, 1)<>';') then
+            if (COPY(StrokaVar, 1, 1) <> ';') then
               begin
 
-                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1) = Trim(InParam)) then
                   ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
 
               end;
@@ -618,27 +633,27 @@ begin
   else
     begin
       ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
-      { D7 MessageDlg('Не найден файл '+ExtractFilePath(ParamStr(0))+Trim(inIniFile)+'!', mtError, [mbOk],0); }
     end;
 
-  { D7 if ParamFromIniFileVar = 'PARAMETR_NOT_FOUND' then
-     MessageDlg('В файле ' + ExtractFilePath(ParamStr(0)) + Trim(inIniFile)+' не найден параметр ' + Trim(inParam) + '!', mtError, [mbOk],0); }
-
   Result := ParamFromIniFileVar;
+
 end;
 
 
-{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
-  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND' }
+{ Функция ParamFromIniFileWithOutMessDlg возвращает параметр с заданным именем
+  из ini-файла;
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
-function ParamFromIniFileWithOutMessDlg(InIniFile: ShortString; InParam: ShortString): ShortString;
+function ParamFromIniFileWithOutMessDlg(InIniFile: ShortString;
+  InParam: ShortString): ShortString;
 var
   IniFileVar: Textfile;
-  ParamFromIniFileVar: string[255];
+  ParamFromIniFileVar: string;
   StrokaVar: ANSIString;
 begin
 
-  ParamFromIniFileVar:='PARAMETR_NOT_FOUND';
+  ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
 
   if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InIniFile)) = True then
     begin
@@ -651,7 +666,7 @@ begin
             if (Copy(StrokaVar, 1, 1) <> ';') then
                 begin
 
-                  if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                  if (Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1) = Trim(InParam)) then
                     ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
 
                 end;
@@ -669,9 +684,10 @@ begin
 end;
 
 
-{ Функция возвращает параметр с заданным именем из ini-файла; Если нет ini
-  - 'INIFILE_NOT_FOUND'. Если нет параметра - 'PARAMETR_NOT_FOUND'
-  Результат в WideString }
+{ Функция ParamFromIniFileWithOutMessDlg2 возвращает параметр с заданным именем
+  из ini-файла;
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
 function ParamFromIniFileWithOutMessDlg2(InIniFile: ShortString; InParam: ShortString): WideString;
 var
@@ -692,7 +708,7 @@ begin
 
             if (Copy(StrokaVar, 1, 1) <> ';') then
               begin
-                if Trim(Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) ) = Trim(InParam) then
+                if Trim(Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1)) = Trim(InParam) then
                   ParamFromIniFileVar := Trim(Copy(StrokaVar, (POS('=', StrokaVar) + 1), 255));
               end;
 
@@ -709,19 +725,22 @@ begin
 end;
 
 
-{ Имя к ini-файлу полное - Функция возвращает параметр с заданным
-  именем из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'.
-  Если нет параметра - 'PARAMETR_NOT_FOUND' }
+{ Функция ParamFromIniFileWithFullPath возвращает параметр с заданным именем
+  из ini-файла;
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
-function ParamFromIniFileWithFullPath(InIniFile: ShortString; InParam: ShortString): ShortString;
+function ParamFromIniFileWithFullPath(InIniFile: ShortString;
+  InParam: ShortString): ShortString;
 var
   IniFileVar: Textfile;
-  ParamFromIniFileVar: string[255];
+  ParamFromIniFileVar: string;
   StrokaVar: ANSIString;
 begin
 
   ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
   InIniFile := Trim(InIniFile);
+
   if FileExists(InIniFile) = True then
     begin
         AssignFile(IniFileVar, InIniFile);
@@ -733,7 +752,7 @@ begin
             if (Copy(StrokaVar, 1, 1) <> ';') then
               begin
 
-                IF (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                IF (Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1) = Trim(InParam)) then
                   ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
 
               end;
@@ -744,28 +763,26 @@ begin
   else
     begin
         ParamFromIniFileVar := 'INIFILE_NOT_FOUND';
-        { D7 MessageDlg('Не найден файл ' + InIniFile + '!', mtError, [mbOk],0); }
     end;
-
-  { D7 IF ParamFromIniFileVar = 'PARAMETR_NOT_FOUND' then
-   MessageDlg('В файле ' + ExtractFilePath(InIniFile) + ' не найден параметр '
-     + Trim(InParam) + '!', mtError, [mbOk], 0); }
 
   Result := ParamFromIniFileVar;
 
 end;
 
 
-{ Имя к ini-файлу полное - Функция возвращает параметр с заданным именем
-  из ini-файла; Если нет ini - 'INIFILE_NOT_FOUND'.
-  Если нет параметра - 'PARAMETR_NOT_FOUND' без MessageDlg }
+{ Функция ParamFromIniFileWithFullPathWithOutMessDlg возвращает параметр
+  с заданным именем из ini-файла.
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
-function ParamFromIniFileWithFullPathWithOutMessDlg(InIniFile: ShortString; InParam: ShortString): ShortString;
+function ParamFromIniFileWithFullPathWithOutMessDlg(InIniFile: ShortString;
+InParam: ShortString): ShortString;
 var
   IniFileVar: Textfile;
-  ParamFromIniFileVar: string[255];
+  ParamFromIniFileVar: string;
   StrokaVar: ANSIString;
 begin
+
   ParamFromIniFileVar := 'PARAMETR_NOT_FOUND';
   InIniFile := Trim(InIniFile);
 
@@ -780,7 +797,7 @@ begin
             if (Copy(StrokaVar, 1, 1) <> ';') then
               begin
 
-                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) -1) = Trim(InParam)) then
+                if (Copy(StrokaVar, 1, Pos('=', StrokaVar) - 1) = Trim(InParam)) then
                   ParamFromIniFileVar := Trim(Copy(StrokaVar, (Pos('=', StrokaVar) + 1), 255));
 
               end;
@@ -798,14 +815,15 @@ begin
 end;
 
 
-{ Функция ищет ini файл и параметр в нем; Если все нормально
-  - возвращается значение параметра,
-  если нет - то заначение функциий 'INIFILE_NOT_FOUND' или 'PARAMETR_NOT_FOUND' }
+{ Функция ParamFoundFromIniFile возвращает параметр
+  с заданным именем из ini-файла.
+  Если нет ini-файла, то результат 'INIFILE_NOT_FOUND'.
+  Если нет в ini-файле нет параметра - возвращаемый результат 'PARAMETR_NOT_FOUND' }
 
 function ParamFoundFromIniFile(InIniFile: ShortString; InParam: ShortString): ShortString;
 var
   IniFileVar: Textfile;
-  ParamFromIniFileVar: string[255];
+  ParamFromIniFileVar: string;
   StrokaVar: ANSIString;
 begin
 
@@ -837,26 +855,31 @@ begin
     end;
 
   Result := ParamFromIniFileVar;
+
 end;
 
 
-{ Функция добавляет перед числом нули 1 до нужного количества знаков '0001' }
+{ Функция BeforZero добавляет перед числом нули до нужного количества знаков.
+  Пример BeforZero(1, 4), результат '0001' }
 
 function BeforZero(InValue: Integer; InLength: Word): ShortString;
 var
   I: Word;
   StringZero: ShortString;
 begin
+
   StringZero:='';
 
   for I := 1 to (InLength - Length(IntToStr(InValue))) do
     StringZero:=StringZero + '0';
 
   Result := StringZero + IntToStr(InValue);
+
 end;
 
 
- { Автонумерация документа из 12-х знаков с ведением электронного жунала }
+ { Функция ID12docFromJournal производит автонумерацию документа из 12-х знаков
+   с ведением электронного жунала }
 
 function ID12docFromJournal(InJournal: ShortString; InNameDoc: ShortString): Word;
 var
@@ -884,11 +907,11 @@ begin
     end;
 
   if IdDocVar = 999999999999 then
-    IdDocVar:=1
+    IdDocVar := 1
   else IdDocVar := IdDocVar + 1;
 
   AssignFile(TxtJournal, ExtractFilePath(ParamStr(0)) + InJournal);
-  if FileExists(ExtractFilePath(ParamStr(0))+InJournal)=True then
+  if FileExists(ExtractFilePath(ParamStr(0)) + InJournal)=True then
     Append(TxtJournal)
   else
     begin
@@ -897,7 +920,7 @@ begin
       WriteLn(TxtJournal, 'Отдел Банковских карт');
       WriteLn(TxtJournal, ' ');
       WriteLn(TxtJournal, 'Электронный журнал регистрации документов');
-      WriteLn(TxtJournal, 'Начат: '+DateToStr(Now));
+      WriteLn(TxtJournal, 'Начат: ' + DateToStr(Now));
       WriteLn(TxtJournal, '------------------------------------------------------------------------------------------');
       WriteLn(TxtJournal, '      #     |   Дата   |                        Примечание                               |');
       WriteLn(TxtJournal, '------------------------------------------------------------------------------------------');
@@ -905,32 +928,39 @@ begin
   WriteLn(TxtJournal, LeftFixString(IntToStr(IdDocVar), 12) + '|'
     + DateToStr(Now) + '|' + DosToWin(InNameDoc));
   CloseFile(TxtJournal);
+
   Result:=IdDocVar;
+
 end;
 
 
-{ Преобразование даты в формате cтроки в Integer }
+{ Функция DateTimeToSec преобразует дату в формате cтроки в Integer от 01.01.2000 г. }
 
 function DateTimeToSec(InValue: ShortString): Integer;
 begin
+
   Result := Round((StrToDate(Copy(InValue, 1, 2) + '.' + Copy(InValue, 4, 2) + '.20'
     + Copy(InValue, 7, 2)) - StrToDate('01.01.2000'))) * 86400
     + StrToInt(Copy(InValue, 16, 2)) + StrToInt(Copy(InValue, 13, 2)) * 60
     + StrToInt(Copy(InValue, 10, 2)) * 3600;
+
 end;
 
 
-{ Преобразование стироки String в PChar }
+{ Функция StrToPchar возвращает строку PChar из передаваемой ей в качестве
+  аргумента строки типа String }
 
 function StrToPchar(InString: string): Pchar;
 begin
+
   InString := InString + #0;
   Result := StrPCopy(@InString[1], InString);
+
 end;
 
 
-{ Процедура выводит в лог файл с именем InFileName строку InString
-с переводом каретки если InLn = 'Ln' }
+{ Процедура ToLogFileWithName выводит в log-файл с именем InFileName строку
+  InString передаваемую в качестве аргумента с переводом каретки если InLn = 'Ln' }
 
 procedure ToLogFileWithName(InFileName: ShortString; InString: ShortString; InLn: ShortString);
 var
@@ -954,23 +984,29 @@ begin
 end;
 
 
-{ Процедура выводит в лог файл с Широкой строкой с именем InFileName
-строку InString с переводом каретки если InLn = 'Ln' }
+{ Процедура ToLogFileWideStringWithName выводит в log-файл с именем InFileName строку
+  InString передаваемую в качестве аргумента с переводом каретки если InLn = 'Ln' }
 
-procedure ToLogFileWideStringWithName(InFileName: ShortString; InString: string; InLn: ShortString);
+procedure ToLogFileWideStringWithName(InFileName: ShortString; InString: string;
+  InLn: ShortString);
 var
   LogFile:TextFile;
 begin
 
   try
+
     AssignFile(LogFile, ExtractFilePath(ParamStr(0)) + Trim(InFileName));
+
     if FileExists(ExtractFilePath(ParamStr(0)) + Trim(InFileName)) = True then
       Append(LogFile)
     else ReWrite(LogFile);
+
     if InLn = 'Ln' then WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now)
       + ': ' + InString)
     else Write(LogFile, ' ' + InString);
+
     CloseFile(LogFile);
+
   except
     on E: Exception do WriteLn(E.Message);
   end;
@@ -980,46 +1016,65 @@ end;
 
 { Полный путь к log-файлу }
 
-procedure ToLogFileWithFullName(InFileName: ShortString; InString: ShortString; InLn: ShortString);
+{ Процедура ToLogFileWithFullName выводит в log-файл с именем InFileName
+  (имя файла с полным путем) строку InString передаваемую в качестве аргумента
+  с переводом каретки если InLn = 'Ln' }
+
+procedure ToLogFileWithFullName(InFileName: ShortString; InString: ShortString;
+  InLn: ShortString);
 var
   LogFile: TextFile;
 begin
+
   AssignFile(LogFile, InFileName);
+
   if FileExists(InFileName) = True then
     Append(LogFile)
   else ReWrite(LogFile);
+
   if InLn = 'Ln' then
     WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now) + ': ' + InString)
   else Write(LogFile, ' ' + InString);
+
   CloseFile(LogFile);
+
 end;
 
 
-{ Полный путь к лог-файлу с использованием WideString }
+{ Процедура ToLogFileWideStringWithFullName выводит в log-файл
+  с именем InFileName строку InString передаваемую в качестве аргумента
+  с переводом каретки если InLn = 'Ln' }
 
-procedure ToLogFileWideStringWithFullName(InFileName: ShortString; InString: WideString; InLn: ShortString);
+procedure ToLogFileWideStringWithFullName(InFileName: ShortString;
+  InString: WideString; InLn: ShortString);
 var
   LogFile: TextFile;
 begin
+
   AssignFile(LogFile, InFileName);
+
   if FileExists(InFileName) = True then
     Append(LogFile)
   else ReWrite(LogFile);
+
   if InLn = 'Ln' then
     WriteLn(LogFile, DateToStr(Now) + ' ' + TimeToStr(Now) + ': ' + InString)
   else Write(LogFile, ' ' + InString);
+
   CloseFile(LogFile);
+
 end;
 
 
-{ Функция преобразует строку Кириллицы в Латиницу по таблице транслитерации
-  с www.beonline.ru }
+{ Функция TranslitBeeLine преобразует строку, передаваемую в качестве аргумента
+  из Кириллицу в Латиницу по таблице транслитерации с www.beonline.ru }
 
 function TranslitBeeLine(InString: ShortString): ShortString;
 var
   I: 1..1000;
   LocalStr: string;
 begin
+
   for I := 1 to Length(InString) do
     begin
       case InString[I] of
@@ -1090,41 +1145,47 @@ begin
         else LocalStr := LocalStr + InString[I];
       end;
     end;
+
   Result := LocalStr;
+
 end;
 
 
-{ Функция преобразует дату 06.05.2006 (06 мая 2006) в строку формата MS SQL '05.06.2006'
-     06.05.2006 10:01:05 }
+{ Функция FormatMsSqlDate преобразует дату 06.05.2006 (06 мая 2006), передаваемую
+  в качестве аргумента в строку формата MS SQL '05.06.2006' 06.05.2006 10:01:05 }
 
 function FormatMsSqlDate(InValue: TDate): ShortString;
 begin
+
   Result := Copy(DateToStr(InValue), 4, 2) + '.' + Copy(DateToStr(InValue), 1, 2)
     + '.' + Copy(DateToStr(InValue), 7, 4);
+
 end;
 
 
-{ Функция преобразует строку в формате даты и времени
+{ Функция StrFormatTimeStampToDateTime преобразует строку в формате даты и времени
   TTimeStamp '04-04-2007 15:22:11 +0300' в тип TDateTime
-  ( корректировку часового пояса +0300 не учитывая ) }
+  (без корректировки часового пояса +0300) }
 
 function StrFormatTimeStampToDateTime(InStrFormatTimeStamp: ShortString): TDateTime;
 begin
+
   Result := StrToDateTime(Copy(InStrFormatTimeStamp, 1, 2) + '.'
     + Copy(InStrFormatTimeStamp, 4, 2) + '.'
     + Copy(InStrFormatTimeStamp, 7, 4) + '.'
     + ' ' + Copy(InStrFormatTimeStamp, 12, 8));
+
 end;
 
 
-{ Функция преобразует строку в формате даты и времени
+{ Функция StrTimeStampToStrDateTime преобразует строку в формате даты и времени
   TTimeStamp '04-04-2007 15:22:11 +0300' в строку '04.04.2007 15:22:11'
-  ( корректировку часового пояса +0300 не учитываем ) }
+  (без корректировки часового пояса +0300) }
 
 function StrTimeStampToStrDateTime(InStrFormatTimeStamp: ShortString): ShortString;
 begin
 
-  StrTimeStampToStrDateTime := Copy(InStrFormatTimeStamp, 1, 2) + '.'
+  Result := Copy(InStrFormatTimeStamp, 1, 2) + '.'
     + Copy(InStrFormatTimeStamp, 4, 2) + '.'
     + Copy(InStrFormatTimeStamp, 7, 4) + '. '
     + Copy(InStrFormatTimeStamp, 12, 8);
@@ -1140,208 +1201,213 @@ var
   DateTimeToStrFormatVar: ShortString;
 begin
 
-  DateTimeToStrFormatVar := StringReplace(DateTimeToStr(In_DateTime), ' ', '', [rfReplaceAll, rfIgnoreCase]);
-  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, '.', '', [rfReplaceAll, rfIgnoreCase]);
-  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, ':', '', [rfReplaceAll, rfIgnoreCase]);
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStr(In_DateTime), ' ', '',
+    [rfReplaceAll, rfIgnoreCase]);
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, '.', '',
+    [rfReplaceAll, rfIgnoreCase]);
+  DateTimeToStrFormatVar := StringReplace(DateTimeToStrFormatVar, ':', '',
+    [rfReplaceAll, rfIgnoreCase]);
   Result := DateTimeToStrFormatVar;
 
 end;
 
 
-{ Функция DecodeCurCodeToISO преобразует код валюты 810 в ISO: "RUR" }
+{ Функция DecodeCurCodeToISO преобразует цифровой код валюты в код ISO.
+  Пример для DecodeCurCodeToISO(810) результат будет "RUR" }
 
 function DecodeCurCodeToISO(InCurrCode: Word): ShortString;
 begin
 
   case InCurrCode of
-    0   : decodeCurCodeToISO := 'RUR';
-    4   : decodeCurCodeToISO := 'AFA';  //    Афгани
-    8   : decodeCurCodeToISO := 'ALL';  //    Лек
-    12  : decodeCurCodeToISO := 'DZD';  //    Алжирский динар
-    20  : decodeCurCodeToISO := 'ADP';  //    Андорская песета
-    31  : decodeCurCodeToISO := 'AZM';  //    Азербайджанский манат
-    32  : decodeCurCodeToISO := 'ARS';  //    Аргентинское песо
-    36  : decodeCurCodeToISO := 'AUD';  //    Австралийский доллар
-    40  : decodeCurCodeToISO := 'ATS';  //    Шиллинг
-    44  : decodeCurCodeToISO := 'BSD';  //    Багамский доллар
-    48  : decodeCurCodeToISO := 'BHD';  //    Бахрейнский динар
-    50  : decodeCurCodeToISO := 'BDT';  //    Така
-    51  : decodeCurCodeToISO := 'AMD';  //    Армянский драм
-    52  : decodeCurCodeToISO := 'BBD';  //    Барбадосский доллар
-    56  : decodeCurCodeToISO := 'BEF';  //    Бельгийский франк
-    60  : decodeCurCodeToISO := 'BMD';  //    Бермудский доллар
-    64  : decodeCurCodeToISO := 'BTN';  //    Нгултрум
-    68  : decodeCurCodeToISO := 'BOB';  //    Боливиано
-    72  : decodeCurCodeToISO := 'BWP';  //    Пула
-    84  : decodeCurCodeToISO := 'BZD';  //    Белизский доллар
-    90  : decodeCurCodeToISO := 'SBD';  //    Доллар Соломоновых
-    96  : decodeCurCodeToISO := 'BND';  //    Брунейский доллар
-    100 : decodeCurCodeToISO := 'BGL';  //    Лев
-    104 : decodeCurCodeToISO := 'MMK';  //    Кьят
-    108 : decodeCurCodeToISO := 'BIF';  //    Бурундийский франк
-    116 : decodeCurCodeToISO := 'KHR';  //    Риель
-    124 : decodeCurCodeToISO := 'CAD';  //    Канадский доллар
-    132 : decodeCurCodeToISO := 'CVE';  //    Эскудо Кабо - Верде
-    136 : decodeCurCodeToISO := 'KYD';  //    Доллар Каймановых
-    144 : decodeCurCodeToISO := 'LKR';  //    Шри - Ланкийская рупия
-    152 : decodeCurCodeToISO := 'CLP';  //    Чилийское песо
-    156 : decodeCurCodeToISO := 'CNY';  //    Юань Ренминби
-    170 : decodeCurCodeToISO := 'COP';  //    Колумбийское песо
-    174 : decodeCurCodeToISO := 'KMF';  //    Франк Коморских
-    188 : decodeCurCodeToISO := 'CRC';  //    Костариканский колон
-    191 : decodeCurCodeToISO := 'HRK';  //    Куна
-    192 : decodeCurCodeToISO := 'CUP';  //    Кубинское песо
-    196 : decodeCurCodeToISO := 'CYP';  //    Кипрский фунт
-    203 : decodeCurCodeToISO := 'CZK';  //    Чешская крона
-    208 : decodeCurCodeToISO := 'DKK';  //    Датская крона
-    214 : decodeCurCodeToISO := 'DOP';  //    Доминиканское песо
-    218 : decodeCurCodeToISO := 'ECS';  //    Сукре
-    222 : decodeCurCodeToISO := 'SVC';  //    Сальвадорский колон
-    230 : decodeCurCodeToISO := 'ETB';  //    Эфиопский быр
-    232 : decodeCurCodeToISO := 'ERN';  //    Накфа
-    233 : decodeCurCodeToISO := 'EEK';  //    Крона
-    238 : decodeCurCodeToISO := 'FKP';  //    Фунт Фолклендских
-    242 : decodeCurCodeToISO := 'FJD';  //    Доллар Фиджи
-    246 : decodeCurCodeToISO := 'FIM';  //    Марка
-    250 : decodeCurCodeToISO := 'FRF';  //    Французский франк
-    262 : decodeCurCodeToISO := 'DJF';  //    Франк Джибути
-    270 : decodeCurCodeToISO := 'GMD';  //    Даласи
-    276 : decodeCurCodeToISO := 'DEM';  //    Немецкая марка
-    288 : decodeCurCodeToISO := 'GHC';  //    Седи
-    292 : decodeCurCodeToISO := 'GIP';  //    Гибралтарский фунт
-    300 : decodeCurCodeToISO := 'GRD';  //    Драхма
-    320 : decodeCurCodeToISO := 'GTQ';  //    Кетсаль
-    324 : decodeCurCodeToISO := 'GNF';  //    Гвинейский франк
-    328 : decodeCurCodeToISO := 'GYD';  //    Гайанский доллар
-    332 : decodeCurCodeToISO := 'HTG';  //    Гурд
-    340 : decodeCurCodeToISO := 'HNL';  //    Лемпира
-    344 : decodeCurCodeToISO := 'HKD';  //    Гонконгский доллар
-    348 : decodeCurCodeToISO := 'HUF';  //    Форинт
-    352 : decodeCurCodeToISO := 'ISK';  //    Исландская крона
-    356 : decodeCurCodeToISO := 'INR';  //    Индийская рупия
-    360 : decodeCurCodeToISO := 'IDR';  //    Рупия
-    364 : decodeCurCodeToISO := 'IRR';  //    Иранский риал
-    368 : decodeCurCodeToISO := 'IQD';  //    Иракский динар
-    372 : decodeCurCodeToISO := 'IEP';  //    Ирландский фунт
-    376 : decodeCurCodeToISO := 'ILS';  //    Новый израильский
-    380 : decodeCurCodeToISO := 'ITL';  //    Итальянская лира
-    388 : decodeCurCodeToISO := 'JMD';  //    Ямайский доллар
-    392 : decodeCurCodeToISO := 'JPY';  //    Йена
-    398 : decodeCurCodeToISO := 'KZT';  //    Тенге
-    400 : decodeCurCodeToISO := 'JOD';  //    Иорданский динар
-    404 : decodeCurCodeToISO := 'KES';  //    Кенийский шиллинг
-    408 : decodeCurCodeToISO := 'KPW';  //    Северо - корейская вона
-    410 : decodeCurCodeToISO := 'KRW';  //    Вона
-    414 : decodeCurCodeToISO := 'KWD';  //    Кувейтский динар
-    417 : decodeCurCodeToISO := 'KGS';  //    Сом
-    418 : decodeCurCodeToISO := 'LAK';  //    Кип
-    422 : decodeCurCodeToISO := 'LBP';  //    Ливанский фунт
-    426 : decodeCurCodeToISO := 'LSL';  //    Лоти
-    428 : decodeCurCodeToISO := 'LVL';  //    Латвийский лат
-    430 : decodeCurCodeToISO := 'LRD';  //    Либерийский доллар
-    434 : decodeCurCodeToISO := 'LYD';  //    Ливийский динар
-    440 : decodeCurCodeToISO := 'LTL';  //    Литовский лит
-    442 : decodeCurCodeToISO := 'LUF';  //    Люксембургский франк
-    446 : decodeCurCodeToISO := 'MOP';  //    Патака
-    450 : decodeCurCodeToISO := 'MGF';  //    Малагасийский франк
-    454 : decodeCurCodeToISO := 'MWK';  //    Квача
-    458 : decodeCurCodeToISO := 'MYR';  //    Малайзийский ринггит
-    462 : decodeCurCodeToISO := 'MVR';  //    Руфия
-    470 : decodeCurCodeToISO := 'MTL';  //    Мальтийская лира
-    478 : decodeCurCodeToISO := 'MRO';  //    Угия
-    480 : decodeCurCodeToISO := 'MUR';  //    Маврикийская рупия
-    484 : decodeCurCodeToISO := 'MXN';  //    Мексиканское песо
-    496 : decodeCurCodeToISO := 'MNT';  //    Тугрик
-    498 : decodeCurCodeToISO := 'MDL';  //    Молдавский лей
-    504 : decodeCurCodeToISO := 'MAD';  //    Марокканский дирхам
-    508 : decodeCurCodeToISO := 'MZM';  //    Метикал
-    512 : decodeCurCodeToISO := 'OMR';  //    Оманский риал
-    516 : decodeCurCodeToISO := 'NAD';  //    Доллар Намибии
-    524 : decodeCurCodeToISO := 'NPR';  //    Непальская рупия
-    528 : decodeCurCodeToISO := 'NLG';  //    Нидерландский гульден
-    532 : decodeCurCodeToISO := 'ANG';  //    Нидерландский
-    533 : decodeCurCodeToISO := 'AWG';  //    Арубанский гульден
-    548 : decodeCurCodeToISO := 'VUV';  //    Вату
-    554 : decodeCurCodeToISO := 'NZD';  //    Новозеландский доллар
-    558 : decodeCurCodeToISO := 'NIO';  //    Золотая кордоба
-    566 : decodeCurCodeToISO := 'NGN';  //    Найра
-    578 : decodeCurCodeToISO := 'NOK';  //    Норвежская крона
-    586 : decodeCurCodeToISO := 'PKR';  //    Пакистанская рупия
-    590 : decodeCurCodeToISO := 'PAB';  //    Бальбоа
-    598 : decodeCurCodeToISO := 'PGK';  //    Кина
-    600 : decodeCurCodeToISO := 'PYG';  //    Гуарани
-    604 : decodeCurCodeToISO := 'PEN';  //    Новый соль
-    608 : decodeCurCodeToISO := 'PHP';  //    Филиппинское песо
-    620 : decodeCurCodeToISO := 'PTE';  //    Португальское эскудо
-    624 : decodeCurCodeToISO := 'GWP';  //    Песо Гвинеи - Бисау
-    626 : decodeCurCodeToISO := 'TPE';  //    Тиморское эскудо
-    634 : decodeCurCodeToISO := 'QAR';  //    Катарский риал
-    642 : decodeCurCodeToISO := 'ROL';  //    Лей
-    643 : decodeCurCodeToISO := 'RUB';  //    Российский рубль
-    646 : decodeCurCodeToISO := 'RWF';  //    Франк Руанды
-    654 : decodeCurCodeToISO := 'SHP';  //    Фунт Острова Святой
-    678 : decodeCurCodeToISO := 'STD';  //    Добра
-    682 : decodeCurCodeToISO := 'SAR';  //    Саудовский риял
-    690 : decodeCurCodeToISO := 'SCR';  //    Сейшельская рупия
-    694 : decodeCurCodeToISO := 'SLL';  //    Леоне
-    702 : decodeCurCodeToISO := 'SGD';  //    Сингапурский доллар
-    703 : decodeCurCodeToISO := 'SKK';  //    Словацкая крона
-    704 : decodeCurCodeToISO := 'VND';  //    Донг
-    705 : decodeCurCodeToISO := 'SIT';  //    Толар
-    706 : decodeCurCodeToISO := 'SOS';  //    Сомалийский шиллинг
-    710 : decodeCurCodeToISO := 'ZAR';  //    Рэнд
-    716 : decodeCurCodeToISO := 'ZWD';  //    Доллар Зимбабве
-    724 : decodeCurCodeToISO := 'ESP';  //    Испанская песета
-    736 : decodeCurCodeToISO := 'SDD';  //    Суданский динар
-    740 : decodeCurCodeToISO := 'SRG';  //    Суринамский гульден
-    748 : decodeCurCodeToISO := 'SZL';  //    Лилангени
-    752 : decodeCurCodeToISO := 'SEK';  //    Шведская крона
-    756 : decodeCurCodeToISO := 'CHF';  //    Швейцарский франк
-    760 : decodeCurCodeToISO := 'SYP';  //    Сирийский фунт
-    764 : decodeCurCodeToISO := 'THB';  //    Бат
-    776 : decodeCurCodeToISO := 'TOP';  //    Паанга
-    780 : decodeCurCodeToISO := 'TTD';  //    Доллар Тринидада и
-    784 : decodeCurCodeToISO := 'AED';  //    Дирхам (ОАЭ)
-    788 : decodeCurCodeToISO := 'TND';  //    Тунисский динар
-    792 : decodeCurCodeToISO := 'TRL';  //    Турецкая лира
-    795 : decodeCurCodeToISO := 'TMM';  //    Манат
-    800 : decodeCurCodeToISO := 'UGX';  //    Угандийский шиллинг
-    807 : decodeCurCodeToISO := 'MKD';  //    Динар
-    810 : decodeCurCodeToISO := 'RUR';  //    Российский рубль
-    818 : decodeCurCodeToISO := 'EGP';  //    Египетский фунт
-    826 : decodeCurCodeToISO := 'GBP';  //    Фунт стерлингов
-    834 : decodeCurCodeToISO := 'TZS';  //    Танзанийский шиллинг
-    840 : decodeCurCodeToISO := 'USD';  //    Доллар США
-    858 : decodeCurCodeToISO := 'UYU';  //    Уругвайское песо
-    860 : decodeCurCodeToISO := 'UZS';  //    Узбекский сум
-    862 : decodeCurCodeToISO := 'VEB';  //    Боливар
-    882 : decodeCurCodeToISO := 'WST';  //    Тала
-    886 : decodeCurCodeToISO := 'YER';  //    Йеменский риал
-    891 : decodeCurCodeToISO := 'YUM';  //    Новый динар
-    894 : decodeCurCodeToISO := 'ZMK';  //    Квача (замбийская)
-    901 : decodeCurCodeToISO := 'TWD';  //    Новый тайваньский
-    950 : decodeCurCodeToISO := 'XAF';  //    Франк КФА ВЕАС
-    951 : decodeCurCodeToISO := 'XCD';  //    Восточно - карибский
-    952 : decodeCurCodeToISO := 'XOF';  //    Франк КФА ВСЕАО
-    953 : decodeCurCodeToISO := 'XPF';  //    Франк КФП
-    960 : decodeCurCodeToISO := 'XDR';  //    СДР (специальные права
-    972 : decodeCurCodeToISO := 'TJS';  //    Сомони
-    973 : decodeCurCodeToISO := 'AOA';  //    Кванза
-    974 : decodeCurCodeToISO := 'BYR';  //    Белорусский рубль
-    975 : decodeCurCodeToISO := 'BGN';  //    Болгарский лев
-    976 : decodeCurCodeToISO := 'CDF';  //    Конголезский франк
-    977 : decodeCurCodeToISO := 'ВАМ';  //    Конвертируемая марка
-    978 : decodeCurCodeToISO := 'EUR';  //    Евро
-    980 : decodeCurCodeToISO := 'UAH';  //    Гривна
-    981 : decodeCurCodeToISO := 'GEL';  //    Лари
-    985 : decodeCurCodeToISO := 'PLN';  //    Злотый
-    986 : decodeCurCodeToISO := 'BRL';  //    Бразильский реал
+    0   : Result := 'RUR';
+    4   : Result := 'AFA';  //    Афгани
+    8   : Result := 'ALL';  //    Лек
+    12  : Result := 'DZD';  //    Алжирский динар
+    20  : Result := 'ADP';  //    Андорская песета
+    31  : Result := 'AZM';  //    Азербайджанский манат
+    32  : Result := 'ARS';  //    Аргентинское песо
+    36  : Result := 'AUD';  //    Австралийский доллар
+    40  : Result := 'ATS';  //    Шиллинг
+    44  : Result := 'BSD';  //    Багамский доллар
+    48  : Result := 'BHD';  //    Бахрейнский динар
+    50  : Result := 'BDT';  //    Така
+    51  : Result := 'AMD';  //    Армянский драм
+    52  : Result := 'BBD';  //    Барбадосский доллар
+    56  : Result := 'BEF';  //    Бельгийский франк
+    60  : Result := 'BMD';  //    Бермудский доллар
+    64  : Result := 'BTN';  //    Нгултрум
+    68  : Result := 'BOB';  //    Боливиано
+    72  : Result := 'BWP';  //    Пула
+    84  : Result := 'BZD';  //    Белизский доллар
+    90  : Result := 'SBD';  //    Доллар Соломоновых
+    96  : Result := 'BND';  //    Брунейский доллар
+    100 : Result := 'BGL';  //    Лев
+    104 : Result := 'MMK';  //    Кьят
+    108 : Result := 'BIF';  //    Бурундийский франк
+    116 : Result := 'KHR';  //    Риель
+    124 : Result := 'CAD';  //    Канадский доллар
+    132 : Result := 'CVE';  //    Эскудо Кабо - Верде
+    136 : Result := 'KYD';  //    Доллар Каймановых
+    144 : Result := 'LKR';  //    Шри - Ланкийская рупия
+    152 : Result := 'CLP';  //    Чилийское песо
+    156 : Result := 'CNY';  //    Юань Ренминби
+    170 : Result := 'COP';  //    Колумбийское песо
+    174 : Result := 'KMF';  //    Франк Коморских
+    188 : Result := 'CRC';  //    Костариканский колон
+    191 : Result := 'HRK';  //    Куна
+    192 : Result := 'CUP';  //    Кубинское песо
+    196 : Result := 'CYP';  //    Кипрский фунт
+    203 : Result := 'CZK';  //    Чешская крона
+    208 : Result := 'DKK';  //    Датская крона
+    214 : Result := 'DOP';  //    Доминиканское песо
+    218 : Result := 'ECS';  //    Сукре
+    222 : Result := 'SVC';  //    Сальвадорский колон
+    230 : Result := 'ETB';  //    Эфиопский быр
+    232 : Result := 'ERN';  //    Накфа
+    233 : Result := 'EEK';  //    Крона
+    238 : Result := 'FKP';  //    Фунт Фолклендских
+    242 : Result := 'FJD';  //    Доллар Фиджи
+    246 : Result := 'FIM';  //    Марка
+    250 : Result := 'FRF';  //    Французский франк
+    262 : Result := 'DJF';  //    Франк Джибути
+    270 : Result := 'GMD';  //    Даласи
+    276 : Result := 'DEM';  //    Немецкая марка
+    288 : Result := 'GHC';  //    Седи
+    292 : Result := 'GIP';  //    Гибралтарский фунт
+    300 : Result := 'GRD';  //    Драхма
+    320 : Result := 'GTQ';  //    Кетсаль
+    324 : Result := 'GNF';  //    Гвинейский франк
+    328 : Result := 'GYD';  //    Гайанский доллар
+    332 : Result := 'HTG';  //    Гурд
+    340 : Result := 'HNL';  //    Лемпира
+    344 : Result := 'HKD';  //    Гонконгский доллар
+    348 : Result := 'HUF';  //    Форинт
+    352 : Result := 'ISK';  //    Исландская крона
+    356 : Result := 'INR';  //    Индийская рупия
+    360 : Result := 'IDR';  //    Рупия
+    364 : Result := 'IRR';  //    Иранский риал
+    368 : Result := 'IQD';  //    Иракский динар
+    372 : Result := 'IEP';  //    Ирландский фунт
+    376 : Result := 'ILS';  //    Новый израильский
+    380 : Result := 'ITL';  //    Итальянская лира
+    388 : Result := 'JMD';  //    Ямайский доллар
+    392 : Result := 'JPY';  //    Йена
+    398 : Result := 'KZT';  //    Тенге
+    400 : Result := 'JOD';  //    Иорданский динар
+    404 : Result := 'KES';  //    Кенийский шиллинг
+    408 : Result := 'KPW';  //    Северо - корейская вона
+    410 : Result := 'KRW';  //    Вона
+    414 : Result := 'KWD';  //    Кувейтский динар
+    417 : Result := 'KGS';  //    Сом
+    418 : Result := 'LAK';  //    Кип
+    422 : Result := 'LBP';  //    Ливанский фунт
+    426 : Result := 'LSL';  //    Лоти
+    428 : Result := 'LVL';  //    Латвийский лат
+    430 : Result := 'LRD';  //    Либерийский доллар
+    434 : Result := 'LYD';  //    Ливийский динар
+    440 : Result := 'LTL';  //    Литовский лит
+    442 : Result := 'LUF';  //    Люксембургский франк
+    446 : Result := 'MOP';  //    Патака
+    450 : Result := 'MGF';  //    Малагасийский франк
+    454 : Result := 'MWK';  //    Квача
+    458 : Result := 'MYR';  //    Малайзийский ринггит
+    462 : Result := 'MVR';  //    Руфия
+    470 : Result := 'MTL';  //    Мальтийская лира
+    478 : Result := 'MRO';  //    Угия
+    480 : Result := 'MUR';  //    Маврикийская рупия
+    484 : Result := 'MXN';  //    Мексиканское песо
+    496 : Result := 'MNT';  //    Тугрик
+    498 : Result := 'MDL';  //    Молдавский лей
+    504 : Result := 'MAD';  //    Марокканский дирхам
+    508 : Result := 'MZM';  //    Метикал
+    512 : Result := 'OMR';  //    Оманский риал
+    516 : Result := 'NAD';  //    Доллар Намибии
+    524 : Result := 'NPR';  //    Непальская рупия
+    528 : Result := 'NLG';  //    Нидерландский гульден
+    532 : Result := 'ANG';  //    Нидерландский
+    533 : Result := 'AWG';  //    Арубанский гульден
+    548 : Result := 'VUV';  //    Вату
+    554 : Result := 'NZD';  //    Новозеландский доллар
+    558 : Result := 'NIO';  //    Золотая кордоба
+    566 : Result := 'NGN';  //    Найра
+    578 : Result := 'NOK';  //    Норвежская крона
+    586 : Result := 'PKR';  //    Пакистанская рупия
+    590 : Result := 'PAB';  //    Бальбоа
+    598 : Result := 'PGK';  //    Кина
+    600 : Result := 'PYG';  //    Гуарани
+    604 : Result := 'PEN';  //    Новый соль
+    608 : Result := 'PHP';  //    Филиппинское песо
+    620 : Result := 'PTE';  //    Португальское эскудо
+    624 : Result := 'GWP';  //    Песо Гвинеи - Бисау
+    626 : Result := 'TPE';  //    Тиморское эскудо
+    634 : Result := 'QAR';  //    Катарский риал
+    642 : Result := 'ROL';  //    Лей
+    643 : Result := 'RUB';  //    Российский рубль
+    646 : Result := 'RWF';  //    Франк Руанды
+    654 : Result := 'SHP';  //    Фунт Острова Святой
+    678 : Result := 'STD';  //    Добра
+    682 : Result := 'SAR';  //    Саудовский риял
+    690 : Result := 'SCR';  //    Сейшельская рупия
+    694 : Result := 'SLL';  //    Леоне
+    702 : Result := 'SGD';  //    Сингапурский доллар
+    703 : Result := 'SKK';  //    Словацкая крона
+    704 : Result := 'VND';  //    Донг
+    705 : Result := 'SIT';  //    Толар
+    706 : Result := 'SOS';  //    Сомалийский шиллинг
+    710 : Result := 'ZAR';  //    Рэнд
+    716 : Result := 'ZWD';  //    Доллар Зимбабве
+    724 : Result := 'ESP';  //    Испанская песета
+    736 : Result := 'SDD';  //    Суданский динар
+    740 : Result := 'SRG';  //    Суринамский гульден
+    748 : Result := 'SZL';  //    Лилангени
+    752 : Result := 'SEK';  //    Шведская крона
+    756 : Result := 'CHF';  //    Швейцарский франк
+    760 : Result := 'SYP';  //    Сирийский фунт
+    764 : Result := 'THB';  //    Бат
+    776 : Result := 'TOP';  //    Паанга
+    780 : Result := 'TTD';  //    Доллар Тринидада и
+    784 : Result := 'AED';  //    Дирхам (ОАЭ)
+    788 : Result := 'TND';  //    Тунисский динар
+    792 : Result := 'TRL';  //    Турецкая лира
+    795 : Result := 'TMM';  //    Манат
+    800 : Result := 'UGX';  //    Угандийский шиллинг
+    807 : Result := 'MKD';  //    Динар
+    810 : Result := 'RUR';  //    Российский рубль
+    818 : Result := 'EGP';  //    Египетский фунт
+    826 : Result := 'GBP';  //    Фунт стерлингов
+    834 : Result := 'TZS';  //    Танзанийский шиллинг
+    840 : Result := 'USD';  //    Доллар США
+    858 : Result := 'UYU';  //    Уругвайское песо
+    860 : Result := 'UZS';  //    Узбекский сум
+    862 : Result := 'VEB';  //    Боливар
+    882 : Result := 'WST';  //    Тала
+    886 : Result := 'YER';  //    Йеменский риал
+    891 : Result := 'YUM';  //    Новый динар
+    894 : Result := 'ZMK';  //    Квача (замбийская)
+    901 : Result := 'TWD';  //    Новый тайваньский
+    950 : Result := 'XAF';  //    Франк КФА ВЕАС
+    951 : Result := 'XCD';  //    Восточно - карибский
+    952 : Result := 'XOF';  //    Франк КФА ВСЕАО
+    953 : Result := 'XPF';  //    Франк КФП
+    960 : Result := 'XDR';  //    СДР (специальные права
+    972 : Result := 'TJS';  //    Сомони
+    973 : Result := 'AOA';  //    Кванза
+    974 : Result := 'BYR';  //    Белорусский рубль
+    975 : Result := 'BGN';  //    Болгарский лев
+    976 : Result := 'CDF';  //    Конголезский франк
+    977 : Result := 'ВАМ';  //    Конвертируемая марка
+    978 : Result := 'EUR';  //    Евро
+    980 : Result := 'UAH';  //    Гривна
+    981 : Result := 'GEL';  //    Лари
+    985 : Result := 'PLN';  //    Злотый
+    986 : Result := 'BRL';  //    Бразильский реал
   end;
 
 end;
 
 
-{ Преобразование строки "01-05" в дату 31.01.2005 }
+{ Функция CardExpDate_To_Date возвращает строку, переданню ей в качестве аргумента
+  в тип даты. Пример для CardExpDate_To_Date("01-05") результат будет 31.01.2005 }
 
 function CardExpDate_To_Date(InCardExpDate: ShortString): TDate;
 var
@@ -1360,7 +1426,8 @@ begin
 end;
 
 
-{ Преобразование номера карты по первым 9-ти цифрам в тип карты (филиал) }
+{ Функция DecodeTypeCard производит преобразование номера карты по первым
+  9-ти цифрам в тип карты (филиал) }
 
 function DecodeTypeCard(InCardNumber: ShortString): ShortString;
 var
@@ -1368,29 +1435,31 @@ var
 begin
 
   DecodeTypeCardVar := 'type not define';
+
   if (Copy(InCardNumber, 1, 9) = '487417315') then DecodeTypeCardVar := 'VISA Electron';
-  if (Copy(InCardNumber, 1, 9) ='487415515') then DecodeTypeCardVar := 'VISA Classic';
-  IF (Copy(InCardNumber, 1, 9) ='487416315') then DecodeTypeCardVar := 'VISA Gold';
-  IF (Copy(InCardNumber, 1, 9) ='676454115') then DecodeTypeCardVar := 'Maestro';
-  IF (Copy(InCardNumber, 1, 9) ='548999015') then DecodeTypeCardVar := 'MasterCard';
-  IF (Copy(InCardNumber, 1, 9) ='549000215') then DecodeTypeCardVar := 'MasterCard Gold';
+  if (Copy(InCardNumber, 1, 9) = '487415515') then DecodeTypeCardVar := 'VISA Classic';
+  IF (Copy(InCardNumber, 1, 9) = '487416315') then DecodeTypeCardVar := 'VISA Gold';
+  IF (Copy(InCardNumber, 1, 9) = '676454115') then DecodeTypeCardVar := 'Maestro';
+  IF (Copy(InCardNumber, 1, 9) = '548999015') then DecodeTypeCardVar := 'MasterCard';
+  IF (Copy(InCardNumber, 1, 9) = '549000215') then DecodeTypeCardVar := 'MasterCard Gold';
 
-  IF (Copy(InCardNumber, 1, 6) ='602208') then DecodeTypeCardVar := 'Union Card';
+  IF (Copy(InCardNumber, 1, 6) = '602208') then DecodeTypeCardVar := 'Union Card';
 
-  IF (Copy(InCardNumber, 1, 9) ='487417415') then DecodeTypeCardVar := 'VISA Electron Пенсионная';
-  IF (Copy(InCardNumber, 1, 9) ='487415415') then DecodeTypeCardVar := 'VISA Classic Пенсионная';
-  IF (Copy(InCardNumber, 1, 9) ='487416415') then DecodeTypeCardVar := 'VISA Gold Пенсионная';
+  IF (Copy(InCardNumber, 1, 9) = '487417415') then DecodeTypeCardVar := 'VISA Electron Пенсионная';
+  IF (Copy(InCardNumber, 1, 9) = '487415415') then DecodeTypeCardVar := 'VISA Classic Пенсионная';
+  IF (Copy(InCardNumber, 1, 9) = '487416415') then DecodeTypeCardVar := 'VISA Gold Пенсионная';
 
   Result := DecodeTypeCardVar;
 
 end;
 
 
-{ Преобразование номера карты по первым 6-ти цифрам в тип карты (Газпромбанк) }
+{ Функция DecodeTypeCardGPB произволит преобразование номера карты по первым
+  6-ти цифрам в тип карты (Газпромбанк) }
 
 function DecodeTypeCardGPB(InCardNumber: ShortString): ShortString;
 var
-  DecodeTypeCardVar:ShortString;
+  DecodeTypeCardVar: ShortString;
 begin
 
   DecodeTypeCardVar := 'type not define';
@@ -1407,15 +1476,15 @@ begin
 end;
 
 
- { Преобразование PChar в String }
+ { Функция PCharToStr производит преобразование PChar в String }
 
-function PCharToStr(P:Pchar): string;
+function PCharToStr(P: Pchar): string;
 begin
   Result := P;
 end;
 
 
-{ Функция преобразует дату 01.01.2002 в строку '01/01/2002' }
+{ Функция StrDateFormat1 преобразует дату 01.01.2002 в строку формата '01/01/2002' }
 
 function StrDateFormat1(InValue: TDate): ShortString;
 begin
@@ -1431,7 +1500,7 @@ begin
 end;
 
 
-{ Функция StrDateFormat2() преобразует дату 01.01.2002 в строку '01-01-2002' }
+{ Функция StrDateFormat2() преобразует дату 01.01.2002 в строку формата '01-01-2002' }
 
 function StrDateFormat2(InValue: TDate): ShortString;
 begin
@@ -1447,7 +1516,8 @@ begin
 end;
 
 
-{ Сумма прописью }
+{ Функция SummaPropis возвращает сумму прописью из типа double, переданного ей
+  в качестве аргумента }
 
 function SummaPropis(InSum: Double): WideString;
 
@@ -1482,7 +1552,7 @@ function SummaPropis(InSum: Double): WideString;
     I := Digit1 div 10;
 
     if (Digit1 > 10) and (Digit1 < 20) then
-      StringVar := StringVar + NumbersInWords3[Digit1-10] + ' '
+      StringVar := StringVar + NumbersInWords3[Digit1 - 10] + ' '
     else
       begin
         if I <> 0 then
@@ -1494,7 +1564,7 @@ function SummaPropis(InSum: Double): WideString;
             else StringVar := StringVar + NumbersInWords[Digit1] + ' ';
       end;
 
-    NumbersToStrings := StringVar;
+    Result := StringVar;
 
   end;
 
@@ -1518,7 +1588,7 @@ begin
 
       J := J mod 100;
 
-      if (J>10) and (J<20) then
+      if (J > 10) and (J < 20) then
         StringVar := StringVar + 'ов '
       else
         case J mod 10 of
@@ -1555,7 +1625,7 @@ begin
 
       J := J mod 100;
 
-      if (J>10) and (J<20) then
+      if (J > 10) and (J < 20) then
         StringVar := StringVar + ' '
       else
         case J mod 10 of
@@ -1581,7 +1651,10 @@ end;
 end;
 
 
-{ Функция SummaPropis2() - сумма прописью второй вариант реализации логики }
+{ Функция SummaPropis2 возвращает сумму прописью из типа double, переданного ей
+  в качестве аргумента
+
+  (второй вариант реализации) }
 
 function SummaPropis2(InSum: Double): WideString;
 
@@ -1621,7 +1694,7 @@ function SummaPropis2(InSum: Double): WideString;
             else
               StringVar := StringVar + NumbersInWords[Digit1] + ' ';
             end;
-    NumbersToStrings := StringVar;
+    Result := StringVar;
   end;
 var
   I: Longint;
@@ -1685,6 +1758,7 @@ begin
           5..9: StringVar := StringVar + ' ';
         end;
 end;
+
   I := I mod 1000;
   J := I;
 
@@ -1700,7 +1774,8 @@ end;
 end;
 
 
-{ Функция StrDateFormat3() преобразует дату 01.02.2002 в строку '2002-02-01' }
+{ Функция StrDateFormat3() преобразует дату, передаваемую в качестве аргумента
+  01.02.2002 в строку формата '2002-02-01' }
 
 function StrDateFormat3(InValue: TDate): ShortString;
 begin
@@ -1717,7 +1792,7 @@ begin
 end;
 
 
-{ Функция передает Год из даты }
+{ Функция YearFromDate возвращает Год из Даты, передаваемой в качестве аргумента }
 
 function YearFromDate(InDate: TDate): Word;
 var
@@ -1730,15 +1805,19 @@ begin
 end;
 
 
-{ Функция из исходной строки InString получает Хэш-функцию MD5 }
+{ Функция GenHashMD5 возвращает Хэш-функцию MD5 из строки, передаваемой
+  в качестве аргумента }
 
 function GenHashMD5(InString: ShortString): ShortString;
 begin
+
   Result := MD5DigestToStr(MD5String(InString));
+
 end;
 
 
-{ Копирование файла }
+{ Функция WindowsCopyFile производит копирование файла, передаваемого в качестве
+  аргумента в директорию, указанную в качестве второго аргумента }
 
 function WindowsCopyFile(FromFile, ToDir: string): boolean;
 var
@@ -1757,8 +1836,9 @@ begin
 end;
 
 
-{ 44. Определение в системе переменной "Temp" как C:\Temp\ }
-{ D7
+{ (Delphi 7) Функция GetTempPathSystem возвращает значение переменной "Temp"
+  (как C:\Temp\) из параметров операционной системе
+
 function GetTempPathSystem: ShortString;
 var
   Buffer: array[0..1023] of Char;
@@ -1767,8 +1847,8 @@ begin
 end; }
 
 
-{ 45. Определение текущего каталога как C:\WORK }
-{ D7
+{ (Delphi 7) Функция GetCurrDir возвращает значение текущего каталога как C:\WORK
+
 function GetCurrDir: ShortString;
 var
   Buffer: array[0..1023] of Char;
@@ -1777,31 +1857,44 @@ begin
 end; }
 
 
-{ Определение короткого имени файла "D:\WORK\read.txt" -> "read.txt" }
+{ Функция GetShortFileName возвращает имя файла без полного пути
+  Пример для GetShortFileName("D:\WORK\read.txt") - результат "read.txt" }
 
-function getShortFileName(InFileName: ShortString): ShortString;
+function GetShortFileName(InFileName: ShortString): ShortString;
 begin
+
   Result := ExtractFileName(InFileName);
+
 end;
 
 
-{ Определение пути по имени файла "D:\WORK\read.txt" -> "D:\WORK\" }
+{ Функция GetFilePath возвращает путь к файлу
+  Пример для GetFilePath("D:\WORK\read.txt") - результат "D:\WORK\" }
 
-function getFilePath(InFileName: ShortString): ShortString;
+function GetFilePath(InFileName: ShortString): ShortString;
 begin
+
   Result := ExtractFilePath(InFileName);
+
 end;
 
 
-{ Определение короткого имени файла без расширения "D:\WORK\read.txt" -> "read" }
+{ Функция GetShortFileNameWithoutExt возвращает имя файла без полного пути
+  и расширения
+  Пример для GetShortFileNameWithoutExt("D:\WORK\read.txt") рузультат "read" }
 
-function getShortFileNameWithoutExt(InFileName:ShortString):ShortString;
+function GetShortFileNameWithoutExt(InFileName: ShortString): ShortString;
 begin
-  Result := Copy(ExtractFileName(InFileName), 1, Pos('.', ExtractFileName(InFileName)) - 1);
+
+  Result := Copy(ExtractFileName(InFileName), 1,
+    Pos('.', ExtractFileName(InFileName)) - 1);
+
 end;
 
 
-{ Функция преобразует дату 01.02.2002 в строку '01022002' ДДММГГГГ }
+{ Функция StrDateFormat4 преобразует дату, передаваемую в качестве аргумента
+  в строку формата ДДММГГГГ
+  Пример для StrDateFormat4(01.02.2002) результат '01022002' }
 
 function StrDateFormat4(InValue: TDate): ShortString;
 begin
@@ -1817,9 +1910,11 @@ begin
 end;
 
 
-{ Функция преобразует дату 01.02.2002 в строку '010202' ДДММГГ }
+{ Функция StrDateFormat5 преобразует дату, передаваемую в качестве аргумента
+  в строку формата ДДММГГ
+  Пример для StrDateFormat5(01.02.2002) результат '010202' }
 
-function StrDateFormat5(InValue: TDate): shortString;
+function StrDateFormat5(InValue: TDate): ShortString;
 begin
 
   if Length(DateToStr(InValue)) = 8 then
@@ -1833,13 +1928,15 @@ begin
 end;
 
 
-{ Функция StrDateFormat6 преобразует дату и время 23.02.2009 12:37:00
-  в строку ДДММГГГГЧЧММСС }
+{ Функция StrDateFormat6 преобразует дату и время, передаваемые в качестве аргумента
+  в строку формата ДДММГГГГЧЧММСС
+  Пример для StrDateFormat6('23.02.2009 12:37:00') результат '23022009123700' }
 
 function StrDateFormat6(InValue: TDateTime): ShortString;
 begin
 
   Result := '';
+
   if Length(DateToStr(InValue)) = 8 then
     Result := Copy(DateToStr(InValue), 1, 2) + Copy(DateToStr(InValue), 4, 2)
       + Copy(DateToStr(InValue), 7, 2) + Copy(TimeToStr(InValue), 1, 2)
@@ -1852,6 +1949,8 @@ begin
 
 end;
 
+
+// --- Wait for Delphi-doc
 
 { Функция StrDateFormat7 преобразует дату и время 23.02.2009 12:37:00
   в строку ДДММГГЧЧММСС }
