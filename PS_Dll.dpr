@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.14 18-05-2022                                  }
+{       ver. 1.15 25-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -1950,10 +1950,8 @@ begin
 end;
 
 
-// --- Wait for Delphi-doc
-
-{ Функция StrDateFormat7 преобразует дату и время 23.02.2009 12:37:00
-  в строку ДДММГГЧЧММСС }
+{ Функция StrDateFormat7 преобразует дату и время, передаваемую в качестве
+  аргумента в формате 23.02.2009 12:37:00 в строку формата ДДММГГЧЧММСС }
 
 function StrDateFormat7(InValue: TDateTime): ShortString;
 var
@@ -1987,7 +1985,8 @@ begin
 end;
 
 
-{ Функция VariableBetweenChars находит в строке значение мужду двумя символами }
+{ Функция VariableBetweenChars в передаваемой ей в качестве аргумента строке
+  находит и возвращает подстроку, между двумя символами (разделителями) }
 
 function VariableBetweenChars(InString: ShortString; InChar: Char;
   InCharNumberStart: Byte; InCharNumberEnd: Byte): ShortString;
@@ -1996,16 +1995,18 @@ var
 begin
 
   VariableBetweenCharsVar := '';
+
   VariableBetweenCharsVar := Copy(InString, FindChar(InString, InChar,
     InCharNumberStart) + 1, FindChar(InString, InChar, InCharNumberEnd)
     - FindChar(InString, InChar, InCharNumberStart) - 1);
+
   Result := VariableBetweenCharsVar;
 
 end;
 
 
-{ Функция VariableBetweenCharsWideString находит в строке значение мужду двумя
-  символами - вариант обработки Широкой строки }
+{ Функция VariableBetweenCharsWideString в передаваемой ей в качестве аргумента
+  строке находит и возвращает подстроку, между двумя символами (разделителями) }
 
 function VariableBetweenCharsWideString(InString: WideString; InChar:Char;
   InCharNumberStart: Byte; InCharNumberEnd: Byte): ShortString;
@@ -2018,8 +2019,8 @@ begin
 end;
 
 
-{ Функция VariableBetweenCharsWideString2 находит в строке значение мужду двумя
-символами - вариант обработки Широкой строки }
+{ Функция VariableBetweenCharsWideString2 в передаваемой ей в качестве аргумента
+  строке находит и возвращает подстроку, между двумя символами (разделителями) }
 
 function VariableBetweenCharsWideString2(InString: WideString; InChar: Char;
   InCharNumberStart: Byte; InCharNumberEnd: Byte): WideString;
@@ -2032,8 +2033,8 @@ begin
 end;
 
 
-{ Функция VariableBetweenCharsWideString3 находит в строке значение мужду двумя
-символами - вариант обработки Широкой строки }
+{ Функция VariableBetweenCharsWideString3 в передаваемой ей в качестве аргумента
+  строке находит и возвращает подстроку, между двумя символами (разделителями) }
 
 function VariableBetweenCharsWideString3(InString: WideString; InChar: Char;
   InCharNumberStart: Byte; InCharNumberEnd: Byte): WideString;
@@ -2046,8 +2047,9 @@ begin
 end;
 
 
-{ Функция StrFormatDateTimeITDToDateTime преобразует строку в формате даты
-  и времени Инфоточки ITD '04-04-07 15:22:11' в тип TDateTime }
+{ Функция StrFormatDateTimeITDToDateTime преобразует строку, передаваемую
+  в качестве аргумента, в формате даты и времени Инфоточки ITD '04-04-07 15:22:11'
+  в тип TDateTime }
 
 function StrFormatDateTimeITDToDateTime(InStrFormatDateTimeITD: ShortString): TDateTime;
 begin
@@ -2059,8 +2061,9 @@ begin
 end;
 
 
-{ Функция StrFormatDateTimeITDToDate преобразует строку в формате даты и времени
-  Инфоточки ITD '04-04-07 15:22:11' в тип TDate }
+{ Функция StrFormatDateTimeITDToDate преобразует строку, передаваемую
+  в качестве аргумента, в формате даты и времени Инфоточки ITD '04-04-07 15:22:11'
+  в тип TDateTime }
 
 function StrFormatDateTimeITDToDate(InStrFormatDateTimeITD: ShortString): TDate;
 begin
@@ -2072,8 +2075,8 @@ begin
 end;
 
 
-{ Функция DateTimeToStrFormatITDDateTime преобразует тип TDateTime в строковый
-  формат даты и времени ITD }
+{ Функция DateTimeToStrFormatITDDateTime преобразует дату и время, передаваемые
+  в качестве аргумента, в формате даты и времени Инфоточки ITD '04-04-07 15:22:11' }
 
 function DateTimeToStrFormatITDDateTime(InDateTime: TDateTime): ShortString;
 begin
@@ -2106,7 +2109,8 @@ begin
      if FileExists(InFileRSAPrivateKey) = false
        then
          begin
-           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Файл '+InFileRSAPrivateKey+' не найден!');
+           raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Файл '
+             + InFileRSAPrivateKey + ' не найден!');
          end;
 
 
@@ -2123,7 +2127,8 @@ begin
         Key := PEM_read_bio_PrivateKey(KeyFile, A, nil, nil);
         if Key = nil then
         begin
-          raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Ошибка чтения PRIVATE KEY из файла '+InFileRSAPrivateKey+' !');
+          raise Exception.Create('Sign_RSA_MD5_hex_WideStr: Ошибка чтения PRIVATE KEY из файла '
+           + InFileRSAPrivateKey + '!');
         end;
 
 
@@ -2131,7 +2136,7 @@ begin
 
         OSt.WriteString(InStringForSign);
 
-        nTamanho:=Length(InStringForSign);
+        nTamanho := Length(InStringForSign);
 
         if nTamanho < 1024 then
         begin
@@ -2160,6 +2165,8 @@ begin
      end;
 end;
 
+
+// --- Wait for Delphi-doc
 
 { Функция Sign_RSA_MD5_hex_File для файла InStringForSign формирует ЭЦП RSA/MD5
   с длиной ключа 1024 бит в кодировке hex.
