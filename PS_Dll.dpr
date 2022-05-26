@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.15 25-05-2022                                  }
+{       ver. 1.16 26-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -2166,13 +2166,12 @@ begin
 end;
 
 
-// --- Wait for Delphi-doc
-
 { Функция Sign_RSA_MD5_hex_File для файла InStringForSign формирует ЭЦП RSA/MD5
-  с длиной ключа 1024 бит в кодировке hex.
-  В InfileRSAPrivateKey передается полный путь к файлу, содержащему RSA PRIVATE KEY }
+  с длиной ключа 1024 бит в кодировке hex. В параметре InfileRSAPrivateKey
+  передается полный путь к файлу, содержащему RSA PRIVATE KEY }
 
-function Sign_RSA_MD5_hex_File(InFileRSAPrivateKey: string; InFileNameForSign:WideString ): WideString;
+function Sign_RSA_MD5_hex_File(InFileRSAPrivateKey: string;
+  InFileNameForSign: WideString ): WideString;
 var
    Len: cardinal;
    Mdctx: EVP_MD_CTX;
@@ -2187,12 +2186,14 @@ begin
 
      if FileExists(InFileRSAPrivateKey) = false then
        begin
-         raise Exception.Create('Sign_RSA_MD5_hex_File: Файл '+InFileRSAPrivateKey+' не найден!');
+         raise Exception.Create('Sign_RSA_MD5_hex_File: Файл '
+           + InFileRSAPrivateKey + ' не найден!');
        end;
 
      if FileExists(InFileNameForSign) = false then
        begin
-         raise Exception.Create('Sign_RSA_MD5_hex_File: Не найден файл '+InFileNameForSign+'!');
+         raise Exception.Create('Sign_RSA_MD5_hex_File: Не найден файл '
+           + InFileNameForSign + '!');
        end;
 
      A := nil;
@@ -2208,7 +2209,8 @@ begin
         Key := PEM_read_bio_PrivateKey(KeyFile, A, nil, nil);
         if Key = nil then
         begin
-          raise Exception.Create('Sign_RSA_MD5_hex_File: Ошибка чтения PRIVATE KEY из файла '+InFileRSAPrivateKey+' !');
+          raise Exception.Create('Sign_RSA_MD5_hex_File: Ошибка чтения PRIVATE KEY из файла '
+            + InFileRSAPrivateKey + '!');
         end;
 
         FileStream := TFileStream.Create(InFileNameForSign, fmOpenRead);
@@ -2242,11 +2244,12 @@ begin
      finally
         EVP_cleanup;
      end;
+
 end;
 
 
-{ Функция mixingString производит перемешку между собой случайным образом
-  символов передаваемых в качестве параметра (перемешка mixing строки) }
+{ Функция MixingString производит перемешку случайным образом
+  символов передаваемых в качестве параметра }
 
 function MixingString(InString: ShortString): ShortString;
 var
@@ -2337,13 +2340,13 @@ begin
   if MaxLengtInString <> Length(InString) then
     InString := Copy(InString, 2, Length(InString) - 1);
 
-  Result:=InString;
+  Result := InString;
 
 end;
 
 
 { Функция StrToFloat2 вызывает StrToFloat с проверкой в InString разделителя,
-  соответствующего установленному в системых настройках ОС }
+  соответствующего установленному в настройках ОС }
 
 function StrToFloat2(InString: ShortString): Extended;
 var
@@ -2364,11 +2367,11 @@ end;
 
 
 { Функция SumFormat получает сумму в строковом виде и преобразует разделитель
-  к точке, запятой и копейки
+  к точке, запятой и копейки:
     123 -> 123.00
     123 -> 123,00
 
-    SumFormat('123', '.', 2) }
+    Пример SumFormat('123', '.', 2) результат '123.00' }
 
 function SumFormat(InSumStr: ShortString; InSeparator: ShortString;
   InDecimal: Word): ShortString;
@@ -2430,7 +2433,8 @@ begin
           SumStrVar := Copy(SumStrVar, 1, POS(InSeparator, SumStrVar) - 1);
     end;
 
-  if (Pos(InSeparator, SumStrVar) <> 0) and (( Length(SumStrVar) - Pos(InSeparator, SumStrVar)) < InDecimal) then
+  if (Pos(InSeparator, SumStrVar) <> 0)
+    and (( Length(SumStrVar) - Pos(InSeparator, SumStrVar)) < InDecimal) then
     begin
       for I := 1 to (InDecimal - (Length(SumStrVar) - POS(InSeparator, SumStrVar))) do
         begin
@@ -2447,7 +2451,7 @@ end;
 
 { Функция DateTimeToStrFormatSirenaDateTime преобразует тип TDateTime
   в строковый формат даты и времени
-  для сервера "Сирены" 2009-06-09T01:01:01.123456 }
+  для сервера системы бронирования "Сирена" 2009-06-09T01:01:01.123456 }
 
 function DateTimeToStrFormatSirenaDateTime(InDateTime: TDateTime): ShortString;
 var
@@ -2458,14 +2462,15 @@ begin
 
   Result := Copy(DateTimeToStr(InDateTime), 7, 4) + '-'
     + Copy(DateTimeToStr(InDateTime), 4, 2)
-    + '-' + Copy(DateTimeToStr(InDateTime), 1, 2) +'T'
+    + '-' + Copy(DateTimeToStr(InDateTime), 1, 2) + 'T'
     + beforZero(MyHour, 2) + ':' + beforZero(MyMin, 2)
     + ':' + beforZero(MySec, 2) + '.' + beforZero(myMilli, 6);
 
 end;
 
 
-{ Функция StrDateFormat8 преобразует дату 01.02.2002 в строку '020201' ГГММДД }
+{ Функция StrDateFormat8 преобразует дату ДД.ММ.ГГГГ в строку ГГММДД
+  Пример StrDateFormat8(01.02.2002) результат '020201' }
 
 function StrDateFormat8(InValue: TDate): ShortString;
 begin
@@ -2482,7 +2487,8 @@ end;
 
 
 { Функция StrDateFormat9 преобразует дату и время 23.02.2009 12:37:00
-  в строку ДДММГГЧЧММССMs }
+  в строку ДДММГГЧЧММССMs
+  Пример StrDateFormat9 для 23.02.2009 12:37:00 - результат '23022009123700' }
 
 function StrDateFormat9(InDateTime: TDateTime): ShortString;
 var
@@ -2517,8 +2523,9 @@ begin
 end;
 
 
-{  Функция StrDateFormat10 преобразует дату и время 23.02.2009 12:37:00
-  в строку ГГГГММДДЧЧММСС }
+{ Функция StrDateFormat10 преобразует дату и время, передаваемую в качестве
+  аргумента в строку ГГГГММДДЧЧММСС
+  Пример StrDateFormat10 для 23.02.2009 12:37:00 - результат '23022009123700'}
 
 function StrDateFormat10(InValue: TDateTime): ShortString;
 begin
@@ -2546,7 +2553,8 @@ begin
 end;
 
 
-{ Функция RandomUserName генерирует UserName }
+{ Функция RandomUserName генерирует случайное имя пользователя UserName
+  из строки '1234567890' }
 
 function RandomUserName(PWLen: Word): ShortString;
 var
@@ -2555,7 +2563,7 @@ var
   Flags: TReplaceFlags;
 begin
 
-  StrTableUserName:='1234567890';
+  StrTableUserName := '1234567890';
 
   StrTableUserName := DateTimeToStrFormat(Now) + StrTableUserName
     + DateTimeToStrFormat(Now);
@@ -2586,7 +2594,8 @@ begin
 end;
 
 
-{ Функция RandomUserPassword генерирует UserPassword }
+{ Функция RandomUserPassword генерирует пароль UserPassword
+  из строки 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456789' }
 
 Function RandomUserPassword(PWLen: Word): ShortString;
 var
@@ -2628,6 +2637,8 @@ begin
 
 end;
 
+
+// --- Wait for Delphi-doc
 
 { Функция RussianDayOfWeek преобразует американский расчет дня недели в российский }
 
