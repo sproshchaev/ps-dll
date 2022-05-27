@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.16 26-05-2022                                  }
+{       ver. 1.17 27-05-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -2638,21 +2638,23 @@ begin
 end;
 
 
-// --- Wait for Delphi-doc
-
-{ Функция RussianDayOfWeek преобразует американский расчет дня недели в российский }
+{ Функция RussianDayOfWeek преобразует американский номер дня недели,
+  передаваемый в качестве параметра в российский: Пнд - 1, Вт - 2, ... Вскр - 7 }
 
 function RussianDayOfWeek(InDayOfWeek: Byte): Byte;
 begin
+
   if InDayOfWeek = 1 then
     Result := 7
   else
     Result := InDayOfWeek - 1;
+
 end;
 
 
-{ Функция RussianDayOfWeekFromDate преобразует американский расчет дня недели
-  в российский из даты }
+{ Функция RussianDayOfWeekFromDate возвращает номера дня недели из даты,
+  передаваемой в качестве аргумента.
+  Пнд - 1, Вт - 2, ... Вскр - 7 }
 
 function RussianDayOfWeekFromDate(InDate: TDate): Byte;
 var
@@ -2670,7 +2672,7 @@ end;
 
 
 { Функция DaysOffBetweenDates возвращает количество выходных дней (субб., вскр.)
-  между 2-мя датами, переданными в качестве аргументов }
+  между двумя датами, переданными в качестве аргументов }
 
 function DaysOffBetweenDates(InDateBegin: TDate; InDateEnd: TDate): Word;
 var
@@ -2691,11 +2693,11 @@ begin
 end;
 
 
-{ Функция paramFromString возвращает параметр (ShortString) из структурированной
+{ Функция ParamFromString возвращает параметр из структурированной
   строки вида "параметр_номер_1=100.00; параметр_номер_2=200.00; "
-  - Адаптирована к параметр_номер_1 и параметр_номер_11 }
+  Адаптирована к параметр_номер_1 и параметр_номер_11 }
 
-function paramFromString(InStringAnswer: WideString; InParam: ShortString): ShortString;
+function ParamFromString(InStringAnswer: WideString; InParam: ShortString): ShortString;
 begin
 
   if Pos('=', InParam) = 0 then
@@ -2706,7 +2708,7 @@ begin
       (Length(InStringAnswer) - Pos(InParam, InStringAnswer) + Length(InParam) + 1)),
       1, Pos(';', Copy(InStringAnswer, Pos(InParam, InStringAnswer) + Length(InParam),
       (Length(InStringAnswer) - Pos(InParam, InStringAnswer) + Length(InParam)+1))) - 1)
-  else Result:='';
+  else Result := '';
 
 end;
 
@@ -2726,7 +2728,7 @@ begin
       + Length(InParam), (Length(InStringAnswer) - Pos(InParam, InStringAnswer)
       + Length(InParam) + 1)), 1, Pos(';', Copy(InStringAnswer,
       POS(InParam, InStringAnswer) + Length(InParam), (Length(InStringAnswer)
-      - Pos(InParam, InStringAnswer) + Length(InParam) + 1))) -1)
+      - Pos(InParam, InStringAnswer) + Length(InParam) + 1))) - 1)
    else Result := '';
 
 end;
@@ -2786,7 +2788,7 @@ begin
         - Pos(InParam, InStringAnswer) + 1))
         - Pos(';', Copy(InStringAnswer, Pos(InParam, InStringAnswer),
         Length(InStringAnswer) - Pos(InParam, InStringAnswer) + 1)));
-      Result:=BeforeSubstring+InParam+InValue+';'+AfterSubstring;
+      Result := BeforeSubstring + InParam + InValue + ';' + AfterSubstring;
     end
   else Result := InStringAnswer +' ' + InParam + InValue + ';';
 
@@ -2922,6 +2924,8 @@ begin
 
 end;
 
+
+// --- Wait for Delphi-doc
 
 { Функция ParamValueFromString возвращает значение параметра по его порядковому
   номеру: "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
