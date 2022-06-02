@@ -3,7 +3,7 @@
 {       Библиотека PS_Dll сожержит процедуры и функции       }
 {       наиболее часто использующиеся в проектах             }
 {                                                            }
-{       ver. 1.17 27-05-2022                                  }
+{       ver. 1.18 02-06-2022                                  }
 {                                                            }
 {************************************************************}
 
@@ -12,7 +12,7 @@ library PS_Dll;
 uses
   ShareMem, SysUtils, Classes, Des in 'Des.pas', psnMD5 in 'psnMD5.pas',
     ShellApi, Windows, libeay32 in 'libeay32.pas',
-    WinSock { D7 Controls, Dialogs };
+    WinSock;
 
 
 { Функция RoundCurrency округляет передаваемое ей значение до указанного
@@ -2925,8 +2925,6 @@ begin
 end;
 
 
-// --- Wait for Delphi-doc
-
 { Функция ParamValueFromString возвращает значение параметра по его порядковому
   номеру: "параметр_номер_1=100.00; параметр_номер_2=200.00; " второй параметр = 200.00 }
 
@@ -2980,8 +2978,8 @@ begin
 end;
 
 
-{ Функция GetParamFromDoublePayment из строки, содержащей двойной параметр вида
-  "1234-9044951501" возвращает первый "1234" (при InParamNumber=1)
+{ Функция GetParamFromDoublePayment из строки (содержащей двойной параметр вида
+  "1234-9044951501") возвращает первый "1234" (при InParamNumber=1)
   или второй параметр "9044951501" (при InParamNumber=2) }
 
 function GetParamFromDoublePayment(InDoubleAutData: ShortString;
@@ -3209,10 +3207,6 @@ DeCryptDES Name 'DeCryptDES',
 GenHashMD5 Name 'GenHashMD5',
 
 WindowsCopyFile Name 'WindowsCopyFile',
-
-{ D7 GetTempPathSystem Name 'GetTempPathSystem', }
-
-{ D7 GetCurrDir Name 'GetCurrDir', }
 
 GetShortFileName Name 'GetShortFileName',
 
